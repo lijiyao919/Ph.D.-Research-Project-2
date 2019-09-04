@@ -3,13 +3,13 @@ from Data.Map import AdjList_Chicago
 
 
 class Graph:
-    def __init__(self):
-        self.edge = AdjList_Chicago
-        self.cache = {}
+    edge = AdjList_Chicago
+    cache = {}
 
-    def calcShortestPath(self, src, dest):
+    @staticmethod
+    def calcShortestPath(src, dest):
         pq=PriorityQueue()
-        distances = {vertex: float('infinity') for vertex in self.edge}
+        distances = {vertex: float('infinity') for vertex in Graph.edge}
         distances[src] = 0
         #print(distances)
 
@@ -19,24 +19,25 @@ class Graph:
         while pq.isEmpty() is not True:
             current_distance, current_vertex = pq.pop_task()
 
-            if (src, current_vertex) not in self.cache:
-                self.cache[(src, current_vertex)] = current_distance
+            if (src, current_vertex) not in Graph.cache:
+                Graph.cache[(src, current_vertex)] = current_distance
 
             if current_vertex == dest:
                 return current_distance
 
-            for neighbor in self.edge[current_vertex]:
+            for neighbor in Graph.edge[current_vertex]:
                 if distances[neighbor] > distances[current_vertex]+1:
                     distances[neighbor] = distances[current_vertex]+1
                     pq.add_task(neighbor, distances[neighbor])
 
-    def queryTravelCost(self, src, dest):
-        if (src, dest) in self.cache:
-            print('Read from cache.')
-            return self.cache[(src, dest)]
+    @staticmethod
+    def queryTravelCost(src, dest):
+        if (src, dest) in Graph.cache:
+            #print('Read from cache.')
+            return Graph.cache[(src, dest)]
         else:
-            return self.calcShortestPath(src,dest)
+            return Graph.calcShortestPath(src,dest)
 
-'''gp = Graph()
-print(gp.queryTravelCost('32', '76'))
-print(gp.queryTravelCost('32', '25'))'''
+
+#print(Graph.queryTravelCost('32', '76'))
+#print(Graph.queryTravelCost('32', '25'))
