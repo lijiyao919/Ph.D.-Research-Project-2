@@ -2,6 +2,7 @@ import pandas as pd
 import datetime
 import numpy as np
 import json
+from Data.Map import AdjList_Chicago
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
@@ -15,7 +16,8 @@ class DemandEvaluation:
         self.__start_date = start
         self.__end_date = end
         self.__delta_time = datetime.timedelta(minutes=15)
-        self.__state_value_table = {}
+        self.__state_value = {}
+        self.__smooth_state_value = {}
 
     #Intitialize state_value_table(state is time&zone, value is the demand evaluation)
     def __initilize(self):
@@ -25,7 +27,8 @@ class DemandEvaluation:
         curr_time = final_time  # 2016-04-01 23:45:00
         while curr_time >= begin_time:
             curr_state_t = curr_time.strftime('%m/%d/%Y %H:%M').split(' ')[1]  #e.g. 23:45 (string type)
-            self.__state_value_table[curr_state_t] =  np.zeros(78, dtype=np.int16)
+            self.__state_value[curr_state_t] =  np.zeros(78, dtype=np.float64)
+            self.__smooth_state_value[curr_state_t] = np.zeros(78, dtype=np.float64)
             curr_time = curr_time-self.__delta_time
         #print(state_value_table)
         #print(len(state_value_table))  # should be 96
@@ -36,6 +39,13 @@ class DemandEvaluation:
         df['Trip Start Timestamp'] = df['Trip Start Timestamp'].astype('datetime64[ns]') #e.g. 4/4/2016 0:00===> 2016-04-04 00:00:00
         df['Trip Total'] = df['Trip Total'].str.replace(',', '').astype('float64') #e.g. 1,200===>1200.0
         return df
+
+    def __smoothStateValueTable(self, curr_state_t):
+        for id in range(1,78):
+            sum_value = self.__state_value[curr_state_t][id]
+            for neigbor_id in AdjList_Chicago[str(id)]:
+                sum_value += self.__state_value[curr_state_t][int(neigbor_id)]
+            self.__smooth_state_value[curr_state_t][id] = float(sum_value) / (len(AdjList_Chicago[str(id)])+1)
 
 
     def handleStateValueTable(self):
@@ -71,21 +81,20 @@ class DemandEvaluation:
                     row+=1
                 #update the state value
                 print('The current time: ', curr_state_t)
-                print(self.__state_value_table[curr_state_t][1])
-                if prev_state_t is not None:
-                    print(self.__state_value_table[prev_state_t][1])
-                print(1/number_of_day)
                 if prev_state_t == None:
-                    self.__state_value_table[curr_state_t] = self.__state_value_table[curr_state_t] + \
-                                                           (1/number_of_day)*(pickup_count - self.__state_value_table[curr_state_t])
+                    self.__state_value[curr_state_t] = self.__state_value[curr_state_t] + \
+                                                           (1/number_of_day)*(pickup_count - self.__state_value[curr_state_t])
                 else:
-                    self.__state_value_table[curr_state_t] = self.__state_value_table[curr_state_t] + \
-                                                           (1/number_of_day)*(pickup_count + DemandEvaluation.Gamma * self.__state_value_table[prev_state_t] - self.__state_value_table[curr_state_t])
+                    self.__state_value[curr_state_t] = self.__state_value[curr_state_t] + \
+                                                           (1/number_of_day)*(pickup_count + DemandEvaluation.Gamma * self.__state_value[prev_state_t] - self.__state_value[curr_state_t])
+                self.__smoothStateValueTable(curr_state_t)
                 print(curr_df.groupby('Pickup Community Area').size())  # print for compare
-                print(self.__state_value_table[curr_state_t])
+                print(self.__state_value[curr_state_t])
+                print(self.__smooth_state_value[curr_state_t])
                 prev_state_t = curr_state_t
                 curr_time = curr_time - self.__delta_time
             curr_date = curr_date + 1
+
 
 
     def saveSateValueTable(self):
@@ -95,28 +104,29 @@ class DemandEvaluation:
         curr_time = final_time
         while curr_time >= begin_time:
             curr_state_t = curr_time.strftime('%m/%d/%Y %H:%M').split(' ')[1]
-            self.__state_value_table[curr_state_t] =  self.__state_value_table[curr_state_t].tolist() #convert value in table for storing
+            self.__state_value[curr_state_t] =  self.__state_value[curr_state_t].tolist() #convert value in table for storing
             curr_time = curr_time-self.__delta_time
         with open('./Data/data.json', 'w') as fp:
-            json.dump(self.__state_value_table, fp)
+            json.dump(self.__state_value, fp)
 
     def loadStateValueTable(self):
         print('Load the State Value Table.')
         with open('./Data/data.json') as fr:
-            self.__state_value_table = json.load(fr)
+            self.__state_value = json.load(fr)
 
     def drawBarChart(self):
         begin_time = datetime.datetime(2016, 4, 1, 0, 0)   #year, month and day is not important here
         final_time = datetime.datetime(2016, 4, 1, 23, 45) #year, month and day is not important here
         curr_time_figure = final_time
+        plt.figure(1)
         while curr_time_figure >= begin_time:
             curr_state_t = curr_time_figure.strftime('%m/%d/%Y %H:%M').split(' ')[1]
-            plt.bar(range(78), self.__state_value_table[curr_state_t])
-            plt.xlim(1,78)
-            plt.xticks(range(1, 78, 2))
-            plt.xlabel('Zones')
-            plt.ylabel('State Value')
+            plt.subplot(211)
+            plt.bar(range(78), self.__state_value[curr_state_t])
             plt.title(curr_state_t)
+            plt.subplot(212)
+            plt.bar(range(78), self.__smooth_state_value[curr_state_t])
+            plt.xlabel("Zone ID")
             plt.show()
             curr_time_figure = curr_time_figure - self.__delta_time
 
@@ -132,26 +142,47 @@ class DemandEvaluation:
         zone, time_idx = np.meshgrid(zone, time_idx)
         #print(zone)
         #print(time_idx)
-        V=[]
+        V1=[]
+        V2=[]
         for i in range(time_len):
-            row=[]
+            row1=[]
+            row2=[]
             for j in range(zone_len):
-                a= self.__state_value_table[time[time_idx[i]][j]][zone[i][j]]
-                row.append(a)
-            V.append(row)
-        V=np.array(V)
+                a1= self.__state_value[time[time_idx[i]][j]][zone[i][j]]
+                a2 = self.__smooth_state_value[time[time_idx[i]][j]][zone[i][j]]
+                row1.append(a1)
+                row2.append(a2)
+            V1.append(row1)
+            V2.append(row2)
+        V1=np.array(V1)
+        V2 = np.array(V2)
         fig = plt.figure()
-        ax = Axes3D(fig)
-        surf=ax.plot_surface(zone, time_idx, V, cmap=cm.coolwarm,)
+        #ax = Axes3D(fig)
+
+        # ===============
+        #  First subplot
+        # ===============
+        ax = fig.add_subplot(1, 2, 1, projection='3d')
+        ax.plot_surface(zone, time_idx, V1, cmap=cm.coolwarm,)
         #fig.colorbar(surf, shrink=0.5, aspect=5)
         ax.set_ylabel('Time')
         ax.set_xlabel('Zone')
+
+        # ===============
+        # Second subplot
+        # ===============
+        ax = fig.add_subplot(1, 2, 2, projection='3d')
+        ax.plot_surface(zone, time_idx, V2, cmap=cm.coolwarm, )
+        # fig.colorbar(surf, shrink=0.5, aspect=5)
+        ax.set_ylabel('Time')
+        ax.set_xlabel('Zone')
+
         plt.show()
 
 
 demand = DemandEvaluation(4,4)
 demand.handleStateValueTable()
-demand.saveSateValueTable()
+#demand.saveSateValueTable()
 demand.drawSurfaceFigure()
 
 
