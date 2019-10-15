@@ -21,9 +21,9 @@ class Rider:
         self.__sat = 0.0
 
     def __str__(self):
-        ret = "[" + str(self.__id) + ', ' + str(self.__startTime) + ", " +  str(self.__srcZone) + ", " + str(self.__destZone) + ", " + \
+        ret = "{" + str(self.__id) + ', ' + str(self.__startTime) + ", " +  str(self.__srcZone) + ", " + str(self.__destZone) + ", " + \
                   str(self.__direction) + ", " + str(self.__defaultPrice) +", "+ str(self.__patience) + ", " + str(self.__status) + ", " + \
-                  str(self.__price) + ", " +str(self.__wait_time) + ", " + str(self.__detour_time) +  ", " + str(self.__sat) + "]"
+                  str(self.__price) + ", " +str(self.__wait_time) + ", " + str(self.__detour_time) +  ", " + str(self.__sat) + "}"
         return ret
 
     #https://stackoverflow.com/questions/13226038/calculating-angle-between-two-vectors-in-python
@@ -60,13 +60,16 @@ class Rider:
         Wt = random.uniform(0.5, 1)
         self.__sat = math.exp((self.__defaultPrice-self.__price)*Wp) - math.exp(self.__detour_time*Wt) + 1
 
+    def getRiderID(self):
+        return self.__id
+
     def getDetourTime(self):
         return self.__detour_time
 
     def getPrice(self):
         return self.__price
 
-
+#TCs(not remove)
 #uID, sT, sZ, dZ, dP, pat, srcX, srcY, destX, destY
 '''r0=Rider("R0", 0, 8, 24, 7.75, 20, -87.6333, 41.8996, -87.6764, 41.9012)
 r1=Rider("R1", 0, 7, 6, 6, 20, -87.6495, 41.9227, -87.656, 41.9442)
