@@ -6,13 +6,13 @@ class Driver:
         self.__pos = pCurr
 
         self.__status = IDLE
-        self.__capacity = VEHICLE_CAPACITY
+        self.__trip_effort = 0
         self.__rider_serviced = []
         self.__route = []
         self.__profit = 0.0
 
     def __str__(self):
-        ret = "{" + str(self.__id) + ", " + str(self.__pos) + ", " + str(self.__status) + ", " + str(self.__capacity) + ", "
+        ret = "{" + str(self.__id) + ", " + str(self.__pos) + ", " + str(self.__status) + ", " + str(self.__trip_effort) + ", "
         ret = ret + "Riders: " + self.__showRiders() + ", "
         ret = ret + "Route: " + self.__showRoute() + ", "
         ret = ret + str(self.__profit) + "}"
@@ -22,7 +22,7 @@ class Driver:
         ret = "["
         if len(self.__rider_serviced):
             for rider in self.__rider_serviced:
-                ret = ret + rider.getRiderID() + ", "
+                ret = ret + rider.getID() + ", "
             ret = ret[0:len(ret) - 2] + "]"
         else:
             ret = ret + "]"
@@ -41,22 +41,47 @@ class Driver:
     def assignRiders(self, riders):
         self.__rider_serviced = riders
 
+    def getRiders(self):
+        return self.__rider_serviced
+
     def setRoute(self, route):
         self.__route = route
 
-    def setProfit(self, profit):
-        self.__profit = profit
+    def getRoute(self):
+        return self.__route
+
+    def calcProfit(self):
+        trip_profit = 0
+        for rider in self.__rider_serviced:
+            trip_profit += rider.getPrice()
+        if self.__trip_effort == 0:
+            pass
+            #log here
+        trip_profit -= self.__trip_effort * COST_PER_MINUTE
+        self.__profit += trip_profit
+
+    def getProfit(self):
+        return self.__profit
+
+    def getID(self):
+        return self.__id
+
+    def setPos(self, zid):
+        self.__pos = zid
+
+    def getPos(self):
+        return self.__pos
 
     def setStatus(self, status):
         self.__status = status
 
-#TCs(Not Remove)
-'''from Rider import Rider
-d1 = Driver("V0", 23)
-r0=Rider("R0", 0, 8, 24, 7.75, 20, -87.6333, 41.8996, -87.6764, 41.9012)
-r1=Rider("R1", 0, 7, 6, 6, 20, -87.6495, 41.9227, -87.656, 41.9442)
-d1.assignRiders([r0, r1])
-d1.setRoute([23,24])
-d1.setProfit(30)
-d1.setStatus(INSERVICE)
-print(d1)'''
+    def getStatus(self):
+        return self.__status
+
+    def setTripEffort(self, time):
+        self.__trip_effort = time
+
+    def getTripEffort(self):
+        return self.__trip_effort
+
+

@@ -1,3 +1,9 @@
+#Simulation
+FILENAME_R = './Test/Chicago_Apr_11_2016.csv'
+SIMULATION_CYCLE = 3  #every 3 minutes
+RIDER_ROW_START = 0
+RIDER_ROW_END = 1
+
 #Rider Para
 WAITING = "waiting"
 SERVING  = "serving"
@@ -14,12 +20,8 @@ DISCOUNT_4 = 0.87
 VEHICLE_CAPACITY = 4
 IDLE = 'idle'
 INSERVICE ='inservice'
-COST_PER_MINUTE = 0.3
+COST_PER_MINUTE = 0.3*SIMULATION_CYCLE
 SAT_PRICE = 1.5
 SAT_TIME = 0.8
 
-#Simulation
-FILENAME_R = './Test/Chicago_Apr_11_2016.csv'
-SIMULATION_CYCLE = 3  #every 3 minutes
-RIDER_ROW_START = 0
-RIDER_ROW_END = 1
+
