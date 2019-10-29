@@ -10,7 +10,6 @@ class RiderTest(unittest.TestCase):
         self.assertEqual(7, r1.getSrcZone())
         self.assertEqual(6, r1.getDestZone())
         self.assertEqual(20, r1.getPatience())
-        self.assertEqual(0, r1.getDirection())
         self.assertEqual(1, r1.getShortestTime())
         self.assertEqual("waiting", r1.getStatus())
         self.assertEqual(0, r1.getWaitTime())
@@ -19,26 +18,29 @@ class RiderTest(unittest.TestCase):
         self.assertEqual(0, r1.getSat())
         print(r1)
 
-        r1 = Rider("R1", 0, 7, 6, 10, 20, 1, 1, 2, 2)
-        self.assertEqual(45, r1.getDirection())
+        r1 = Rider("R1", 0, 7, 6, 10, 20, 1, 1, 2, 1)  #0
+        self.assertEqual(6, r1.getDirID())
 
-        r1 = Rider("R1", 0, 7, 6, 10, 20, 1, 1, 1, 2)
-        self.assertEqual(90, r1.getDirection())
+        r1 = Rider("R1", 0, 7, 6, 10, 20, 1, 1, 2, 2)  #45
+        self.assertEqual(7, r1.getDirID())
 
-        r1 = Rider("R1", 0, 7, 6, 10, 20, 1, 1, 0, 2)
-        self.assertEqual(135, r1.getDirection())
+        r1 = Rider("R1", 0, 7, 6, 10, 20, 1, 1, 1, 2)  #90
+        self.assertEqual(9, r1.getDirID())
 
-        r1 = Rider("R1", 0, 7, 6, 10, 20, 1, 1, 0, 1)
-        self.assertEqual(-180, r1.getDirection())
+        r1 = Rider("R1", 0, 7, 6, 10, 20, 1, 1, 0, 2)  #135
+        self.assertEqual(10, r1.getDirID())
 
-        r1 = Rider("R1", 0, 7, 6, 10, 20, 1, 1, 0, 0)
-        self.assertEqual(-135, r1.getDirection())
+        r1 = Rider("R1", 0, 7, 6, 10, 20, 1, 1, 0, 1)  #-180
+        self.assertEqual(0, r1.getDirID())
 
-        r1 = Rider("R1", 0, 7, 6, 10, 20, 1, 1, 1, 0)
-        self.assertEqual(-90, r1.getDirection())
+        r1 = Rider("R1", 0, 7, 6, 10, 20, 1, 1, 0, 0)  #-135
+        self.assertEqual(1, r1.getDirID())
 
-        r1 = Rider("R1", 0, 7, 6, 10, 20, 1, 1, 2, 0)
-        self.assertEqual(-45, r1.getDirection())
+        r1 = Rider("R1", 0, 7, 6, 10, 20, 1, 1, 1, 0)  #-90
+        self.assertEqual(3, r1.getDirID())
+
+        r1 = Rider("R1", 0, 7, 6, 10, 20, 1, 1, 2, 0)  #-45
+        self.assertEqual(4, r1.getDirID())
 
 
     def testTickWaitTimeSuccess(self):

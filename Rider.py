@@ -11,8 +11,8 @@ class Rider:
         self.__srcZone = sZ
         self.__destZone = dZ
         self.__patience = pat
-        self.__direction = self.__calcDirection(srcX, srcY, destX, destY)
-        self.__shortest_time = Graph.queryTravelCost(str(sZ), str(dZ))
+        self.__dirID = self.__assignDirID(srcX, srcY, destX, destY)
+        self.__shortest_time = Graph.queryTravelCost(sZ, dZ)
         self.__default_price = dP
 
         self.__status = WAITING
@@ -23,11 +23,12 @@ class Rider:
 
     def __str__(self):
         ret = "{" + str(self.__id) + ', ' + str(self.__startTime) + ", " +  str(self.__srcZone) + ", " + str(self.__destZone) + ", " + \
-                  str(self.__patience) + ", " + str(self.__direction) +", "+ str(self.__shortest_time) + ", " + str(self.__default_price) + ", " + \
+                  str(self.__patience) + ", " + str(self.__dirID) +", "+ str(self.__shortest_time) + ", " + str(self.__default_price) + ", " + \
                   str(self.__status) + ", " + str(self.__wait_time) + ", " + str(self.__travel_time) +  ", " + str(self.__price) +  ", " + str(self.__sat) + "}"
         return ret
 
     #https://stackoverflow.com/questions/13226038/calculating-angle-between-two-vectors-in-python
+    #The range is [-180, 180)
     def __calcDirection(self, srcX, srcY, destX, destY):
         p1 = [srcX, srcY]
         p0 = [destX, destY]
@@ -37,6 +38,15 @@ class Rider:
         v1 = np.array(p2) - np.array(p1)
         angle = np.math.atan2(np.linalg.det([v0, v1]), np.dot(v0, v1))
         return np.degrees(angle)*(-1)
+
+    #Tansfer from [-180,180) to [0,360).
+    #calculate DirID by dividing the DIR_THRESHOLD
+    def __assignDirID(self, srcX, srcY, destX, destY):
+        dir = self.__calcDirection(srcX, srcY, destX, destY)
+        return int((dir+180)/DIR_THRESHOLD)
+
+    def getDirID(self):
+        return self.__dirID
 
     def tickWaitTime(self):
         self.__wait_time += 1
@@ -100,10 +110,11 @@ class Rider:
     def getPatience(self):
         return self.__patience
 
-    def getDirection(self):
-        return self.__direction
+    def setStatus(self, status):
+        self.__status = status
 
     def getStatus(self):
         return self.__status
+
 
 

@@ -6,28 +6,24 @@ from Config import *
 class RiderTest(unittest.TestCase):
     def testValidConstruction(self):
         d1 = Driver("V0", 23)
-
         self.assertEqual("V0", d1.getID())
         self.assertEqual(23, d1.getPos())
         self.assertEqual("idle", d1.getStatus())
         self.assertEqual(0, d1.getTripEffort())
-        self.assertEqual(0, len(d1.getRiders()))
         self.assertEqual(0, len(d1.getRoute()))
         self.assertEqual(0, d1.getProfit())
         print(d1)
 
-    def testAssignRiders(self):
-        d1 = Driver("V0", 23)
-        r0 = Rider("R0", 0, 8, 24, 7.75, 20, -87.6333, 41.8996, -87.6764, 41.9012)
-        r1 = Rider("R1", 0, 7, 6, 6, 20, -87.6495, 41.9227, -87.656, 41.9442)
-        d1.assignRiders([r0, r1])
-        self.assertEqual(2, len(d1.getRiders()))
-        print(d1)
-
     def testSetRoute(self):
         d1 = Driver("V0", 23)
-        d1.setRoute([7,8])
-        self.assertEqual(2, len(d1.getRoute()))
+        r1 = Rider("R1", 0, 7, 1, 10, 20, 1, 1, 2, 1)  # 0
+        r2 = Rider("R2", 0, 7, 3, 10, 20, 1, 1, 2, 1)
+        r3 = Rider("R3", 0, 7, 77, 10, 20, 1, 1, 2, 1)
+        r4 = Rider("R4", 0, 7, 6, 10, 20, 1, 1, 2, 1)
+
+        route = [("R1", r1), ("R2", r2), ("R3", r3), ("R4", r4)]
+        d1.setRoute(route)
+        self.assertEqual(4, len(d1.getRoute()))
         print(d1)
 
     def testSetStatus(self):
@@ -50,7 +46,7 @@ class RiderTest(unittest.TestCase):
         r1.setTravelTime(1)
         r1.calcPrice(2)
         #print(r1.getPrice())
-        d1.assignRiders([r0, r1])
+        d1.setRoute([("R0", r0), ("R1", r1)])
         d1.setTripEffort(2)
         d1.calcProfit()
         self.assertAlmostEqual(10.64, d1.getProfit(), delta=0.1)

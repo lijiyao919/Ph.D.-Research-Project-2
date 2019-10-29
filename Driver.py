@@ -7,7 +7,6 @@ class Driver:
 
         self.__status = IDLE
         self.__trip_effort = 0
-        self.__rider_serviced = []
         self.__route = []
         self.__profit = 0.0
 
@@ -20,29 +19,23 @@ class Driver:
 
     def __showRiders(self):
         ret = "["
-        if len(self.__rider_serviced):
-            for rider in self.__rider_serviced:
-                ret = ret + rider.getID() + ", "
+        if len(self.__route):
+            for rider_id, _ in self.__route:
+                ret = ret + rider_id + ", "
             ret = ret[0:len(ret) - 2] + "]"
         else:
             ret = ret + "]"
         return ret
 
     def __showRoute(self):
-        ret = "["
+        ret = "[" + str(self.getPos())+", "
         if len(self.__route):
-            for zone in self.__route:
-                ret = ret + str(zone) + ", "
+            for _, rider in self.__route:
+                ret = ret + str(rider.getDestZone()) + ", "
             ret = ret[0:len(ret) - 2] + "]"
         else:
             ret = ret + "]"
         return ret
-
-    def assignRiders(self, riders):
-        self.__rider_serviced = riders
-
-    def getRiders(self):
-        return self.__rider_serviced
 
     def setRoute(self, route):
         self.__route = route
@@ -52,7 +45,7 @@ class Driver:
 
     def calcProfit(self):
         trip_profit = 0
-        for rider in self.__rider_serviced:
+        for _, rider in self.__route:
             trip_profit += rider.getPrice()
         if self.__trip_effort == 0:
             pass
