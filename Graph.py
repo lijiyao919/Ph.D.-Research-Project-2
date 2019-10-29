@@ -38,7 +38,3 @@ class Graph:
             return Graph.__calcShortestPath(src_z, dest_z)
 
 
-
-
-#print(Graph.queryTravelCost('32', '76'))
-#print(Graph.queryTravelCost('32', '25'))
