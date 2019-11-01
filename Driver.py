@@ -8,13 +8,16 @@ class Driver:
         self.__status = IDLE
         self.__trip_effort = 0
         self.__route = []
+        self.__accept_time = 0
+
         self.__profit = 0.0
+        self.__idle_time = 0
 
     def __str__(self):
         ret = "{" + str(self.__id) + ", " + str(self.__pos) + ", " + str(self.__status) + ", " + str(self.__trip_effort) + ", "
         ret = ret + "Riders: " + self.__showRiders() + ", "
         ret = ret + "Route: " + self.__showRoute() + ", "
-        ret = ret + str(self.__profit) + "}"
+        ret = ret + str(self.__profit) + ", " + str(self.__accept_time) + "}"
         return ret
 
     def __showRiders(self):
@@ -28,17 +31,21 @@ class Driver:
         return ret
 
     def __showRoute(self):
-        ret = "[" + str(self.getPos())+", "
         if len(self.__route):
+            ret = "[" + str(self.getPos()) + ", "
+            ret = ret + str(self.__route[0][1].getSrcZone()) + ", "
             for _, rider in self.__route:
                 ret = ret + str(rider.getDestZone()) + ", "
             ret = ret[0:len(ret) - 2] + "]"
         else:
-            ret = ret + "]"
+            ret = "[]"
         return ret
 
     def setRoute(self, route):
         self.__route = route
+
+    def popRoute(self):
+        return self.__route.pop(0)
 
     def getRoute(self):
         return self.__route
@@ -76,5 +83,17 @@ class Driver:
 
     def getTripEffort(self):
         return self.__trip_effort
+
+    def setAcceptTime(self, time):
+        self.__accept_time = time
+
+    def getAcceptTime(self):
+        return self.__accept_time
+
+    def tickIdleTime(self):
+        self.__idle_time += 1
+
+    def getIdleTime(self):
+        return self.__idle_time
 
 

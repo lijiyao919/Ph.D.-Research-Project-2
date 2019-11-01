@@ -50,3 +50,13 @@ class RiderTest(unittest.TestCase):
         d1.setTripEffort(2)
         d1.calcProfit()
         self.assertAlmostEqual(10.64, d1.getProfit(), delta=0.1)
+
+    def testSetAcceptTime(self):
+        d1=Driver("V1", 23)
+        d1.setAcceptTime(10)
+        self.assertEqual(10, d1.getAcceptTime())
+
+    def testTickIdleTime(self):
+        d1=Driver("V1", 23)
+        d1.tickIdleTime()
+        self.assertEqual(1,d1.getIdleTime())
