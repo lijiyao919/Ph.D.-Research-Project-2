@@ -1,8 +1,18 @@
 #Simulation
-FILENAME_R = './Test/Chicago_Apr_11_2016.csv'
+FILENAME_R = "C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/Test/Chicago_Apr_11_2016.csv"
+FILENAME_D = "C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/Test/Chicago_d.csv"
 SIMULATION_CYCLE = 3  #every 3 minutes in one cycle
+SIMULATION_CYCLE_START = 0
+SIMULATION_CYCLE_END = 100
 RIDER_ROW_START = 0
-RIDER_ROW_END = 1
+RIDER_ROW_END = 10
+SHOWN_INTERVAL = 20
+
+BUSIEST_ZONE = 1000
+BUSIER_ZONE = 600
+BUSY_ZONE = 200
+COMMON_ZONE = 50
+
 
 #Rider Para
 WAITING = "waiting"
