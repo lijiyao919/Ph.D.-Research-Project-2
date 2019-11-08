@@ -77,16 +77,25 @@ class DispatcherTest(unittest.TestCase):
         dispatcher.handleRiderRequest(r18)
         dispatcher.handleRiderRequest(r19)
 
+        self.assertEqual(18, dispatcher.getRiderWaitDictLen())
         print(dispatcher.showRiderWaitDict())
 
     def testCheckRiderPatience(self):
         r1 = Rider("R1", 0, 7, 1, 10, 20, 1, 1, 2, 1)
+        r2 = Rider("R2", 0, 7, 1, 10, 20, 1, 1, 2, 1)
+        r3 = Rider("R3", 0, 7, 1, 10, 20, 1, 1, 2, 1)
+        r4 = Rider("R4", 0, 7, 1, 10, 20, 1, 1, 2, 1)
         dispatcher = Dispatcher()
         dispatcher.handleRiderRequest(r1)
+        dispatcher.handleRiderRequest(r2)
+        dispatcher.handleRiderRequest(r3)
+        dispatcher.handleRiderRequest(r4)
         Dispatcher.timestamp=21
 
         dispatcher.checkRiderPatience()
 
+        self.assertEqual(0, dispatcher.getRiderWaitDictLen())
+        self.assertEqual(4, dispatcher.getRiderCancelDictLen())
         print(dispatcher.showRiderWaitDict())
         print(dispatcher.showRiderCanceledDict())
 
@@ -96,6 +105,7 @@ class DispatcherTest(unittest.TestCase):
         r2 = Rider("R2", 0, 7, 3, 10, 20, 1, 1, 2, 1)
         r3 = Rider("R3", 0, 7, 77, 10, 20, 1, 1, 2, 1)
         r4 = Rider("R4", 0, 7, 6, 10, 20, 1, 1, 2, 1)
+        d1 = Driver("D1", 6)
 
         riders={}
         riders["R4"] = r4
@@ -104,8 +114,8 @@ class DispatcherTest(unittest.TestCase):
         riders["R3"] = r3
 
         dispatcher = Dispatcher();
-        route, total_effort = dispatcher.planRoute(riders)
-        self.assertEqual(4, total_effort)
+        route, total_effort = dispatcher.planRoute(riders, d1)
+        self.assertEqual(5, total_effort)
         print(route)
 
     def testMatchRidertoDriver(self):
@@ -149,6 +159,8 @@ class DispatcherTest(unittest.TestCase):
         print(r4)
         print(r5)
 
+        self.assertEqual(0, dispatch.getRiderWaitDictLen())
+        self.assertEqual(5, dispatch.getRiderServeDictLen())
         print("check dispatcher")
         print(dispatch.showRiderWaitDict())
         print(dispatch.showRiderServedDict())
@@ -178,6 +190,7 @@ class DispatcherTest(unittest.TestCase):
         print(dispatch.showRiderServedDict())
         print(dispatch.showRiderFinishedDict())
         self.assertEqual(1, d2.getIdleTime())
+        self.assertEqual(1, dispatch.getRiderFinishDictLen())
 
     def testUpdateRiderStatus(self):
         r1 = Rider("R1", 0, 7, 1, 10, 20, 1, 1, 2, 1)
@@ -187,6 +200,7 @@ class DispatcherTest(unittest.TestCase):
         self.assertEqual(0,r1.getWaitTime())
         dispatch.updateRiderStatus()
         self.assertEqual(1,r1.getWaitTime())
+
 
 
 

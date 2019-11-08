@@ -86,6 +86,9 @@ class Rider:
     def getPrice(self):
         return self.__price
 
+    def getDefaultPrice(self):
+        return self.__default_price
+
     def calcSat(self):
         self.__sat = math.exp((self.__default_price-self.__price)*SAT_PRICE) - \
                      math.exp(self.getDetourTime()*SAT_TIME) + 1

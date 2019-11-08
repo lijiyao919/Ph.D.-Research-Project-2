@@ -39,7 +39,7 @@ def readRequestFromCsv(driver_request_list, rider_request_list):
         timestamp = obs["Time"]
         actor_id =  obs["ID"]
         zone_id = obs["Zone"]
-        request = DriverRequest(timestamp, Driver(actor_id, zone_id), "DriverRequest")
+        request = DriverRequest(timestamp, "DriverRequest", Driver(actor_id, zone_id))
         if request is not None:
             driver_request_list.add(request)
         else:
@@ -62,7 +62,7 @@ def readRequestFromCsv(driver_request_list, rider_request_list):
         dest_lat = float(obs["Dropoff Centroid Latitude"])
         dest_lon = float(obs["Dropoff Centroid Longitude"])
         patience = 40
-        request = RiderRequest(timestamp, Rider(actor_id, timestamp, pickup_zone, dropoff_zone, default_price, patience, src_lon, src_lat, dest_lon, dest_lat), "RiderRequest")
+        request = RiderRequest(timestamp, "RiderRequest", Rider(actor_id, timestamp, pickup_zone, dropoff_zone, default_price, patience, src_lon, src_lat, dest_lon, dest_lat))
         if request is not None:
             rider_request_list.add(request)
         else:

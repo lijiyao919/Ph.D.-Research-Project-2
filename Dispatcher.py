@@ -4,6 +4,8 @@ from Rider import Rider
 from Config import *
 from Graph import Graph
 from Data.Map import AdjList_Chicago
+from Logger import Logger
+import logging
 
 class Dispatcher:
     # Sync timestamp for logging
@@ -16,6 +18,20 @@ class Dispatcher:
         self.__rider_finished_dict = {}
         self.__rider_canceled_dict = {}
         self.__assign_gid_dict = {}
+
+        #Drivers' Performance
+        self.__average_profit = 0.0
+        self.__average_idle_time = 0.0
+
+        #Riders' Performance
+        self.__average_waiting_time = 0.0
+        self.__average_travel_time = 0.0
+        self.__average_fare = 0.0
+        self.__average_sat = 0.0
+
+        self.logger = Logger('Dispatcher')
+        self.logger.setLevel(logging.DEBUG)
+        self.logger.info(Dispatcher.timestamp, "__INIT__", None, None, "Create Dispatcher Object")
 
         #Driver Dict
         for zone_id in range(1,78):
@@ -96,11 +112,9 @@ class Dispatcher:
             if driver.getID() not in self.__driver_dict[driver.getPos()].keys():
                 self.__driver_dict[driver.getPos()][driver.getID()] = driver
             else:
-                pass
-                #log error
+                self.logger.error(Dispatcher.timestamp, "handleDriverRequest", driver.getID(), None, "Driver has been in the Pool")
         else:
-            pass
-            #log error
+            self.logger.error(Dispatcher.timestamp, "handleDriverRequest", None, None, "Driver's type is wrong.")
 
     def handleRiderRequest(self, rider):
         if isinstance(rider, Rider):
@@ -114,8 +128,7 @@ class Dispatcher:
             if rider.getID() not in self.__rider_waiting_dict[zone_id][dir_id][group_id]:
                 self.__rider_waiting_dict[zone_id][dir_id][group_id][rider.getID()] = rider
             else:
-                pass
-                #log error
+                self.logger.error(Dispatcher.timestamp, "handleRiderRequest", None, rider.getID(), "Rider has been in the Pool" )
 
             # check how many riders in the zone&direction&group_num to determine group id
             rider_num = len(self.__rider_waiting_dict[zone_id][dir_id][group_id])
@@ -123,8 +136,7 @@ class Dispatcher:
             if rider_num == VEHICLE_CAPACITY:
                 self.__assign_gid_dict[zone_id][dir_id] += 1
         else:
-            pass
-            #log error
+            self.logger.error(Dispatcher.timestamp, "handleRiderRequest", None, None, "Rider's type is wrong.")
 
     def checkRiderPatience(self):
         cancel_id = []
@@ -161,19 +173,24 @@ class Dispatcher:
                         driver_zone, driver_number = self.__selectDriverZoneWithLen(zone_id)
                         if driver_zone is not None:
                             for driver_id in self.__driver_dict[driver_zone].keys():
-                                if self.__driver_dict[driver_zone][driver_id].getStatus() == IDLE:
-                                    route, total_effort = self.planRoute(self.__rider_waiting_dict[zone_id][dir_id][group_id], self.__driver_dict[driver_zone][driver_id])
-                                    self.__driver_dict[driver_zone][driver_id].setStatus(INSERVICE)
-                                    self.__driver_dict[driver_zone][driver_id].setAcceptTime(Dispatcher.timestamp)
-                                    self.__driver_dict[driver_zone][driver_id].setRoute(route)
-                                    self.__driver_dict[driver_zone][driver_id].setTripEffort(total_effort)
-                                    self.__driver_dict[driver_zone][driver_id].calcProfit()
+                                driver = self.__driver_dict[driver_zone][driver_id]
+                                if driver.getStatus() == IDLE:
+                                    self.logger.info(Dispatcher.timestamp, "matchRidertoDriver", driver.getID(), None, "Driver be Chosen to Serve Riders.")
+                                    route, total_effort = self.planRoute(self.__rider_waiting_dict[zone_id][dir_id][group_id], driver)
+                                    driver.setStatus(INSERVICE)
+                                    driver.setAcceptTime(Dispatcher.timestamp)
+                                    driver.setRoute(route)
+                                    driver.setTripEffort(total_effort)
+                                    driver.calcProfit()
+                                    self.logger.debug(Dispatcher.timestamp, "matchRidertoDriver", driver.getID(), None, str(driver))
                                     break
                             for rider_id in self.__rider_waiting_dict[zone_id][dir_id][group_id].keys():
-                                self.__rider_waiting_dict[zone_id][dir_id][group_id][rider_id].calcPrice(len(self.__rider_waiting_dict[zone_id][dir_id][group_id]))
-                                self.__rider_waiting_dict[zone_id][dir_id][group_id][rider_id].calcSat()
-                                self.__rider_waiting_dict[zone_id][dir_id][group_id][rider_id].setStatus(SERVING)
-                                self.__rider_serving_dict[rider_id] = self.__rider_waiting_dict[zone_id][dir_id][group_id][rider_id]
+                                rider = self.__rider_waiting_dict[zone_id][dir_id][group_id][rider_id]
+                                rider.calcPrice(len(self.__rider_waiting_dict[zone_id][dir_id][group_id]))
+                                rider.calcSat()
+                                rider.setStatus(SERVING)
+                                self.__rider_serving_dict[rider_id] = rider
+                                self.logger.info(Dispatcher.timestamp, "matchRidertoDriver", driver.getID(), rider.getID(), str(rider))
                             group_id_delete_list.append(group_id)
                     for group_id in group_id_delete_list:
                         del self.__rider_waiting_dict[zone_id][dir_id][group_id]
@@ -209,6 +226,8 @@ class Dispatcher:
         for zone_id in self.__driver_dict.keys():
             for driver in self.__driver_dict[zone_id].values():
                 if driver.getStatus() == INSERVICE:
+                    self.logger.info(Dispatcher.timestamp, "updateDriverStatus", driver.getID(), None, "Update Driver Who is INSERVICE.")
+                    self.logger.debug(Dispatcher.timestamp, "updateDriverStatus", driver.getID(), None, str(driver))
                     start_trip_time = driver.getAcceptTime()
                     next_dest_time=(driver.getRoute())[0][1].getTravelTime()
                     if start_trip_time + next_dest_time <= Dispatcher.timestamp:
@@ -216,11 +235,18 @@ class Dispatcher:
                         driver.setPos(rider[1].getDestZone())
                         self.__rider_finished_dict[rider[0]]=rider[1]
                         del self.__rider_serving_dict[rider[0]]
+                        rider[1].setStatus(FINISHED)
+                        self.logger.info(Dispatcher.timestamp, "updateDriverStatus", driver.getID(), rider[1].getID(), "Dropoff One Rider.")
+                    if len(driver.getRoute()) == 0:
+                        driver.setStatus(IDLE)
+                        self.logger.info(Dispatcher.timestamp, "updateDriverStatus", driver.getID(), None, "Finish One Trip.")
+                    self.logger.debug(Dispatcher.timestamp, "updateDriverStatus", driver.getID(), None, str(driver))
                 elif driver.getStatus() == IDLE:
+                    self.logger.info(Dispatcher.timestamp, "updateDriverStatus", driver.getID(), None, "Update Driver Who is IDLE.")
                     driver.tickIdleTime()
                 else:
-                    pass
-                    #log error
+                    self.logger.error(Dispatcher.timestamp, "updateDriverStatus", driver.getID(), None, "Driver Status is Wrong.")
+
 
     def updateRiderStatus(self):
         for zone_id in self.__rider_waiting_dict.keys():
@@ -229,6 +255,78 @@ class Dispatcher:
                     for rider_id in self.__rider_waiting_dict[zone_id][dir_id][group_id].keys():
                         if self.__rider_waiting_dict[zone_id][dir_id][group_id][rider_id].getStatus() == WAITING:
                             self.__rider_waiting_dict[zone_id][dir_id][group_id][rider_id].tickWaitTime()
+
+    def getDriverDictLen(self):
+        total_len = 0
+        for zone_id in self.__driver_dict.keys():
+            total_len = total_len + len(self.__driver_dict[zone_id])
+        return total_len
+
+    def getRiderWaitDictLen(self):
+        total_len = 0
+        for zone_id in self.__rider_waiting_dict.keys():
+            for dir_id in self.__rider_waiting_dict[zone_id].keys():
+                for group_id in self.__rider_waiting_dict[zone_id][dir_id].keys():
+                    total_len = total_len + len(self.__rider_waiting_dict[zone_id][dir_id][group_id])
+        return total_len
+
+    def getRiderServeDictLen(self):
+        return len(self.__rider_serving_dict)
+
+    def getRiderFinishDictLen(self):
+        return len(self.__rider_finished_dict)
+
+    def getRiderCancelDictLen(self):
+        return len(self.__rider_canceled_dict)
+
+    def getCurrentTotalNumberOfRider(self):
+        return self.getRiderWaitDictLen()+self.getRiderServeDictLen()+self.getRiderFinishDictLen()+self.getRiderCancelDictLen()
+
+    def calcAverageProfitOfDrivers(self):
+        totalProfit = 0
+        for zone_id in self.__driver_dict.keys():
+            for driver in self.__driver_dict[zone_id].values():
+                totalProfit += driver.getProfit()
+        return totalProfit / self.getDriverDictLen()
+
+    def calcAverageIdleTimeOfDrivers(self):
+        totalIdleTime = 0
+        for zone_id in self.__driver_dict.keys():
+            for driver in self.__driver_dict[zone_id].values():
+                totalIdleTime += driver.getIdleTime()
+        return totalIdleTime / self.getDriverDictLen()
+
+    def calcAverageWaitTimeOfRiders(self):
+        totalWaitTime = 0
+        for rider in self.__rider_finished_dict.values():
+            totalWaitTime +=rider.getWaitTime()
+        return totalWaitTime/self.getRiderFinishDictLen()
+
+    def calcAverageDetourTimeOfRiders(self):
+        totalDetourTime = 0
+        for rider in self.__rider_finished_dict.values():
+            totalDetourTime += rider.getDetourTime()
+        return totalDetourTime/self.getRiderFinishDictLen()
+
+    def calcAverageFareOfRiders(self):
+        totalFare = 0
+        for rider in self.__rider_finished_dict.values():
+            totalFare += rider.getPrice()
+        return totalFare/self.getRiderFinishDictLen()
+
+    def calcAverageDefaultFareRiders(self):
+        totalDefaultFare = 0
+        for rider in self.__rider_finished_dict.values():
+            totalDefaultFare += rider.getDefaultPrice()
+        return totalDefaultFare/self.getRiderFinishDictLen()
+
+    def calcAverageSatOfRiders(self):
+        totalSat = 0
+        for rider in self.__rider_finished_dict.values():
+            totalSat += rider.getSat()
+        return totalSat/self.getRiderFinishDictLen()
+
+
 
 
 
