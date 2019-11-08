@@ -61,7 +61,7 @@ def readRequestFromCsv(driver_request_list, rider_request_list):
         src_lon = float(obs["Pickup Centroid Longitude"])
         dest_lat = float(obs["Dropoff Centroid Latitude"])
         dest_lon = float(obs["Dropoff Centroid Longitude"])
-        patience = 40
+        patience = PATIENCE
         request = RiderRequest(timestamp, "RiderRequest", Rider(actor_id, timestamp, pickup_zone, dropoff_zone, default_price, patience, src_lon, src_lat, dest_lon, dest_lat))
         if request is not None:
             rider_request_list.add(request)

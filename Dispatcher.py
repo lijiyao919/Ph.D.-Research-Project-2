@@ -150,19 +150,16 @@ class Dispatcher:
                                 self.__rider_canceled_dict[rider.getID()] = rider
                                 cancel_id.append(rider.getID())
                             else:
-                                pass
-                                #log debug
+                                self.logger.debug(Dispatcher.timestamp, "checkRiderPatience", None, rider.getID(), "Cancel Time Should be: ", str(rider.getStartTime()+rider.getPatience()))
                         else:
-                            pass
-                            #log error
+                            self.logger.error(Dispatcher.timestamp, "checkRiderPatience", None, rider.getID(), "Rider not in the waiting list")
 
                     #Remove rider from waiting dict
                     for id in cancel_id:
                         if id in self.__rider_waiting_dict[zone_id][dir][group_id].keys():
                             del self.__rider_waiting_dict[zone_id][dir][group_id][id]
                         else:
-                            pass
-                            #log error
+                            self.logger.error(Dispatcher.timestamp, "checkRiderPatience", None, id, "Fail to remove rider from waiting list")
 
     def matchRidertoDriver(self):
         for zone_id in self.__rider_waiting_dict.keys():
