@@ -3,9 +3,9 @@ FILENAME_R = "C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/Test/C
 FILENAME_D = "C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/Test/Chicago_d.csv"
 SIMULATION_CYCLE = 3  #every 3 minutes in one cycle
 SIMULATION_CYCLE_START = 0
-SIMULATION_CYCLE_END = 40
+SIMULATION_CYCLE_END = 230
 RIDER_ROW_START = 0
-RIDER_ROW_END = 847
+RIDER_ROW_END = 13404
 SHOWN_INTERVAL = 10
 
 BUSIEST_ZONE = 1000
