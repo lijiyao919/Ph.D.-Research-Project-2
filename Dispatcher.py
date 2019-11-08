@@ -3,7 +3,7 @@ from Driver import Driver
 from Rider import Rider
 from Config import *
 from Graph import Graph
-from Data.Map import AdjList_Chicago
+from Map import AdjList_Chicago
 from Logger import Logger
 import logging
 

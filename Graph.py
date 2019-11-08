@@ -1,5 +1,5 @@
 from PriorityQueue import PriorityQueue
-from Data.Map import AdjList_Chicago
+from Map import AdjList_Chicago
 
 class Graph:
     __edge = AdjList_Chicago

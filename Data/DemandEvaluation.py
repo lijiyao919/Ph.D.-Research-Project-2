@@ -2,7 +2,7 @@ import pandas as pd
 import datetime
 import numpy as np
 import json
-from Data.Map import AdjList_Chicago
+from Map import AdjList_Chicago
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
@@ -35,7 +35,7 @@ class DemandEvaluation:
 
 
     def __readCSVByDate(self, curr_date):
-        df = pd.read_csv("./Train/Chicago_April_{}_2016.csv".format(curr_date))
+        df = pd.read_csv("../Train/Chicago_April_{}_2016.csv".format(curr_date))
         df['Trip Start Timestamp'] = df['Trip Start Timestamp'].astype('datetime64[ns]') #e.g. 4/4/2016 0:00===> 2016-04-04 00:00:00
         df['Trip Total'] = df['Trip Total'].str.replace(',', '').astype('float64') #e.g. 1,200===>1200.0
         return df
@@ -43,9 +43,9 @@ class DemandEvaluation:
     def __smoothStateValueTable(self, curr_state_t):
         for id in range(1,78):
             sum_value = self.__state_value[curr_state_t][id]
-            for neigbor_id in AdjList_Chicago[str(id)]:
+            for neigbor_id in AdjList_Chicago[id]:
                 sum_value += self.__state_value[curr_state_t][int(neigbor_id)]
-            self.__smooth_state_value[curr_state_t][id] = float(sum_value) / (len(AdjList_Chicago[str(id)])+1)
+            self.__smooth_state_value[curr_state_t][id] = float(sum_value) / (len(AdjList_Chicago[id])+1)
 
 
     def handleStateValueTable(self):
@@ -106,7 +106,7 @@ class DemandEvaluation:
             curr_state_t = curr_time.strftime('%m/%d/%Y %H:%M').split(' ')[1]
             self.__state_value[curr_state_t] =  self.__state_value[curr_state_t].tolist() #convert value in table for storing
             curr_time = curr_time-self.__delta_time
-        with open('./Data/data.json', 'w') as fp:
+        with open('./data.json', 'w') as fp:
             json.dump(self.__state_value, fp)
 
     def loadStateValueTable(self):
@@ -184,10 +184,3 @@ demand = DemandEvaluation(4,4)
 demand.handleStateValueTable()
 #demand.saveSateValueTable()
 demand.drawSurfaceFigure()
-
-
-
-
-
-
-
