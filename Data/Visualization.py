@@ -103,7 +103,7 @@ class Visualization:
             plt.close()
 
 v= Visualization()
-#v.handleRequestCount()
-#v.showCountWRTZones(v.dropoff_table)
-v.handleTransitionTable(28)
-v.showCountWRTZones(v.transition_table)
+v.handleRequestCount()
+v.showCountWRTZones(v.dropoff_table)
+#v.handleTransitionTable(28)
+#v.showCountWRTZones(v.transition_table)
