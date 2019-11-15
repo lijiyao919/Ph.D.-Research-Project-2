@@ -1,9 +1,9 @@
 #Simulation
-FILENAME_R = "C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/Test/Chicago_Apr_11_2016.csv"
+FILENAME_R = "C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/Test/Chicago_April_11_2016.csv"
 FILENAME_D = "C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/Test/Chicago_d.csv"
 SIMULATION_CYCLE = 3  #every 3 minutes in one cycle
 SIMULATION_CYCLE_START = 0
-SIMULATION_CYCLE_END = 230
+SIMULATION_CYCLE_END = 260
 RIDER_ROW_START = 0
 RIDER_ROW_END = 13404
 SHOWN_INTERVAL = 10
