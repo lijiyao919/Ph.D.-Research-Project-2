@@ -6,6 +6,7 @@ from Graph import Graph
 from Map import AdjList_Chicago
 from Logger import Logger
 import logging
+import numpy as np
 
 class Dispatcher:
     # Sync timestamp for logging
@@ -163,10 +164,11 @@ class Dispatcher:
                     driver = self.selectDriverFromAdjacentZones(zone_id)
                     if driver is not None:
                         self.logger.info(Dispatcher.timestamp, "matchRidertoDriver", driver.getID(), None, "Driver be Chosen to Serve Riders.")
-                        self.logger.debug(Dispatcher.timestamp, "matchRidertoDriver", driver.getID(), None, str(self.showRiderWaitDict()))
+                        self.logger.debug(Dispatcher.timestamp, "matchRidertoDriver", None, None,
+                                          "Driver Zone ===> Rider Zone: ", str(driver.getPos()) + "===>" + str(zone_id))
                         route, total_effort = self.planRoute(self.__rider_waiting_dict[zone_id][dir_id][group_id], driver)
                         driver.setStatus(INSERVICE)
-                        driver.setAcceptTime(Dispatcher.timestamp)
+                        driver.setTripStartTime(Dispatcher.timestamp)
                         driver.setRoute(route)
                         driver.setTripEffort(total_effort)
                         driver.calcProfit()
@@ -192,9 +194,9 @@ class Dispatcher:
         max=0
 
         for zone in zones:
-            if self.countIdleDrivers(zone_id) > max:
+            if self.countIdleDrivers(zone) > max:
                 zone_selected = zone
-                max = self.countIdleDrivers(zone_id)
+                max = self.countIdleDrivers(zone)
 
         if zone_selected is not None:
             for driver in self.__driver_dict[zone_selected].values():
@@ -209,9 +211,7 @@ class Dispatcher:
                 total += 1
         return total
 
-
     def planRoute(self, riders, driver):
-        self.logger.info(Dispatcher.timestamp, "planRoute", driver.getID(), None, str(riders))
         route_tuple =sorted(riders.items(), key=lambda x: x[1].getShortestTime())
         src = route_tuple[0][1].getSrcZone()
         total_effort = Graph.queryTravelCost(driver.getPos(), src)
@@ -224,15 +224,18 @@ class Dispatcher:
 
     def updateDriverStatus(self):
         for zone_id in self.__driver_dict.keys():
-            for driver in self.__driver_dict[zone_id].values():
+            for driver in self.__driver_dict[zone_id].copy().values():
                 if driver.getStatus() == INSERVICE:
                     self.logger.info(Dispatcher.timestamp, "updateDriverStatus", driver.getID(), None, "Update Driver Who is INSERVICE.")
                     self.logger.debug(Dispatcher.timestamp, "updateDriverStatus", driver.getID(), None, str(driver))
-                    start_trip_time = driver.getAcceptTime()
+                    start_trip_time = driver.getTripStartTime()
                     next_dest_time=(driver.getRoute())[0][1].getTravelTime()
                     if start_trip_time + next_dest_time <= Dispatcher.timestamp:
                         rider = driver.popRoute()
+                        del self.__driver_dict[driver.getPos()][driver.getID()]
+                        self.__driver_dict[rider[1].getDestZone()][driver.getID()] = driver
                         driver.setPos(rider[1].getDestZone())
+
                         self.__rider_finished_dict[rider[0]]=rider[1]
                         del self.__rider_serving_dict[rider[0]]
                         rider[1].setStatus(FINISHED)
@@ -325,6 +328,25 @@ class Dispatcher:
         for rider in self.__rider_finished_dict.values():
             totalSat += rider.getSat()
         return totalSat/self.getRiderFinishDictLen()
+
+    def showDriverNumberOfEachZone(self):
+        numZone = []
+        for zone_id in self.__driver_dict.keys():
+            total = len(self.__driver_dict[zone_id])
+            numZone.append(total)
+        return numZone
+
+    def showRiderNumberOfEachZone(self):
+        numZone = []
+        for zone_id in self.__rider_waiting_dict.keys():
+            total_num = 0
+            for dir_id in self.__rider_waiting_dict[zone_id].keys():
+                for group_id in self.__rider_waiting_dict[zone_id][dir_id].keys():
+                    total_num += len(self.__rider_waiting_dict[zone_id][dir_id][group_id])
+            numZone.append(total_num)
+        return numZone
+
+
 
 
 

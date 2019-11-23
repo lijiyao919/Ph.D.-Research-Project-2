@@ -1,11 +1,11 @@
 #Simulation
-FILENAME_R = "C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/Test/Chicago_April_11_2016.csv"
-FILENAME_D = "C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/Test/Chicago_d.csv"
+FILENAME_R = "C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/Test/Chicago_rider_test.csv"
+FILENAME_D = "C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/Test/Chicago_driver_test.csv"
 SIMULATION_CYCLE = 3  #every 3 minutes in one cycle
 SIMULATION_CYCLE_START = 0
-SIMULATION_CYCLE_END = 260
+SIMULATION_CYCLE_END = 100
 RIDER_ROW_START = 0
-RIDER_ROW_END = 13404
+RIDER_ROW_END = 29#13404
 SHOWN_INTERVAL = 10
 
 BUSIEST_ZONE = 1000

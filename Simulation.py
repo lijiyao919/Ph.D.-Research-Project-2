@@ -50,8 +50,9 @@ class Simulation:
                 self.logger.debug(self.cycle, "RUN", None, None, "Current Rider Request Moved into Dict of Dispatcher: ", str(curr_rider_request))
                 self.dispatcher.handleRiderRequest(curr_rider_request.rider)
 
-            #print(self.dispatcher.showRiderWaitDict())
-            #print(self.dispatcher.showDriverDict())
+            #Show Driver and Rider in each zone
+            print(self.dispatcher.showDriverNumberOfEachZone())
+            print(self.dispatcher.showRiderNumberOfEachZone())
 
             #Update Riders' patience
             self.logger.info(self.cycle, "RUN", None, None, "4. Check Which Rider's Request Should be Cancelled in Rider List of Dispathcer.")

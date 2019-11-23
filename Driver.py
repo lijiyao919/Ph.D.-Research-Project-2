@@ -84,10 +84,10 @@ class Driver:
     def getTripEffort(self):
         return self.__trip_effort
 
-    def setAcceptTime(self, time):
+    def setTripStartTime(self, time):
         self.__accept_time = time
 
-    def getAcceptTime(self):
+    def getTripStartTime(self):
         return self.__accept_time
 
     def tickIdleTime(self):

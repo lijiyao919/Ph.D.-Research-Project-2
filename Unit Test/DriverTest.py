@@ -53,8 +53,8 @@ class RiderTest(unittest.TestCase):
 
     def testSetAcceptTime(self):
         d1=Driver("V1", 23)
-        d1.setAcceptTime(10)
-        self.assertEqual(10, d1.getAcceptTime())
+        d1.setTripStartTime(10)
+        self.assertEqual(10, d1.getTripStartTime())
 
     def testTickIdleTime(self):
         d1=Driver("V1", 23)
