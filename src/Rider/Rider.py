@@ -1,8 +1,8 @@
 from src.Config import *
-from src.Graph import Graph
+from src.Graph.Graph import Graph
 import numpy as np
 import math
-from src.Logger import Logger
+from src.Logger.Logger import Logger
 import logging
 
 class Rider:
@@ -16,25 +16,26 @@ class Rider:
 
         self.__id = uID
         self.__request_timestamp = sT
-        self.__arrival_timestamp = None
         self.__srcZone = sZ
         self.__destZone = dZ
+        self.__default_price = dP
+        self.__price = math.inf
         self.__patience = pat
         self.__dirID = self.__assignDirID(srcX, srcY, destX, destY)
-        self.__groupID = None
         self.__shortest_time = Graph.queryTravelCost(sZ, dZ)
-        self.__default_price = dP
-        self.__price = dP
+        self.__arrival_timestamp = None
+        self.__groupID = None
 
         self.__status = WAITING
-        self.__wait_time = 0.0
-        self.__detour_time = 0.0
-        self.__sat = 0.0
+        self.__wait_time = 0
+        self.__detour_time = -1
+        self.__sat = 0
 
     def __str__(self):
-        ret = "{" + str(self.__id) + ', ' + str(self.__request_timestamp) + ", " + str(self.__arrival_timestamp) + ", " + str(self.__srcZone) + ", " + str(self.__destZone) + ", " + \
-              str(self.__patience) + ", " + str(self.__dirID) +", " + str(self.__shortest_time) + ", " + str(self.__default_price) + ", " + \
-              str(self.__status) + ", " + str(self.__wait_time) + ", " + str(self.__detour_time) +  ", " + str(self.__price) +  ", " + str(self.__sat) + "}"
+        ret = "{" + str(self.__id) + ', ' + str(self.__request_timestamp) +  ", " + str(self.__srcZone) + ", " + str(self.__destZone) + ", " + \
+              str(self.__default_price) + ", "  + str(self.__price) +  ", " + str(self.__patience) + ", " + str(self.__dirID) +", " + \
+              str(self.__shortest_time) + ", " +  str(self.__arrival_timestamp) + ", " + str(self.__groupID) + ", " +\
+              str(self.__status) + ", " + str(self.__wait_time) + ", " + str(self.__detour_time) +  ", " +  str(self.__sat) + "}"
         return ret
 
     #https://stackoverflow.com/questions/13226038/calculating-angle-between-two-vectors-in-python
@@ -76,16 +77,20 @@ class Rider:
     def calcDetourTime(self, time):
         self.__detour_time = time - self.__shortest_time
 
+    def getDetourTime(self):
+        return self.__detour_time
+
     def setArrivalTimestamp(self, time):
         self.__arrival_timestamp = time
 
     def getArrivalTimestamp(self):
         return self.__arrival_timestamp
 
+    #prerequest: calc detour time first
     def calcPrice(self, n_shared):
         if self.__detour_time < 0:
-            self.__logger.warning(Rider.timestamp, "calcPrice", self.getID(), None, "Detour time is unreasonable.")
-            return math.inf
+            self.__logger.error(Rider.timestamp, "calcPrice", None, self.getID(), "Detour time is unreasonable.")
+            raise Exception("Detour time is unreasonable.")
         self.__price = self.__default_price * math.exp(DETOUR_WEIGH * -self.__detour_time)
         if n_shared == 1:
             self.__price = self.__price * DISCOUNT_1
@@ -96,7 +101,8 @@ class Rider:
         elif n_shared == 4:
             self.__price = self.__price * DISCOUNT_4
         else:
-            self.__logger.error(Rider.timestamp, "calcPrice", self.getID(), None, "Detour time is unreasonable.")
+            self.__logger.error(Rider.timestamp, "calcPrice", None, self.getID(), "Shared number is incorret.")
+            raise Exception("Shared number is incorret.")
 
     def getPrice(self):
         return self.__price
@@ -105,8 +111,15 @@ class Rider:
         return self.__default_price
 
     def calcSat(self):
-        self.__sat = math.exp((self.__default_price-self.__price)*SAT_PRICE) - \
-                     math.exp(self.getDetourTime()*SAT_TIME) + 1
+        if self.__detour_time < 0:
+            self.__logger.error(Rider.timestamp, "calcSat", None, self.getID(), "Detour time is unreasonable.")
+            raise Exception("Detour time is unreasonable.")
+        elif self.__price >= self.__default_price:
+            self.__logger.error(Rider.timestamp, "calcSat", None, self.getID(), "Price is unreasonable.")
+            raise Exception("Price is unreasonable.")
+        else:
+            self.__sat = math.exp((self.__default_price-self.__price)*SAT_PRICE) - \
+                         math.exp(self.__detour_time*SAT_TIME) + 1
         #print(math.exp((self.__default_price-self.__price)*SAT_PRICE))
         #print(math.exp(self.getDetourTime()*SAT_TIME) - 1)
 
