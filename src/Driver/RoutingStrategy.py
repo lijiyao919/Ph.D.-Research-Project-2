@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from src.Logger import Logger
+from src.Logger.Logger import Logger
 
 class RoutingStrategy(ABC):
 

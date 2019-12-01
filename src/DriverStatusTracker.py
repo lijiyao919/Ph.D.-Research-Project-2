@@ -18,9 +18,9 @@ class DriverStatusTracker:
         driver.calcTripProfit()
 
     def updateDriverStatusWhenInService(self, driver):
-        next_event_time = driver.getRoute()[0].getArrivalTime()
+        next_event_time = driver.getTripRoute()[0].getArrivalTime()
         if  next_event_time <= DriverStatusTracker.timestamp:
-            elem = driver.popRoute()
+            elem = driver.popTripRoute()
             del self.__driver_dict[driver.getPos()][driver.getID()]
             self.__driver_dict[elem.getZoneID()][driver.getID()] = driver
             driver.setPos(elem.getZoneID())

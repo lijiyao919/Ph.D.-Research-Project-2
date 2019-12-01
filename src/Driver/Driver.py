@@ -1,8 +1,9 @@
 from src.Config import *
-from src.Graph import Graph
-from src.RoutingInDistance import RoutingInDistance
-from src.Logger import Logger
+from src.Graph.Graph import Graph
+from src.Driver.RoutingInDistance import RoutingInDistance
+from src.Logger.Logger import Logger
 import logging
+import math
 
 
 class Driver:
@@ -52,6 +53,9 @@ class Driver:
             ret = ret + "]"
         return ret
 
+    def getID(self):
+        return self.__id
+
     def setRiders(self, riders):
         self.__riders = riders
 
@@ -60,12 +64,14 @@ class Driver:
             return self.__riders[id]
         else:
             self.__logger.error(Driver.timestamp, "getRider", self.getID(), id, "Rider not in vehicle.")
+            raise Exception("Rider not in vehicle.")
 
     def removeRider(self, id):
         if id in self.__riders.keys():
             del self.__riders[id]
         else:
             self.__logger.error(Driver.timestamp, "removeRider", self.getID(), id, "Rider not in vehicle.")
+            raise Exception("Rider not in vehicle.")
 
     def calcTripRoute(self):
         if len(self.__trip_route) == 0:
@@ -73,13 +79,16 @@ class Driver:
             route_strategy.planRoute()
         else:
             self.__logger.error(Driver.timestamp, "calcTripRoute", self.getID(), None, "Trip route is empty.")
+            raise Exception("Trip route is empty.")
 
-    def popRoute(self):
-        return self.__trip_route.pop(0)
+    def popTripRoute(self):
+        if len(self.__trip_route) > 0:
+            return self.__trip_route.pop(0)
+        else:
+            self.__logger.error(Driver.timestamp, "popTripRoute", self.getID(), None, "Nothing to be poped.")
+            raise Exception("Nothing to be poped.")
 
-    def getRoute(self):
-        return self.__trip_route
-
+    #must calc route first
     def calcTripEffort(self):
         total_effort = 0
         pos = self.getPos()
@@ -89,33 +98,35 @@ class Driver:
             if elem.getEvent() == DROPOFF:
                 rider = self.__riders[elem.getRiderID()]
                 rider.setArrivalTimestamp(Driver.timestamp + total_effort)
-                rider.calcDetourTime(total_effort)
-            pos = elem.zone_id
+                rider.calcDetourTime(total_effort) #detour time is b/w the rerquest accepted and arrive at destination.
+            pos = elem.getZoneID()
 
         if total_effort <= 0:
             self.__logger.warning(Driver.timestamp, "calcTripEffort", self.getID(), None, "Trip effort value is unresonable ")
+            raise Exception("Trip effort value is unresonable ")
         else:
             self.__trip_effort = total_effort
 
     def getTripEffort(self):
         return self.__trip_effort
 
+    #must calc route effort and rider price first
     def calcTripProfit(self):
         trip_revenue = 0
-        for elem in self.__trip_route:
-            trip_revenue += self.__riders[elem.getRiderID()].getPrice()
-        trip_profit = trip_revenue - self.__trip_effort * COST_PER_MINUTE
-
-        if trip_profit <= 0:
-            self.__logger.warning(Driver.timestamp, "calcTripEffort", self.getID(), None, "Trip profit value is unresonable ")
+        if len(self.__riders) > 0:
+            for rider in self.__riders.values():
+                if rider.getPrice() is not math.inf:
+                    trip_revenue += rider.getPrice()
+                else:
+                    self.__logger.error(Driver.timestamp, "calcTripEffort", self.getID(), None, "Price value is unresonable ")
+                    raise Exception("Price value is unresonable ")
+            self.__trip_profit = trip_revenue - self.__trip_effort * COST_PER_MINUTE
         else:
-            self.__trip_profit = trip_profit
+            self.__logger.error(Driver.timestamp, "calcTripEffort", self.getID(), None, "No riders in vehicle.")
+            raise Exception("No riders in vehicle.")
 
-    def getProfit(self):
+    def getTripProfit(self):
         return self.__trip_profit
-
-    def getID(self):
-        return self.__id
 
     def setPos(self, zid):
         self.__pos = zid

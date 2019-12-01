@@ -219,7 +219,7 @@ class Dispatcher:
         totalProfit = 0
         for zone_id in self.__driver_dict.keys():
             for driver in self.__driver_dict[zone_id].values():
-                totalProfit += driver.getProfit()
+                totalProfit += driver.getTripProfit()
         return totalProfit / self.countTotalDriverNumber()
 
     def calcAverageIdleTimeOfDrivers(self):
