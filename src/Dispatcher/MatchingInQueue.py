@@ -1,6 +1,7 @@
+from collections import OrderedDict
 from src.Graph.Map import AdjList_Chicago
-from src.MatchingStrategy import MatchingStrategy
-from src.Config import *
+from src.Dispatcher.MatchingStrategy import MatchingStrategy
+from src.Configure.Config import *
 import logging
 
 class MatchingInQueue(MatchingStrategy):
@@ -23,9 +24,12 @@ class MatchingInQueue(MatchingStrategy):
             if self.__countIdleDriversWithinAZone(zone) > max:
                 zone_selected = zone
                 max = self.__countIdleDriversWithinAZone(zone)
+            elif self.__countIdleDriversWithinAZone(zone) == max and max != 0:
+                if zone < zone_selected:
+                    zone_selected = zone
 
         if zone_selected is not None:
-            for driver in self.__driver_dict[zone_selected].values():
+            for driver in OrderedDict(sorted(self.__driver_dict[zone_selected].items(), key=lambda t: t[0])).values():
                 if driver.getStatus() == IDLE:
                     return driver
         return None

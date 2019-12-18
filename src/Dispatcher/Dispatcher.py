@@ -1,12 +1,12 @@
-from collections import defaultdict
-from src.Driver import Driver
-from src.Rider import Rider
-from src.Config import *
-from src.Logger import Logger
-from src.ClusteringInGroup import ClusteringInGroup
-from src.MatchingInQueue import MatchingInQueue
-from src.DriverStatusTracker import DriverStatusTracker
-from src.RiderStatusTracker import RiderStatusTracker
+from collections import defaultdict, OrderedDict
+from src.Driver.Driver import Driver
+from src.Rider.Rider import Rider
+from src.Configure.Config import *
+from src.Logger.Logger import Logger
+from src.Dispatcher.ClusteringInGroup import ClusteringInGroup
+from src.Dispatcher.MatchingInQueue import MatchingInQueue
+from src.Dispatcher.DriverStatusTracker import DriverStatusTracker
+from src.Dispatcher.RiderStatusTracker import RiderStatusTracker
 import logging
 
 class Dispatcher:
@@ -38,16 +38,6 @@ class Dispatcher:
         #Rider Status tracker
         self.__rider_tracker = RiderStatusTracker(self.__rider_wait_dict, self.__rider_serve_dict, self.__rider_finish_dict, self.__rider_cancel_dict)
 
-        #Drivers' Performance
-        self.__average_profit = 0.0
-        self.__average_idle_time = 0.0
-
-        #Riders' Performance
-        self.__average_waiting_time = 0.0
-        self.__average_travel_time = 0.0
-        self.__average_fare = 0.0
-        self.__average_sat = 0.0
-
         #Driver Dict
         for zone_id in range(1,78):
             self.__driver_dict[zone_id] = {}
@@ -58,70 +48,94 @@ class Dispatcher:
             for dir_id in range(0, 12):
                 self.__rider_wait_dict[zone_id][dir_id] = defaultdict(dict)
 
-    def showDriverDict(self):
-        ret = "Driver DICT: zone_id:{rider_id}\n"
-        for zone_id in self.__driver_dict.keys():
-            ret = ret + str(zone_id) + ": {"
-            for driver_id in self.__driver_dict[zone_id].keys():
-                ret = ret + str(driver_id) + ", "
-            ret = ret + "},\n"
+    def showDriverDict(self, zone_id):
+        ret = str(zone_id) + ": {"
+        for driver_id in OrderedDict(sorted(self.__driver_dict[zone_id].items(), key=lambda t: t[0])).keys():
+            ret = ret + driver_id + ", "
+        ret = ret + "}"
         return ret
 
-    def showRiderWaitDict(self):
-        ret = "Rider Wait DICT: zone_id:{dir_id:{group_id:{rider_id}}}\n"
-        for zone_id in self.__rider_wait_dict.keys():
-            ret = ret + str(zone_id) + ": {"
-            for dir_id in self.__rider_wait_dict[zone_id].keys():
-                ret = ret + str(dir_id) + ": {"
-                for group_id in self.__rider_wait_dict[zone_id][dir_id].keys():
-                    ret = ret + str(group_id) + ": ["
-                    for rider_id in self.__rider_wait_dict[zone_id][dir_id][group_id].keys():
-                        ret = ret + str(rider_id) + ", "
-                    ret = ret[0:len(ret) - 2] + "], "
-                ret = ret + "}, "
-            ret = ret + "},\n"
+    def getDriverFromDriverDict(self, zone_id, driver_id):
+        for id, driver in self.__driver_dict[zone_id].items():
+            if id == driver_id:
+                return driver
+        return None
+
+    def getDriverNumberOfZone(self, zone_id):
+        return len(self.__driver_dict[zone_id])
+
+
+    def showRiderWaitDict(self, zone_id):
+        ret = str(zone_id) + ": {"
+        for dir_id in self.__rider_wait_dict[zone_id].keys():
+            ret = ret + str(dir_id) + ": {"
+            for group_id in self.__rider_wait_dict[zone_id][dir_id].keys():
+                ret = ret + str(group_id) + ": ["
+                for rider_id in OrderedDict(sorted(self.__rider_wait_dict[zone_id][dir_id][group_id].items(), key=lambda t: t[0])).keys():
+                    ret = ret + str(rider_id) + ", "
+                ret = ret + "], "
+            ret = ret + "}, "
+        ret = ret + "}"
         return ret
+
+    def getRiderFromWaitDict(self, zone_id, dir_id, group_id, rider_id):
+        for id, rider in self.__rider_wait_dict[zone_id][dir_id][group_id].items():
+            if id == rider_id:
+                return rider
+        return None
+
+    def getGroupFromWaitDict(self, zone_id, dir_id, group_id):
+        for id, group in self.__rider_wait_dict[zone_id][dir_id].items():
+            if id == group_id:
+                return group
+        return None
+
+    def getRequestNumberOfZone(self, zone_id):
+        total_num = 0
+        for dir_id in self.__rider_wait_dict[zone_id].keys():
+            for group_id in self.__rider_wait_dict[zone_id][dir_id].keys():
+                total_num += len(self.__rider_wait_dict[zone_id][dir_id][group_id])
+        return total_num
+
 
     def showRiderServedDict(self):
-        ret = "Rider Served DICT: {rider_id}\n"
-        ret = ret + "{"
-        for rider_id in self.__rider_serve_dict.keys():
+        ret = "{"
+        for rider_id in OrderedDict(sorted(self.__rider_serve_dict.items(), key=lambda t: t[0])).keys():
             ret=ret+str(rider_id)+", "
-        ret=ret+"}\n"
+        ret=ret+"}"
         return ret
+
+    def getRiderFromServedDict(self, rider_id):
+        for id, rider in self.__rider_serve_dict.items():
+            if id == rider_id:
+                return rider
+        return None
 
     def showRiderFinishedDict(self):
-        ret = "Rider Finished DICT: {rider_id}\n"
-        ret = ret + "{"
-        for rider_id in self.__rider_finish_dict.keys():
+        ret = "{"
+        for rider_id in OrderedDict(sorted(self.__rider_finish_dict.items(), key=lambda t: t[0])).keys():
             ret = ret + str(rider_id) + ", "
-        ret = ret + "}\n"
+        ret = ret + "}"
         return ret
+
+    def getRiderFromFinishedDict(self, rider_id):
+        for id, rider in self.__rider_finish_dict.items():
+            if id == rider_id:
+                return rider
+        return None
 
     def showRiderCanceledDict(self):
-        ret = "Rider Canceled DICT: {rider_id}\n"
-        ret = ret + "{"
-        for rider_id in self.__rider_cancel_dict.keys():
+        ret = "{"
+        for rider_id in OrderedDict(sorted(self.__rider_cancel_dict.items(), key=lambda t: t[0])).keys():
             ret = ret + str(rider_id) + ", "
-        ret = ret + "}\n"
+        ret = ret + "}"
         return ret
 
-    def showDriverNumberOfEachZone(self):
-        numZone = []
-        for zone_id in self.__driver_dict.keys():
-            total = len(self.__driver_dict[zone_id])
-            numZone.append(total)
-        return numZone
-
-    def showRiderNumberOfEachZone(self):
-        numZone = []
-        for zone_id in self.__rider_wait_dict.keys():
-            total_num = 0
-            for dir_id in self.__rider_wait_dict[zone_id].keys():
-                for group_id in self.__rider_wait_dict[zone_id][dir_id].keys():
-                    total_num += len(self.__rider_wait_dict[zone_id][dir_id][group_id])
-            numZone.append(total_num)
-        return numZone
+    def getRiderFromCanceledDict(self, rider_id):
+        for id, rider in self.__rider_cancel_dict.items():
+            if id == rider_id:
+                return rider
+        return None
 
     #put driver into Driver Dict at start
     def handleDriverIntoDict(self, driver):
@@ -129,15 +143,18 @@ class Dispatcher:
             if driver.getID() not in self.__driver_dict[driver.getPos()].keys():
                 self.__driver_dict[driver.getPos()][driver.getID()] = driver
             else:
-                self.__logger.error(Dispatcher.timestamp, "handleDriverRequest", driver.getID(), None, "Driver has been in the Pool")
+                self.__logger.error(Dispatcher.timestamp, "handleDriverRequest", driver.getID(), None, "Driver has been in the Pool.")
+                raise Exception("Driver has been in the Pool.")
         else:
             self.__logger.error(Dispatcher.timestamp, "handleDriverRequest", None, None, "Driver's type is wrong.")
+            raise Exception("Driver's type is wrong.")
 
     def handleRiderIntoDict(self, rider):
         if isinstance(rider, Rider):
             self.__cluster_strategy.cluster(rider)
         else:
             self.__logger.error(Dispatcher.timestamp, "handleRiderRequest", None, None, "Rider's type is wrong.")
+            raise Exception("Rider's type is wrong.")
 
     def matchRidertoDriver(self):
         for zone_id in self.__rider_wait_dict.keys():
@@ -147,12 +164,14 @@ class Dispatcher:
                     if driver is not None:
                         self.__logger.info(Dispatcher.timestamp, "matchRidertoDriver", driver.getID(), None, "Driver be Chosen to Serve Riders.")
                         self.__logger.debug(Dispatcher.timestamp, "matchRidertoDriver", None, None, "Driver Zone ===> Rider Zone: ", str(driver.getPos()) + "===>" + str(zone_id))
-                        driver.setRiders(self.__rider_wait_dict[zone_id][dir_id][group_id].copy)
+                        # update driver status
+                        driver.setRiders(self.__rider_wait_dict[zone_id][dir_id][group_id])
                         self.__driver_tracker.updateDriverStatusAfterMatching(driver)
                         self.__logger.debug(Dispatcher.timestamp, "matchRidertoDriver", driver.getID(), None, str(driver))
 
+                        #update rider status
                         for rider in self.__rider_wait_dict[zone_id][dir_id][group_id].values():
-                            self.__rider_tracker.updateRiderStatusAfterMatching(rider, len(self.__rider_wait_dict[zone_id][dir_id][group_id]))
+                            self.__rider_tracker.updateRiderStatusAfterMatching(rider)
                             self.__logger.debug(Dispatcher.timestamp, "matchRidertoDriver", driver.getID(), rider.getID(), str(rider))
                         del self.__rider_wait_dict[zone_id][dir_id][group_id]
                     else:
@@ -160,7 +179,7 @@ class Dispatcher:
                         break
 
 
-    def updateDriverInDriverDict(self):
+    def updateDriverInDict(self):
         for zone_id in self.__driver_dict.keys():
             for driver in self.__driver_dict[zone_id].copy().values():
                 if driver.getStatus() == IDLE:
@@ -168,26 +187,21 @@ class Dispatcher:
                     self.__driver_tracker.updateDriverStatusWhenIdle(driver)
                 elif driver.getStatus() == INSERVICE:
                     self.__logger.info(Dispatcher.timestamp, "updateDriverStatus", driver.getID(), None, "Update Driver Who is INSERVICE.")
-                    self.__driver_tracker.updateDriverStatusWhenInService(driver)
+                    self.__driver_tracker.updateDriverStatusWhenInService(driver, self.__rider_tracker)
                     self.__logger.debug(Dispatcher.timestamp, "updateDriverStatus", driver.getID(), None, str(driver))
                 else:
                     self.__logger.error(Dispatcher.timestamp, "updateDriverStatus", driver.getID(), None, "Driver Status is Wrong.")
+                    raise Exception("Driver Status is Wrong.")
 
 
     def updateRidersInWaitDict(self):
         for zone_id in self.__rider_wait_dict.keys():
             for dir_id in self.__rider_wait_dict[zone_id].keys():
-                for group_id in self.__rider_wait_dict[zone_id][dir_id].keys():
-                    for rider in self.__rider_wait_dict[zone_id][dir_id][group_id].values():
+                for group_id in self.__rider_wait_dict[zone_id][dir_id].copy().keys():
+                    for rider in self.__rider_wait_dict[zone_id][dir_id][group_id].copy().values():
                         if rider.getStatus() == WAITING:
                             self.__rider_tracker.checkRiderStatusIfTimeOut(rider)
                             self.__rider_tracker.updateRiderStatusWhenWait(rider)
-
-
-    def updateRidersInServeDict(self):
-        for rider in self.__rider_serve_dict.values():
-            self.__rider_tracker.updateRiderStatusWhenInService()
-
 
     def countTotalDriverNumber(self):
         total_len = 0
@@ -231,33 +245,39 @@ class Dispatcher:
 
     def calcAverageWaitTimeOfRiders(self):
         totalWaitTime = 0
-        for rider in self.__rider_finish_dict.values():
+        riders = {**self.__rider_serve_dict, **self.__rider_finish_dict}
+        for rider in riders.values():
             totalWaitTime +=rider.getWaitTime()
-        return totalWaitTime/self.countRiderNumberInFinishDict()
+        return totalWaitTime/(self.countRiderNumberInFinishDict()+self.countRiderNumberInServeDict())
 
     def calcAverageDetourTimeOfRiders(self):
         totalDetourTime = 0
-        for rider in self.__rider_finish_dict.values():
+        riders = {**self.__rider_serve_dict, **self.__rider_finish_dict}
+        for rider in riders.values():
             totalDetourTime += rider.getDetourTime()
-        return totalDetourTime/self.countRiderNumberInFinishDict()
+        return totalDetourTime/(self.countRiderNumberInFinishDict()+self.countRiderNumberInServeDict())
 
     def calcAverageFareOfRiders(self):
         totalFare = 0
-        for rider in self.__rider_finish_dict.values():
+        riders = {**self.__rider_serve_dict, **self.__rider_finish_dict}
+        for rider in riders.values():
             totalFare += rider.getPrice()
-        return totalFare/self.countRiderNumberInFinishDict()
+        return totalFare/(self.countRiderNumberInFinishDict()+self.countRiderNumberInServeDict())
 
     def calcAverageDefaultFareRiders(self):
         totalDefaultFare = 0
-        for rider in self.__rider_finish_dict.values():
+        riders = {**self.__rider_serve_dict, **self.__rider_finish_dict}
+        for rider in riders.values():
             totalDefaultFare += rider.getDefaultPrice()
-        return totalDefaultFare/self.countRiderNumberInFinishDict()
+        return totalDefaultFare/(self.countRiderNumberInFinishDict()+self.countRiderNumberInServeDict())
 
     def calcAverageSatOfRiders(self):
         totalSat = 0
-        for rider in self.__rider_finish_dict.values():
+        riders = {**self.__rider_serve_dict, **self.__rider_finish_dict}
+        for rider in riders.values():
             totalSat += rider.getSat()
-        return totalSat/self.countRiderNumberInFinishDict()
+        return totalSat/(self.countRiderNumberInFinishDict()+self.countRiderNumberInServeDict())
+
 
 
 

@@ -1,6 +1,6 @@
 import unittest
-from src.RequestList import RequestList
-from src.RequestReader import *
+from src.Import.RequestList import RequestList
+from src.Import.ImportData import *
 
 class RequestReaderTest(unittest.TestCase):
     def testCreateRiderRequest(self):

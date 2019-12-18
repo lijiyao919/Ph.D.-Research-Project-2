@@ -1,7 +1,7 @@
 import unittest
 import math
 from src.Rider.Rider import Rider
-from src.Config import *
+from src.Configure.Config import *
 
 class RiderTest(unittest.TestCase):
     def testConstructor(self):

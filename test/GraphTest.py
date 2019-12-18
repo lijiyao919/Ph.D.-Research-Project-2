@@ -7,4 +7,4 @@ class GraphTest(unittest.TestCase):
         self.assertEqual(3, Graph.queryTravelCost(7, 19))
         self.assertEqual(3, Graph.queryTravelCost(8, 30))
         self.assertEqual(1, Graph.queryTravelCost(7, 6))
-        self.assertEqual(0.5, Graph.queryTravelCost(6, 6))
+        self.assertEqual(0, Graph.queryTravelCost(6, 6))

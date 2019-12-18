@@ -1,10 +1,10 @@
-from src.Logger import Logger
-from src.Config import *
+from src.Logger.Logger import Logger
+from src.Configure.Config import *
 
 class RiderStatusTracker:
     timestamp = -1
 
-    def __init__(self, driver_dict, wait_dict, serve_dict, finish_dict, cancel_dict):
+    def __init__(self, wait_dict, serve_dict, finish_dict, cancel_dict):
         self.__logger = Logger("RiderStatusTracker")
 
         self.__wait_dict = wait_dict
@@ -27,23 +27,23 @@ class RiderStatusTracker:
                                 str(rider.getRequestTimeStamp() + rider.getPatience()))
 
 
-    def updateRiderStatusAfterMatching(self, rider, group_num):
-        rider.calcPrice(group_num)
+    def updateRiderStatusAfterMatching(self, rider):
         rider.calcSat()
         rider.setStatus(SERVING)
         self.__serve_dict[rider.getID()] = rider
 
 
-    def updateRiderStatusWhenInService(self,rider):
+    def notifyRiderToFinishTrip(self, rider):
         if rider.getStatus() == SERVING:
-            if rider.getArrivalTimestamp() <= RiderStatusTracker.timestamp:
-                self.__finish_dict[rider.getID()] = rider
-                rider.setStatus(FINISHED)
-                del self.__serve_dict[rider.getID()]
+            self.__finish_dict[rider.getID()] = rider
+            rider.setStatus(FINISHED)
+            del self.__serve_dict[rider.getID()]
         else:
             self.__logger.error(RiderStatusTracker.timestamp, "updateRiderStatusWhenInService", None, rider.getID(), "The status and dict not match.")
+            raise Exception("The status and dict not match.")
 
 
     def updateRiderStatusWhenWait(self,rider):
-        rider.tickWaitTime()
+        if rider.getStatus() == WAITING:
+            rider.tickWaitTime()
 

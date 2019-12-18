@@ -1,10 +1,10 @@
-from src.RequestReader import readRequestFromCsv
-from src.RequestList import RequestList
+from src.Import.ImportData import readRequestFromCsv
+from src.Import.RequestList import RequestList
 from src.Dispatcher import Dispatcher
 from src.Logger import Logger
 from src.Driver import Driver
 from src.Rider import Rider
-from src.Config import *
+from src.Configure.Config import *
 import time
 import logging
 

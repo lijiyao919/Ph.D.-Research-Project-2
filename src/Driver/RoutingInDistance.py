@@ -1,6 +1,6 @@
 from src.Driver.RoutingStrategy import RoutingStrategy
 from src.Driver.RoutingElem import RoutingElem
-from src.Config import *
+from src.Configure.Config import *
 
 class RoutingInDistance(RoutingStrategy):
 

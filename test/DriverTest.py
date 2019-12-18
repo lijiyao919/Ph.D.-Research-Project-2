@@ -1,9 +1,9 @@
 import unittest
 from src.Driver.Driver import Driver
 from src.Rider.Rider import Rider
-from src.Config import *
+from src.Configure.Config import *
 
-class RiderTest(unittest.TestCase):
+class DriverTest(unittest.TestCase):
 
     def testConstructor(self):
         d1 = Driver("V0", 23)
@@ -47,7 +47,7 @@ class RiderTest(unittest.TestCase):
         except:
             pass
 
-    def testCalcTripRoute(self):
+    def testCalcTripRouteSuccess(self):
         d1 = Driver("V0", 23)
         r1 = Rider("R1", 0, 7, 1, 10, 20, 1, 1, 2, 1)  # 0
         r2 = Rider("R2", 0, 7, 3, 10, 20, 1, 1, 2, 1)
@@ -80,6 +80,14 @@ class RiderTest(unittest.TestCase):
             self.assertEqual(DROPOFF, elem5.getEvent())
             self.assertEqual("R1", elem5.getRiderID())
             elem6 = d1.popTripRoute()
+            self.fail("Expected exception here.")
+        except:
+            pass
+
+    def testCalcTripRouteFailure(self):
+        try:
+            d1 = Driver("V0", 23)
+            d1.calcTripRoute()
             self.fail("Expected exception here.")
         except:
             pass
@@ -173,6 +181,24 @@ class RiderTest(unittest.TestCase):
             self.fail("Expected Exception here.")
         except:
             pass
+
+    def testNotifyRiderPrice(self):
+        d1 = Driver("V0", 23)
+        r1 = Rider("R1", 0, 7, 1, 10, 20, 1, 1, 2, 1)  # 0
+        r2 = Rider("R2", 0, 7, 3, 10, 20, 1, 1, 2, 1)
+        r3 = Rider("R3", 0, 7, 77, 10, 20, 1, 1, 2, 1)
+        r4 = Rider("R4", 0, 7, 6, 10, 20, 1, 1, 2, 1)
+        riders = {"R1": r1, "R2": r2, "R3": r3, "R4": r4}
+        d1.setRiders(riders)
+        d1.calcTripRoute()
+        d1.calcTripEffort()
+        d1.notifyRiderPrice()
+        self.assertAlmostEqual(7.87208, r1.getPrice(), delta=0.01)
+        self.assertAlmostEqual(7.87208, r2.getPrice(), delta=0.01)
+        self.assertAlmostEqual(7.87208, r3.getPrice(), delta=0.01)
+        self.assertAlmostEqual(7.87208, r4.getPrice(), delta=0.01)
+
+
 
     def testSetStatus(self):
         d1 = Driver("V0", 23)

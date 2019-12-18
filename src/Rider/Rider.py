@@ -1,4 +1,4 @@
-from src.Config import *
+from src.Configure.Config import *
 from src.Graph.Graph import Graph
 import numpy as np
 import math

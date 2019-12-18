@@ -1,4 +1,5 @@
-from src.Config import *
+from collections import OrderedDict
+from src.Configure.Config import *
 from src.Graph.Graph import Graph
 from src.Driver.RoutingInDistance import RoutingInDistance
 from src.Logger.Logger import Logger
@@ -36,7 +37,7 @@ class Driver:
     def showRidersOnBoard(self):
         ret = "["
         if len(self.__riders):
-            for rider_id in self.__riders.keys():
+            for rider_id in OrderedDict(sorted(self.__riders.items(), key=lambda t: t[0])).keys():
                 ret = ret + rider_id + ", "
             ret = ret[0:len(ret) - 2] + "]"
         else:
@@ -57,7 +58,8 @@ class Driver:
         return self.__id
 
     def setRiders(self, riders):
-        self.__riders = riders
+        for rider_id, rider in riders.items():
+            self.__riders[rider_id] = rider
 
     def getRider(self, id):
         if id in self.__riders.keys():
@@ -88,6 +90,9 @@ class Driver:
             self.__logger.error(Driver.timestamp, "popTripRoute", self.getID(), None, "Nothing to be poped.")
             raise Exception("Nothing to be poped.")
 
+    def getTripRoute(self):
+        return self.__trip_route
+
     #must calc route first
     def calcTripEffort(self):
         total_effort = 0
@@ -110,6 +115,11 @@ class Driver:
     def getTripEffort(self):
         return self.__trip_effort
 
+    def notifyRiderPrice(self):
+        shared_number = len(self.__riders)
+        for rider in self.__riders.values():
+            rider.calcPrice(shared_number)
+
     #must calc route effort and rider price first
     def calcTripProfit(self):
         trip_revenue = 0
@@ -120,7 +130,7 @@ class Driver:
                 else:
                     self.__logger.error(Driver.timestamp, "calcTripEffort", self.getID(), None, "Price value is unresonable ")
                     raise Exception("Price value is unresonable ")
-            self.__trip_profit = trip_revenue - self.__trip_effort * COST_PER_MINUTE
+            self.__trip_profit = trip_revenue - self.__trip_effort * COST_PER_CYCLE
         else:
             self.__logger.error(Driver.timestamp, "calcTripEffort", self.getID(), None, "No riders in vehicle.")
             raise Exception("No riders in vehicle.")

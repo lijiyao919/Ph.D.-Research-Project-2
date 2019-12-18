@@ -32,7 +32,7 @@ class Graph:
     @staticmethod
     def queryTravelCost(src_z, dest_z):
         if src_z == dest_z:
-            return 0.5
+            return 0
         elif (src_z, dest_z) in Graph.__cache:
             #print('Read from cache.')
             return Graph.__cache[(src_z, dest_z)]
