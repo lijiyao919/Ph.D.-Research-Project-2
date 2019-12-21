@@ -6,8 +6,9 @@ import pandas as pd
 
 class ImportData:
 
-    def importDriverData(self, driver_list):
-        driver = pd.read_csv(FILENAME_D)
+    @staticmethod
+    def importDriverData(file_name, driver_list):
+        driver = pd.read_csv(file_name)
         numOfDriver = len(driver)
 
         print("Import Driver Data:")
@@ -19,8 +20,9 @@ class ImportData:
             if i % 100 == 0:
                 print(i)
 
-    def importRiderData(self, rider_list):
-        rider = pd.read_csv(FILENAME_R)
+    @staticmethod
+    def importRiderData(file_name, rider_list):
+        rider = pd.read_csv(file_name)
 
         print("Import Rider Data:")
         for i in range(RIDER_ROW_START, RIDER_ROW_END):

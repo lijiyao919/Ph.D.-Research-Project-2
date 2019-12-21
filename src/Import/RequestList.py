@@ -1,4 +1,4 @@
-from src.Logger import Logger
+from src.Logger.Logger import Logger
 import logging
 
 class RequestList:
@@ -6,40 +6,38 @@ class RequestList:
     timestamp = -1
 
     def __init__(self):
-        self.log = Logger("RequestList")
-        self.log.setLevel(logging.INFO)
-        self.log.info(RequestList.timestamp, "__INIT__", None, None, "Create RequestList Object.")
-        self.items = []
-
+        self.__logger = Logger("RequestList")
+        self.__logger.setLevel(logging.INFO)
+        self.__logger.info(RequestList.timestamp, "__INIT__", None, None, "Create RequestList Object.")
+        self.__items = []
 
     def __str__(self):
         ret = "["
-        # As long as there is another element in self._items,
-        # append its string representation to ret
-        for i in range(0, len(self.items)):
-            ret = ret + str(self.items[i]) + ", "
-        # Finishing touch on ret to close the brackets
-        ret = ret[0:len(ret)-2] + "]"
-        # If self._items was empty, modify ret
-        if ret == "]":
-            ret = "None"
+        for i in range(0, len(self.__items)):
+            ret = ret + str(self.__items[i]) + ", "
+        ret = ret + "]"
         return ret
 
     def first_element(self):
-        return self.items[0]
-
+        if self.is_empty():
+            self.__logger.error(RequestList.timestamp, "__INIT__", None, None, "No First element exists.")
+            raise Exception("No First element exists.")
+        return self.__items[0]
 
     def remove(self):
-        return self.items.pop(0)
+        item = self.__items.pop(0)
+        self.__logger.info(RequestList.timestamp, "remove", None, None, str(item))
+        return item
 
 
     def is_empty(self):
-        return len(self.items) == 0
+        return len(self.__items) == 0
 
 
     def __len__(self):
-        return len(self.items)
+        return len(self.__items)
 
 
     def add(self, item):
-        self.items.append(item)
+        self.__logger.info(RequestList.timestamp, "add", None, None, str(item))
+        self.__items.append(item)
