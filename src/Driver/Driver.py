@@ -106,7 +106,7 @@ class Driver:
                 rider.calcDetourTime(total_effort) #detour time is b/w the rerquest accepted and arrive at destination.
             pos = elem.getZoneID()
 
-        if total_effort <= 0:
+        if total_effort < 0:
             self.__logger.warning(Driver.timestamp, "calcTripEffort", self.getID(), None, "Trip effort value is unresonable ")
             raise Exception("Trip effort value is unresonable ")
         else:

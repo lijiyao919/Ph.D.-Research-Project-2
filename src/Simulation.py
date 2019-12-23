@@ -1,8 +1,13 @@
-from src.Import.ImportData import readRequestFromCsv
 from src.Import.RequestList import RequestList
-from src.Dispatcher import Dispatcher
-from src.Logger import Logger
-from src.Driver import Driver
+from src.Import.ImportData import ImportData
+from src.Dispatcher.Dispatcher import Dispatcher
+from src.Dispatcher.ClusteringStrategy import ClusteringStrategy
+from src.Dispatcher.MatchingStrategy import MatchingStrategy
+from src.Dispatcher.DriverStatusTracker import DriverStatusTracker
+from src.Dispatcher.RiderStatusTracker import RiderStatusTracker
+from src.Logger.Logger import Logger
+from src.Driver.Driver import Driver
+from src.Driver.RoutingStrategy import RoutingStrategy
 from src.Rider import Rider
 from src.Configure.Config import *
 import time
@@ -11,77 +16,82 @@ import logging
 class Simulation:
 
     def __init__(self):
-        self.logger = Logger('Simulation')
-        self.logger.info(-1, "__INIT__", None, None, "Create Simulation Object.")
-        self.logger.setLevel(logging.DEBUG)
-        self.driver_list = RequestList()
-        self.rider_list = RequestList()
-        self.dispatcher = Dispatcher()
-        self.cycle = 0
-        self.sim_time = []
+        self.__logger = Logger('Simulation')
+        self.__logger.info(-1, "__INIT__", None, None, "Create Simulation Object.")
+        self.__logger.setLevel(logging.DEBUG)
+        self.__driver_list = RequestList()
+        self.__rider_list = RequestList()
+        self.__dispatcher = Dispatcher()
+        self.__cycle = 0
+        self.__sim_time = []
 
+    def importData(self,):
+        ImportData.importDriverData(FILENAME_D, self.__driver_list)
+        ImportData.importRiderData(FILENAME_R, self.__rider_list)
 
     def run(self):
 
         #Run simulation cycle
-        for self.cycle in range(SIMULATION_CYCLE_START, SIMULATION_CYCLE_END):
+        for self.__cycle in range(SIMULATION_CYCLE_START, SIMULATION_CYCLE_END):
 
             #Start simulation time of this cycle
-            print("The Cycle Number: ", self.cycle)
+            print("The Cycle Number: ", self.__cycle)
 
             # Synchronization the time with Modules(Driver, Dispatcher, Rider, and so on)
-            self.logger.info(self.cycle, "RUN", None, None, "1. Synchronizing Time With Each Module.")
-            Driver.timestamp = self.cycle
-            Rider.timestamp = self.cycle
-            Dispatcher.timestamp = self.cycle
-            RequestList.timestamp = self.cycle
+            self.__logger.info(self.__cycle, "RUN", None, None, "1. Synchronizing Time With Each Module.")
+            #Dispatcher Module
+            Dispatcher.timestamp = self.__cycle
+            ClusteringStrategy.timestamp = self.__cycle
+            MatchingStrategy.timestamp = self.__cycle
+            DriverStatusTracker.timestamp = self.__cycle
+            RiderStatusTracker.timestamp = self.__cycle
+            #Driver Module
+            Driver.timestamp = self.__cycle
+            RoutingStrategy.timestamp = self.__cycle
+            #Rider Module
+            Rider.timestamp = self.__cycle
+            #Import Module
+            RequestList.timestamp = self.__cycle
 
             # Put the driver requests to dispatcher (The Driver List)
-            self.logger.info(self.cycle, "RUN", None, None, "2. Put Drivers' Requests To Dispatcher From RequestList.")
-            while not self.driver_list.is_empty() and self.driver_list.first_element().timestamp == self.cycle:
-                curr_driver_request = self.driver_list.remove()
-                self.logger.debug(self.cycle, "RUN", None, None, "Current Driver Request Moved into Dict of Dispatcher: ", str(curr_driver_request))
-                self.dispatcher.handleDriverIntoDict(curr_driver_request.driver)
+            self.__logger.info(self.__cycle, "RUN", None, None, "2. Put Drivers' Requests To Dispatcher From RequestList.")
+            while not self.__driver_list.is_empty():
+                curr_driver = self.__driver_list.remove()
+                self.__logger.debug(self.__cycle, "RUN", None, None, "Current Driver Moved into Dict of Dispatcher: ", str(curr_driver))
+                self.__dispatcher.handleDriverIntoDict(curr_driver)
 
             # Put the rider requests to dispatcher (The Rider List)
-            self.logger.info(self.cycle, "RUN", None, None, "3. Put Rider' Requests To Dispatcher From RequestList.")
-            while not self.rider_list.is_empty() and self.rider_list.first_element().timestamp == self.cycle:
-                curr_rider_request = self.rider_list.remove()
-                self.logger.debug(self.cycle, "RUN", None, None, "Current Rider Request Moved into Dict of Dispatcher: ", str(curr_rider_request))
-                self.dispatcher.handleRiderIntoDict(curr_rider_request.rider)
+            self.__logger.info(self.__cycle, "RUN", None, None, "3. Put Rider' Requests To Dispatcher From RequestList.")
+            while not self.__rider_list.is_empty() and self.__rider_list.first_element().getRequestTimeStamp() == self.__cycle:
+                curr_rider = self.__rider_list.remove()
+                self.__logger.debug(self.__cycle, "RUN", None, None, "Current Rider Moved into Dict of Dispatcher: ", str(curr_rider))
+                self.__dispatcher.handleRiderIntoDict(curr_rider)
 
-            #Show Driver and Rider in each zone
-            print(self.dispatcher.showDriverNumberOfEachZone())
-            print(self.dispatcher.showRiderNumberOfEachZone())
-
-            #Update Riders' patience
-            self.logger.info(self.cycle, "RUN", None, None, "4. Check Which Rider's Request Should be Cancelled in Rider List of Dispathcer.")
-            self.dispatcher.removeTimeoutRiderFromWaitDict()
 
             #Show dispatch dicts
-            print("waiting, serving, finished, canceled: ", self.dispatcher.countRiderNumberInWaitDict(),
-                  self.dispatcher.countRiderNumberInServeDict(),
-                  self.dispatcher.countRiderNumberInFinishDict(),
-                  self.dispatcher.countRiderNumberInCancelDict())
+            print("waiting, serving, finished, canceled: ", self.__dispatcher.countRiderNumberInWaitDict(),
+                  self.__dispatcher.countRiderNumberInServeDict(),
+                  self.__dispatcher.countRiderNumberInFinishDict(),
+                  self.__dispatcher.countRiderNumberInCancelDict())
 
             #match driver and rider by dispatcher
             start_sim = time.time()
-            self.logger.info(self.cycle, "RUN", None, None, "5. Match Riders' Request to AN Appropriate Driver.")
-            self.dispatcher.matchRidertoDriver()
+            self.__logger.info(self.__cycle, "RUN", None, None, "4. Match Riders' Request to AN Appropriate Driver.")
+            self.__dispatcher.matchRidertoDriver()
             end_sim = time.time()
 
             # Update simulator's states
-            self.logger.info(self.cycle, "RUN", None, None, "6. Update State of Simulator.")
-            self.dispatcher.updateDriverStatus()
-            self.dispatcher.updateRiderStatus()
+            self.__logger.info(self.__cycle, "RUN", None, None, "5. Update State of Simulator.")
+            self.__dispatcher.updateDriverInDict()
+            self.__dispatcher.updateRidersInWaitDict()
 
             #Calc # of active driver desision time of this cycle
             diff_sim = end_sim - start_sim
-            self.sim_time.append(diff_sim)
+            self.__sim_time.append(diff_sim)
 
             #Show up results
-            self.logger.info(self.cycle, "RUN", None, None, "7. Show Up All Results of this Cycle.")
-            if self.cycle % SHOWN_INTERVAL == 0 and self.cycle != SIMULATION_CYCLE_START:
+            self.__logger.info(self.__cycle, "RUN", None, None, "6. Show Up All Results of this Cycle.")
+            if self.__cycle % SHOWN_INTERVAL == 0 and self.__cycle != SIMULATION_CYCLE_START:
                 self.show()
             print("Time Consume: ", diff_sim)
 
@@ -90,28 +100,28 @@ class Simulation:
     def show(self):
         print("\n")
 
-        print("The Number of Riders occured so far: ", self.dispatcher.countCurrentTotalRiderNumber())
-        print("The Number of Riders to be served: ", self.dispatcher.countRiderNumberInWaitDict())
-        print("The Number of Drivers: ", self.dispatcher.countTotalDriverNumber())
-        print("The Number of Cycles: ", self.cycle)
+        print("The Number of Riders occured so far: ", self.__dispatcher.countCurrentTotalRiderNumber())
+        print("The Number of Riders to be served: ", self.__dispatcher.countRiderNumberInWaitDict())
+        print("The Number of Drivers: ", self.__dispatcher.countTotalDriverNumber())
+        print("The Number of Cycles: ", self.__cycle)
 
         print("***************************************************************")
         print("Driver Performace Metrics:")
-        print("Average Profit: ", round(self.dispatcher.calcAverageProfitOfDrivers(), 2))
-        print("Average Idle Time: ", round(self.dispatcher.calcAverageIdleTimeOfDrivers(), 2))
+        print("Average Profit: ", round(self.__dispatcher.calcAverageProfitOfDrivers(), 2))
+        print("Average Idle Time: ", round(self.__dispatcher.calcAverageIdleTimeOfDrivers(), 2))
 
         print("***************************************************************")
         print("Rider Performace Metrics:")
-        print("Average Waiting Time (Cycles): ", round(self.dispatcher.calcAverageWaitTimeOfRiders(), 2))
-        print("Average Detour Time (Cycles): ", round(self.dispatcher.calcAverageDetourTimeOfRiders(), 2))
-        print("Average Sat: ", round(self.dispatcher.calcAverageSatOfRiders(), 2))
-        print("Average Fare: ", round(self.dispatcher.calcAverageFareOfRiders(), 2))
-        print("Average Default Fare: ", round(self.dispatcher.calcAverageDefaultFareRiders(), 2))
+        print("Average Waiting Time (Cycles): ", round(self.__dispatcher.calcAverageWaitTimeOfRiders(), 2))
+        print("Average Detour Time (Cycles): ", round(self.__dispatcher.calcAverageDetourTimeOfRiders(), 2))
+        print("Average Sat: ", round(self.__dispatcher.calcAverageSatOfRiders(), 2))
+        print("Average Fare: ", round(self.__dispatcher.calcAverageFareOfRiders(), 2))
+        print("Average Default Fare: ", round(self.__dispatcher.calcAverageDefaultFareRiders(), 2))
 
         print("***************************************************************")
         print("System Performace Metrics:")
-        print("Serving Rate: ", round(1 - self.dispatcher.countRiderNumberInCancelDict() / self.dispatcher.countCurrentTotalRiderNumber(), 2))
-        print("Average Running Time: ", round(sum(self.sim_time)/len(self.sim_time), 2))
+        print("Serving Rate: ", round(1 - self.__dispatcher.countRiderNumberInCancelDict() / self.__dispatcher.countCurrentTotalRiderNumber(), 2))
+        print("Average Running Time: ", round(sum(self.__sim_time) / len(self.__sim_time), 2))
 
         print("***************************************************************")
         print("\n")
@@ -119,5 +129,5 @@ class Simulation:
 
 if __name__ == "__main__":
     sim = Simulation()
-    readRequestFromCsv(sim.driver_list, sim.rider_list)
+    sim.importData()
     sim.run()
