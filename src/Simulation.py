@@ -30,9 +30,12 @@ class Simulation:
         ImportData.importRiderData(FILENAME_R, self.__rider_list)
 
     def run(self):
-
         #Run simulation cycle
         for self.__cycle in range(SIMULATION_CYCLE_START, SIMULATION_CYCLE_END):
+            # Initialize monitoring stuff
+            for zone_id in range(1, 78):
+                self.__dispatcher.cancel_rider[zone_id] = 0
+                self.__dispatcher.no_work_driver[zone_id] = 0
 
             #Start simulation time of this cycle
             print("The Cycle Number: ", self.__cycle)
@@ -91,17 +94,27 @@ class Simulation:
 
             #Show up results
             self.__logger.info(self.__cycle, "RUN", None, None, "6. Show Up All Results of this Cycle.")
-            if self.__cycle % SHOWN_INTERVAL == 0 and self.__cycle != SIMULATION_CYCLE_START:
-                self.show()
             print("Time Consume: ", diff_sim)
+            print(self.filterMonitorDict(self.__dispatcher.cancel_rider))
+            print(self.filterMonitorDict(self.__dispatcher.no_work_driver))
+            if self.__cycle % SHOWN_INTERVAL == 0 and self.__cycle != SIMULATION_CYCLE_START:
+                self.showPerformanceMetrics()
+            print("\n")
 
         print("Simulation Terminated.\n")
 
-    def show(self):
+    def filterMonitorDict(self, monitor_dict):
+        ret="{"
+        for zone_id, item in monitor_dict.items():
+            if item > 0:
+                ret=ret+str(zone_id)+":"+str(item)+", "
+        ret=ret+"}"
+        return ret
+
+    def showPerformanceMetrics(self):
         print("\n")
 
         print("The Number of Riders occured so far: ", self.__dispatcher.countCurrentTotalRiderNumber())
-        print("The Number of Riders to be served: ", self.__dispatcher.countRiderNumberInWaitDict())
         print("The Number of Drivers: ", self.__dispatcher.countTotalDriverNumber())
         print("The Number of Cycles: ", self.__cycle)
 

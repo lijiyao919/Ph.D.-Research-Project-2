@@ -26,6 +26,10 @@ class Dispatcher:
         self.__rider_finish_dict = {}
         self.__rider_cancel_dict = {}
 
+        #Performance of driver and rider
+        self.cancel_rider={}
+        self.no_work_driver={}
+
         #Cluser Strategy
         self.__cluster_strategy = ClusteringInGroup(self.__rider_wait_dict)
 
@@ -184,7 +188,7 @@ class Dispatcher:
             for driver in self.__driver_dict[zone_id].copy().values():
                 if driver.getStatus() == IDLE:
                     self.__logger.info(Dispatcher.timestamp, "updateDriverStatus", driver.getID(), None, "Update Driver when IDLE.")
-                    self.__driver_tracker.updateDriverStatusWhenIdle(driver)
+                    self.__driver_tracker.updateDriverStatusWhenIdle(driver, self.no_work_driver)
                 elif driver.getStatus() == INSERVICE:
                     self.__logger.info(Dispatcher.timestamp, "updateDriverStatus", driver.getID(), None, "Update Driver Who is INSERVICE.")
                     self.__driver_tracker.updateDriverStatusWhenInService(driver, self.__rider_tracker)
@@ -200,7 +204,7 @@ class Dispatcher:
                 for group_id in self.__rider_wait_dict[zone_id][dir_id].copy().keys():
                     for rider in self.__rider_wait_dict[zone_id][dir_id][group_id].copy().values():
                         if rider.getStatus() == WAITING:
-                            self.__rider_tracker.checkRiderStatusIfTimeOut(rider)
+                            self.__rider_tracker.checkRiderStatusIfTimeOut(rider, self.cancel_rider)
                             self.__rider_tracker.updateRiderStatusWhenWait(rider)
 
     def countTotalDriverNumber(self):

@@ -12,7 +12,7 @@ class RiderStatusTracker:
         self.__finish_dict = finish_dict
         self.__cancel_dict = cancel_dict
 
-    def checkRiderStatusIfTimeOut(self, rider):
+    def checkRiderStatusIfTimeOut(self, rider, cancel_dict):
         if RiderStatusTracker.timestamp - rider.getRequestTimeStamp() >= rider.getPatience():
             rider.setStatus(CANCEL)
             self.__cancel_dict[rider.getID()] = rider
@@ -22,6 +22,7 @@ class RiderStatusTracker:
             del self.__wait_dict[zone_id][dir][group_id][rider.getID()]
             if len(self.__wait_dict[zone_id][dir][group_id]) == 0:
                 del self.__wait_dict[zone_id][dir][group_id]
+            cancel_dict[rider.getSrcZone()] += 1
         else:
             self.__logger.debug(RiderStatusTracker.timestamp, "updateRiderStatusWhenTimeOut", None, rider.getID(), "Cancel Time Should be: ",
                                 str(rider.getRequestTimeStamp() + rider.getPatience()))

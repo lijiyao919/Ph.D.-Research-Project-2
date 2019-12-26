@@ -33,8 +33,11 @@ class DriverStatusTracker:
         if len(driver.getTripRoute()) == 0:
             driver.setStatus(IDLE)
 
-    def updateDriverStatusWhenIdle(self, driver):
+    def updateDriverStatusWhenIdle(self, driver, no_work_dict):
         driver.tickIdleTime()
+        if driver.getIdleTime() >= 10:
+            no_work_dict[driver.getPos()] += 1
+
 
 
 
