@@ -24,17 +24,17 @@ class Visualization:
             self.dropoff_table[curr_state_t] = np.zeros(78, dtype=np.float64)
             curr_time = curr_time + self.delta_time
 
-    def __readCSVByDate(self, curr_date):
-        df = pd.read_csv("../Test/Chicago_April_{}_2016.csv".format(curr_date))
+    def __readCSV(self, curr_date):
+        df = pd.read_csv("C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/data/Chicago_April_11_2016.csv")
         df['Trip Start Timestamp'] = df['Trip Start Timestamp'].astype('datetime64[ns]') #e.g. 4/4/2016 0:00===> 2016-04-04 00:00:00
         df['Trip Total'] = df['Trip Total'].str.replace(',', '').astype('float64') #e.g. 1,200===>1200.0
         return df
 
     def handleRequestCount(self):
-        print('Handle Pickup and Dropoff.')
+        print('Count pickup and dropoff in each zone.')
         self.__initilize_table()
 
-        df = self.__readCSVByDate(curr_date)
+        df = self.__readCSV(curr_date)
         g_time = df.groupby('Trip Start Timestamp')
         curr_time = self.final_time
 
@@ -60,10 +60,10 @@ class Visualization:
             curr_time = curr_time - self.delta_time
 
     def handleTransitionTable(self, zone_id):
-        print('Handle Pickup and Dropoff.')
+        print('Count from zone_id to the other zones.')
         self.__initilize_table()
 
-        df = self.__readCSVByDate(curr_date)
+        df = self.__readCSV(curr_date)
         g_time = df.groupby('Trip Start Timestamp')
         curr_time = self.final_time
 
@@ -99,11 +99,12 @@ class Visualization:
             plt.plot(list)
             plt.title("Zone ID: "+str(zone_id))
             plt.xticks(range(0,97,4))
-            plt.savefig('../Figures/zone_{}.jpg'.format(zone_id), dpi=300)
+            #plt.savefig('../Figures/zone_{}.jpg'.format(zone_id), dpi=300)
+            plt.show()
             plt.close()
 
 v= Visualization()
 v.handleRequestCount()
-v.showCountWRTZones(v.dropoff_table)
+v.showCountWRTZones(v.pickup_table)
 #v.handleTransitionTable(28)
 #v.showCountWRTZones(v.transition_table)

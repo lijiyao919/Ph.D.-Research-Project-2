@@ -32,7 +32,7 @@ class ImportData:
             actor_id = "R" + str(i)
             pickup_zone = int(obs["Pickup Community Area"])
             dropoff_zone = int(obs["Dropoff Community Area"])
-            default_price = float(obs["Trip Total"])
+            default_price = float(obs["Trip Total"].replace(',', ''))
             src_lat = float(obs["Pickup Centroid Latitude"])
             src_lon = float(obs["Pickup Centroid Longitude"])
             dest_lat = float(obs["Dropoff Centroid Latitude"])
