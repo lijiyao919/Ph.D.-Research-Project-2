@@ -8,7 +8,7 @@ from src.Dispatcher.RiderStatusTracker import RiderStatusTracker
 from src.Logger.Logger import Logger
 from src.Driver.Driver import Driver
 from src.Driver.RoutingStrategy import RoutingStrategy
-from src.Rider import Rider
+from src.Rider.Rider import Rider
 from src.Configure.Config import *
 import time
 import logging
