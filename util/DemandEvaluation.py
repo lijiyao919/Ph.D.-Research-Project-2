@@ -21,8 +21,8 @@ class DemandEvaluation:
     #Intitialize state_value_table(state is time&zone, value is the demand evaluation)
     def __initilize(self):
         print('Initialize the State Value Table.')
-        begin_time = datetime.datetime(2016, 4, 1, hour=0, minute=0)   #year, month and day is not important here
-        final_time = datetime.datetime(2016, 4, 1, hour=23, minute=45) #year, month and day is not important here
+        begin_time = datetime.datetime(2016, 4, 11, hour=0, minute=0)   #year, month and day is not important here
+        final_time = datetime.datetime(2016, 4, 11, hour=23, minute=45) #year, month and day is not important here
         curr_time = final_time  # 2016-04-01 23:45:00
         while curr_time >= begin_time:
             curr_state_t = curr_time.strftime('%m/%d/%Y %H:%M').split(' ')[1]  #e.g. 23:45 (string type)
@@ -98,8 +98,8 @@ class DemandEvaluation:
 
     def saveSateValueTable(self):
         print('Save the State Value Table.')
-        begin_time = datetime.datetime(2016, 4, 1, hour=0, minute=0)   #year, month and day is not important here
-        final_time = datetime.datetime(2016, 4, 1, hour=23, minute=45) #year, month and day is not important here
+        begin_time = datetime.datetime(2016, 4, 11, hour=0, minute=0)   #year, month and day is not important here
+        final_time = datetime.datetime(2016, 4, 11, hour=23, minute=45) #year, month and day is not important here
         curr_time = final_time
         while curr_time >= begin_time:
             curr_state_t = curr_time.strftime('%m/%d/%Y %H:%M').split(' ')[1]
@@ -114,8 +114,8 @@ class DemandEvaluation:
             self.__state_value = json.load(fr)
 
     def drawBarChart(self):
-        begin_time = datetime.datetime(2016, 4, 1, 0, 0)   #year, month and day is not important here
-        final_time = datetime.datetime(2016, 4, 1, 23, 45) #year, month and day is not important here
+        begin_time = datetime.datetime(2016, 4, 11, 0, 0)   #year, month and day is not important here
+        final_time = datetime.datetime(2016, 4, 11, 23, 45) #year, month and day is not important here
         curr_time_figure = final_time
         plt.figure(1)
         while curr_time_figure >= begin_time:
@@ -179,7 +179,7 @@ class DemandEvaluation:
         plt.show()
 
 
-demand = DemandEvaluation(4,4)
+demand = DemandEvaluation(11,11)
 demand.handleStateValueTable()
 #demand.saveSateValueTable()
 demand.drawSurfaceFigure()

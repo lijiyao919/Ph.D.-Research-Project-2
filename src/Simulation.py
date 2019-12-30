@@ -10,7 +10,7 @@ from src.Driver.Driver import Driver
 from src.Driver.RoutingStrategy import RoutingStrategy
 from src.Rider.Rider import Rider
 from src.Configure.Config import *
-import time
+import datetime
 import logging
 
 class Simulation:
@@ -37,9 +37,6 @@ class Simulation:
                 self.__dispatcher.cancel_rider[zone_id] = 0
                 self.__dispatcher.no_work_driver[zone_id] = 0
 
-            #Start simulation time of this cycle
-            print("The Cycle Number: ", self.__cycle)
-
             # Synchronization the time with Modules(Driver, Dispatcher, Rider, and so on)
             self.__logger.info(self.__cycle, "RUN", None, None, "1. Synchronizing Time With Each Module.")
             #Dispatcher Module
@@ -48,6 +45,8 @@ class Simulation:
             MatchingStrategy.timestamp = self.__cycle
             DriverStatusTracker.timestamp = self.__cycle
             RiderStatusTracker.timestamp = self.__cycle
+            if self.__cycle % 5 == 0:
+                MatchingStrategy.time += datetime.timedelta(minutes=15)
             #Driver Module
             Driver.timestamp = self.__cycle
             RoutingStrategy.timestamp = self.__cycle
@@ -55,6 +54,10 @@ class Simulation:
             Rider.timestamp = self.__cycle
             #Import Module
             RequestList.timestamp = self.__cycle
+
+            # Start simulation time of this cycle
+            print("The Cycle Number: ", self.__cycle)
+            print("Time: ", MatchingStrategy.time)
 
             # Put the driver requests to dispatcher (The Driver List)
             self.__logger.info(self.__cycle, "RUN", None, None, "2. Put Drivers' Requests To Dispatcher From RequestList.")
@@ -78,23 +81,16 @@ class Simulation:
                   self.__dispatcher.countRiderNumberInCancelDict())
 
             #match driver and rider by dispatcher
-            start_sim = time.time()
             self.__logger.info(self.__cycle, "RUN", None, None, "4. Match Riders' Request to AN Appropriate Driver.")
             self.__dispatcher.matchRidertoDriver()
-            end_sim = time.time()
 
             # Update simulator's states
             self.__logger.info(self.__cycle, "RUN", None, None, "5. Update State of Simulator.")
             self.__dispatcher.updateDriverInDict()
             self.__dispatcher.updateRidersInWaitDict()
 
-            #Calc # of active driver desision time of this cycle
-            diff_sim = end_sim - start_sim
-            self.__sim_time.append(diff_sim)
-
             #Show up results
             self.__logger.info(self.__cycle, "RUN", None, None, "6. Show Up All Results of this Cycle.")
-            print("Time Consume: ", diff_sim)
             print(self.filterMonitorDict(self.__dispatcher.cancel_rider))
             print(self.filterMonitorDict(self.__dispatcher.no_work_driver))
             if self.__cycle % SHOWN_INTERVAL == 0 and self.__cycle != SIMULATION_CYCLE_START:
@@ -134,10 +130,8 @@ class Simulation:
         print("***************************************************************")
         print("System Performace Metrics:")
         print("Serving Rate: ", round(1 - self.__dispatcher.countRiderNumberInCancelDict() / self.__dispatcher.countCurrentTotalRiderNumber(), 2))
-        print("Average Running Time: ", round(sum(self.__sim_time) / len(self.__sim_time), 2))
 
         print("***************************************************************")
-        print("\n")
 
 
 if __name__ == "__main__":
