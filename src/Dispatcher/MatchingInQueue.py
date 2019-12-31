@@ -21,10 +21,11 @@ class MatchingInQueue(MatchingStrategy):
         max = 0
 
         for zone in zones:
-            if self.__countIdleDriversWithinAZone(zone) > max:
+            supply_demand_ratio = self.__countIdleDriversWithinAZone(zone)/(1+self.getRatioOfSupplyDemand(zone))
+            if supply_demand_ratio > max:
                 zone_selected = zone
-                max = self.__countIdleDriversWithinAZone(zone)
-            elif self.__countIdleDriversWithinAZone(zone) == max and max != 0:
+                max = supply_demand_ratio
+            elif supply_demand_ratio == max and max != 0:
                 if zone < zone_selected:
                     zone_selected = zone
 
