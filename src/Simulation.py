@@ -17,8 +17,8 @@ class Simulation:
 
     def __init__(self):
         self.__logger = Logger('Simulation')
+        #self.__logger.setLevel(logging.DEBUG)
         self.__logger.info(-1, "__INIT__", None, None, "Create Simulation Object.")
-        self.__logger.setLevel(logging.DEBUG)
         self.__driver_list = RequestList()
         self.__rider_list = RequestList()
         self.__dispatcher = Dispatcher()

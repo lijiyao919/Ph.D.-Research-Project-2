@@ -6,7 +6,7 @@ import json
 class MatchingStrategy(ABC):
 
     timestamp = -1
-    time = datetime.datetime(2016, 4, 11, hour=11, minute=45)
+    time = datetime.datetime(2016, 4, 11, hour=10, minute=45)
 
     def __init__(self):
         self.logger = Logger('MatchingStrategy')

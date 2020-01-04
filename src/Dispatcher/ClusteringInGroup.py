@@ -5,7 +5,7 @@ from src.Configure.Config import *
 class ClusteringInGroup(ClusteringStrategy):
     def __init__(self, rider_waiting_dict):
         super().__init__()
-        self.logger.setLevel(logging.DEBUG)
+        #self.logger.setLevel(logging.DEBUG)
         self.logger.info(ClusteringStrategy.timestamp, "__INIT__", None, None, "Create ClusteringInGroup Object")
 
         self.__assign_gid_dict = {}

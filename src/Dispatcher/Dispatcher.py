@@ -16,7 +16,7 @@ class Dispatcher:
     def __init__(self):
         #logger in Dispatcher
         self.__logger = Logger('Dispatcher')
-        self.__logger.setLevel(logging.DEBUG)
+        #self.__logger.setLevel(logging.DEBUG)
         self.__logger.info(Dispatcher.timestamp, "__INIT__", None, None, "Create A Dispatcher Object")
 
         #Storage for drivers and riders
@@ -277,10 +277,11 @@ class Dispatcher:
 
     def calcAverageSatOfRiders(self):
         totalSat = 0
-        riders = {**self.__rider_serve_dict, **self.__rider_finish_dict}
+        riders = {**self.__rider_serve_dict, **self.__rider_finish_dict, **self.__rider_cancel_dict}
         for rider in riders.values():
             totalSat += rider.getSat()
-        return totalSat/(self.countRiderNumberInFinishDict()+self.countRiderNumberInServeDict())
+        return totalSat/(self.countRiderNumberInFinishDict()+self.countRiderNumberInServeDict()+self.countRiderNumberInCancelDict())
+
 
 
 

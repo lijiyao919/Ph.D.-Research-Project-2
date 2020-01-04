@@ -28,11 +28,13 @@ class ImportData:
         for i in range(RIDER_ROW_START, RIDER_ROW_END):
             obs = rider.iloc[i, :]
 
+            default_price = float(obs["Trip Total"].replace(',', ''))
+            if default_price > 200:
+                continue
             timestamp = ((pd.to_datetime(obs["Trip Start Timestamp"]) - pd.Timestamp(2016, 4, 11, 0)) / pd.to_timedelta(1, unit='m')) / SIMULATION_CYCLE
             actor_id = "R" + str(i)
             pickup_zone = int(obs["Pickup Community Area"])
             dropoff_zone = int(obs["Dropoff Community Area"])
-            default_price = float(obs["Trip Total"].replace(',', ''))
             src_lat = float(obs["Pickup Centroid Latitude"])
             src_lon = float(obs["Pickup Centroid Longitude"])
             dest_lat = float(obs["Dropoff Centroid Latitude"])

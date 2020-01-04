@@ -14,7 +14,7 @@ class Driver:
     def __init__(self, id, pCurr):
         # logger in Dispatcher
         self.__logger = Logger('Driver')
-        self.__logger.setLevel(logging.DEBUG)
+        #self.__logger.setLevel(logging.DEBUG)
         self.__logger.info(Driver.timestamp, "__INIT__", None, None, "Create A Driver Object")
 
         self.__id = id

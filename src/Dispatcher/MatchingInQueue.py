@@ -7,7 +7,7 @@ import logging
 class MatchingInQueue(MatchingStrategy):
     def __init__(self, driver_dict, rider_wait_dict, rider_serve_dict):
         super().__init__()
-        self.logger.setLevel(logging.DEBUG)
+        #self.logger.setLevel(logging.DEBUG)
         self.logger.info(MatchingStrategy.timestamp, "__INIT__", None, None, "Create MatchingInQueue Object")
 
         self.__driver_dict = driver_dict

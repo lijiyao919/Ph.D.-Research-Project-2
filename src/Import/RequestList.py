@@ -7,7 +7,7 @@ class RequestList:
 
     def __init__(self):
         self.__logger = Logger("RequestList")
-        self.__logger.setLevel(logging.INFO)
+        #self.__logger.setLevel(logging.INFO)
         self.__logger.info(RequestList.timestamp, "__INIT__", None, None, "Create RequestList Object.")
         self.__items = []
 

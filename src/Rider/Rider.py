@@ -11,7 +11,7 @@ class Rider:
     def __init__(self, uID, sT, sZ, dZ, dP, pat, srcX, srcY, destX, destY):
         # logger in Dispatcher
         self.__logger = Logger('Rider')
-        self.__logger.setLevel(logging.DEBUG)
+        #self.__logger.setLevel(logging.DEBUG)
         self.__logger.info(Rider.timestamp, "__INIT__", None, None, "Create A Rider Object")
 
         self.__id = uID
@@ -30,6 +30,9 @@ class Rider:
         self.__wait_time = 0
         self.__detour_time = -1
         self.__sat = 0
+
+        if self.__default_price > 100:
+            self.__logger.warning(Rider.timestamp, "__INIT__", None, self.getID(), str(self))
 
     def __str__(self):
         ret = "{" + str(self.__id) + ', ' + str(self.__request_timestamp) +  ", " + str(self.__srcZone) + ", " + str(self.__destZone) + ", " + \
@@ -118,10 +121,10 @@ class Rider:
             self.__logger.error(Rider.timestamp, "calcSat", None, self.getID(), "Price is unreasonable.")
             raise Exception("Price is unreasonable.")
         else:
-            self.__sat = math.exp((self.__default_price-self.__price)*SAT_PRICE) - \
-                         math.exp(self.__detour_time*SAT_TIME) + 1
-        #print(math.exp((self.__default_price-self.__price)*SAT_PRICE))
-        #print(math.exp(self.getDetourTime()*SAT_TIME) - 1)
+            self.__sat = (self.__default_price-self.__price)*SAT_PRICE - math.expm1(self.__detour_time)
+            if self.__sat > 10000000:
+                self.__logger.warning(Rider.timestamp, "calcPrice", None, self.getID(), "SAT is too large", str(self))
+
 
     def getSat(self):
         return self.__sat

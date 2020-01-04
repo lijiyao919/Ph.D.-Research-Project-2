@@ -4,7 +4,7 @@ class Logger:
 
     def __init__(self, module):
         # Create the Logger
-        logging.basicConfig(filename='./Carpool.log', filemode='w', level=logging.CRITICAL, format='%(levelname)s - %(name)s - %(message)s')
+        logging.basicConfig(filename='./Carpool.log', filemode='w', level=logging.WARNING, format='%(levelname)s - %(name)s - %(message)s')
         #logging.basicConfig(format='%(levelname)s - %(name)s - %(message)s', handlers=[logging.StreamHandler()])
         self.__logger = logging.getLogger(module)
         self.__cycle_obs = []
