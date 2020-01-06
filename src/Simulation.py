@@ -10,6 +10,7 @@ from src.Driver.Driver import Driver
 from src.Driver.RoutingStrategy import RoutingStrategy
 from src.Rider.Rider import Rider
 from src.Configure.Config import *
+from src.Import.ImportDemandEvaluation import ImportDemandEvaluation
 import datetime
 import logging
 
@@ -46,7 +47,7 @@ class Simulation:
             DriverStatusTracker.timestamp = self.__cycle
             RiderStatusTracker.timestamp = self.__cycle
             if self.__cycle % 5 == 0:
-                MatchingStrategy.time += datetime.timedelta(minutes=15)
+                ImportDemandEvaluation.time += datetime.timedelta(minutes=15)
             #Driver Module
             Driver.timestamp = self.__cycle
             RoutingStrategy.timestamp = self.__cycle
@@ -57,7 +58,7 @@ class Simulation:
 
             # Start simulation time of this cycle
             print("The Cycle Number: ", self.__cycle)
-            print("Time: ", MatchingStrategy.time)
+            print("Time: ", ImportDemandEvaluation.time)
 
             # Put the driver requests to dispatcher (The Driver List)
             self.__logger.info(self.__cycle, "RUN", None, None, "2. Put Drivers' Requests To Dispatcher From RequestList.")

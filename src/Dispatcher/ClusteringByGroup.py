@@ -2,7 +2,7 @@ from src.Dispatcher.ClusteringStrategy import ClusteringStrategy
 import logging
 from src.Configure.Config import *
 
-class ClusteringInGroup(ClusteringStrategy):
+class ClusteringByGroup(ClusteringStrategy):
     def __init__(self, rider_waiting_dict):
         super().__init__()
         #self.logger.setLevel(logging.DEBUG)
@@ -42,7 +42,7 @@ class ClusteringInGroup(ClusteringStrategy):
             self.__rider_dict[zone_id][dir_id][group_id][rider.getID()] = rider
             rider.setGroupID(group_id)
         else:
-            self.logger.error(ClusteringInGroup.timestamp, "cluster", None, rider.getID(), "Rider has been in the Pool")
+            self.logger.error(ClusteringByGroup.timestamp, "cluster", None, rider.getID(), "Rider has been in the Pool")
 
         # check how many riders in the zone&direction&group_num to determine group id
         rider_num = len(self.__rider_dict[zone_id][dir_id][group_id])

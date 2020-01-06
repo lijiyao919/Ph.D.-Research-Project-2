@@ -3,7 +3,7 @@ from src.Driver.Driver import Driver
 from src.Rider.Rider import Rider
 from src.Configure.Config import *
 from src.Logger.Logger import Logger
-from src.Dispatcher.ClusteringInGroup import ClusteringInGroup
+from src.Dispatcher.ClusteringByGroup import ClusteringByGroup
 from src.Dispatcher.MatchingInQueue import MatchingInQueue
 from src.Dispatcher.DriverStatusTracker import DriverStatusTracker
 from src.Dispatcher.RiderStatusTracker import RiderStatusTracker
@@ -31,7 +31,7 @@ class Dispatcher:
         self.no_work_driver={}
 
         #Cluser Strategy
-        self.__cluster_strategy = ClusteringInGroup(self.__rider_wait_dict)
+        self.__cluster_strategy = ClusteringByGroup(self.__rider_wait_dict)
 
         #Matching Strategy
         self.__match_strategy = MatchingInQueue(self.__driver_dict, self.__rider_wait_dict, self.__rider_serve_dict)

@@ -1,6 +1,7 @@
 from collections import OrderedDict
 from src.Graph.Map import AdjList_Chicago
 from src.Dispatcher.MatchingStrategy import MatchingStrategy
+from src.Import.ImportDemandEvaluation import ImportDemandEvaluation
 from src.Configure.Config import *
 import logging
 
@@ -14,6 +15,8 @@ class MatchingInQueue(MatchingStrategy):
         self.__rider_wait_dict = rider_wait_dict
         self.__rider_serve_dict = rider_serve_dict
 
+        self.__demand_evaluation = ImportDemandEvaluation.getInstance()
+
     def match(self, rider_zone_id):
         zones = AdjList_Chicago[rider_zone_id].copy()
         zones.append(rider_zone_id)
@@ -21,7 +24,7 @@ class MatchingInQueue(MatchingStrategy):
         max = 0
 
         for zone in zones:
-            supply_demand_ratio = self.__countIdleDriversWithinAZone(zone)/(1+self.getRatioOfSupplyDemand(zone))
+            supply_demand_ratio = self.__countIdleDriversWithinAZone(zone)/(1+self.__demand_evaluation.getRatioOfSupplyDemand(zone))
             if supply_demand_ratio > max:
                 zone_selected = zone
                 max = supply_demand_ratio
