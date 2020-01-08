@@ -26,7 +26,7 @@ class DispatcherTest(unittest.TestCase):
         for zone_id in range(1, 78):
             for dir_id in range(0, 12):
                 self.assertEqual(None, dispatcher.getGroupFromWaitDict(zone_id, dir_id, None))
-        self.assertEqual("1: {0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7: {}, 8: {}, 9: {}, 10: {}, 11: {}, }", dispatcher.showRiderWaitDict(1))
+        self.assertEqual("1: {0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7: {}, 8: {}, 9: {}, 10: {}, 11: {}, -1: {}, }", dispatcher.showRiderWaitDict(1))
         self.assertEqual(0, dispatcher.getRequestNumberOfZone(1))
         self.assertEqual(0, dispatcher.getRequestNumberOfZone(20))
         self.assertEqual(0, dispatcher.getRequestNumberOfZone(77))
@@ -116,13 +116,13 @@ class DispatcherTest(unittest.TestCase):
         dispatcher.handleRiderIntoDict(r9)
 
         self.assertEqual(9, dispatcher.getRequestNumberOfZone(1))
-        self.assertEqual("1: {0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {1: [R1, R2, R3, R4, ], 2: [R5, R6, R7, R8, ], 3: [R9, ], }, 7: {}, 8: {}, 9: {}, 10: {}, 11: {}, }", dispatcher.showRiderWaitDict(1))
+        self.assertEqual("1: {0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {1: [R1, R2, R3, R4, ], 2: [R5, R6, R7, R8, ], 3: [R9, ], }, 7: {}, 8: {}, 9: {}, 10: {}, 11: {}, -1: {}, }", dispatcher.showRiderWaitDict(1))
         self.assertEqual(9, dispatcher.countRiderNumberInWaitDict())
 
         r10 = Rider("R10", 0, 7, 6, 10, 20, 1, 1, 1, 2)  # 90
         dispatcher.handleRiderIntoDict(r10)
         self.assertEqual(1, dispatcher.getRequestNumberOfZone(7))
-        self.assertEqual("7: {0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7: {}, 8: {}, 9: {1: [R10, ], }, 10: {}, 11: {}, }", dispatcher.showRiderWaitDict(7))
+        self.assertEqual("7: {0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7: {}, 8: {}, 9: {1: [R10, ], }, 10: {}, 11: {}, -1: {}, }", dispatcher.showRiderWaitDict(7))
         self.assertEqual(10, dispatcher.countRiderNumberInWaitDict())
 
         r16 = Rider("R16", 0, 1, 6, 10, 20, 1, 1, 2, 1) #0
@@ -134,7 +134,7 @@ class DispatcherTest(unittest.TestCase):
         dispatcher.handleRiderIntoDict(r18)
         dispatcher.handleRiderIntoDict(r19)
         self.assertEqual(13, dispatcher.getRequestNumberOfZone(1))
-        self.assertEqual("1: {0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {1: [R1, R2, R3, R4, ], 2: [R5, R6, R7, R8, ], 3: [R16, R17, R18, R9, ], 4: [R19, ], }, 7: {}, 8: {}, 9: {}, 10: {}, 11: {}, }",
+        self.assertEqual("1: {0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {1: [R1, R2, R3, R4, ], 2: [R5, R6, R7, R8, ], 3: [R16, R17, R18, R9, ], 4: [R19, ], }, 7: {}, 8: {}, 9: {}, 10: {}, 11: {}, -1: {}, }",
                           dispatcher.showRiderWaitDict(1))
         self.assertEqual(14, dispatcher.countRiderNumberInWaitDict())
         self.assertEqual(14, dispatcher.countCurrentTotalRiderNumber())
@@ -433,19 +433,21 @@ class DispatcherTest(unittest.TestCase):
     def testUpdateRidersInWaitDict(self):
         r1 = Rider("R1", 0, 7, 1, 10, 20, 1, 1, 2, 1)
         dispatch = Dispatcher()
+        for zone_id in range(1, 78):
+            dispatch.cancel_rider[zone_id] = 0
         dispatch.handleRiderIntoDict(r1)
 
         RiderStatusTracker.timestamp = 1
         dispatch.updateRidersInWaitDict()
         self.assertEqual(WAITING, r1.getStatus())
-        self.assertEqual("7: {0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {1: [R1, ], }, 7: {}, 8: {}, 9: {}, 10: {}, 11: {}, }", dispatch.showRiderWaitDict(7))
+        self.assertEqual("7: {0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {1: [R1, ], }, 7: {}, 8: {}, 9: {}, 10: {}, 11: {}, -1: {}, }", dispatch.showRiderWaitDict(7))
         self.assertEqual(1, r1.getWaitTime())
         self.assertEqual(1, dispatch.countRiderNumberInWaitDict())
 
         RiderStatusTracker.timestamp = 21
         dispatch.updateRidersInWaitDict()
         self.assertEqual(CANCEL, r1.getStatus())
-        self.assertEqual("7: {0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7: {}, 8: {}, 9: {}, 10: {}, 11: {}, }", dispatch.showRiderWaitDict(7))
+        self.assertEqual("7: {0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7: {}, 8: {}, 9: {}, 10: {}, 11: {}, -1: {}, }", dispatch.showRiderWaitDict(7))
         self.assertEqual("{R1, }", dispatch.showRiderCanceledDict())
         self.assertEqual(1, r1.getWaitTime())
         self.assertEqual(1, dispatch.countRiderNumberInCancelDict())

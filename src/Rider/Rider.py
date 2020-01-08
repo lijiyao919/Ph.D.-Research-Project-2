@@ -59,6 +59,9 @@ class Rider:
         dir = self.__calcDirection(srcX, srcY, destX, destY)
         return int((dir+180)/DIR_THRESHOLD)
 
+    def setDirID(self, dir):
+        self.__dirID = dir
+
     def getDirID(self):
         return self.__dirID
 

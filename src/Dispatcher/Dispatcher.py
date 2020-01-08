@@ -3,7 +3,8 @@ from src.Driver.Driver import Driver
 from src.Rider.Rider import Rider
 from src.Configure.Config import *
 from src.Logger.Logger import Logger
-from src.Dispatcher.ClusteringByGroup import ClusteringByGroup
+from src.Dispatcher.ClusteringByDir import ClusteringByDir
+from src.Dispatcher.ClusteringByRatio import ClusteringByRatio
 from src.Dispatcher.MatchingInQueue import MatchingInQueue
 from src.Dispatcher.DriverStatusTracker import DriverStatusTracker
 from src.Dispatcher.RiderStatusTracker import RiderStatusTracker
@@ -31,7 +32,8 @@ class Dispatcher:
         self.no_work_driver={}
 
         #Cluser Strategy
-        self.__cluster_strategy = ClusteringByGroup(self.__rider_wait_dict)
+        self.__cluster_strategy = ClusteringByDir(self.__rider_wait_dict)
+        #self.__cluster_strategy = ClusteringByRatio(self.__rider_wait_dict, self.__driver_dict)
 
         #Matching Strategy
         self.__match_strategy = MatchingInQueue(self.__driver_dict, self.__rider_wait_dict, self.__rider_serve_dict)
@@ -49,7 +51,7 @@ class Dispatcher:
         #Rider Dict
         for zone_id in range(1,78):
             self.__rider_wait_dict[zone_id] = {}
-            for dir_id in range(0, 12):
+            for dir_id in range(-1, 12):
                 self.__rider_wait_dict[zone_id][dir_id] = defaultdict(dict)
 
     def showDriverDict(self, zone_id):
