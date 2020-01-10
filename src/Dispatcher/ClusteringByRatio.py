@@ -21,7 +21,7 @@ class ClusteringByRatio(ClusteringStrategy):
         if demand !=0:
             ratio = supply/demand
 
-        if ratio != None and ratio < 1:
+        if ratio != None and ratio < RATIO_THREHOLD:
             rider.setDirID(-1)
             self.groupRiderByDir(rider, 1)
         else:

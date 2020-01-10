@@ -32,8 +32,10 @@ class Dispatcher:
         self.no_work_driver={}
 
         #Cluser Strategy
-        self.__cluster_strategy = ClusteringByDir(self.__rider_wait_dict)
-        #self.__cluster_strategy = ClusteringByRatio(self.__rider_wait_dict, self.__driver_dict)
+        if CLUSTER_BY_RATIO:
+            self.__cluster_strategy = ClusteringByRatio(self.__rider_wait_dict, self.__driver_dict)
+        else:
+            self.__cluster_strategy = ClusteringByDir(self.__rider_wait_dict)
 
         #Matching Strategy
         self.__match_strategy = MatchingInQueue(self.__driver_dict, self.__rider_wait_dict, self.__rider_serve_dict)
