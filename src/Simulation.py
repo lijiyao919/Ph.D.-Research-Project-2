@@ -12,6 +12,8 @@ from src.Rider.Rider import Rider
 from src.Configure.Config import *
 from src.Import.ImportDemandEvaluation import ImportDemandEvaluation
 import datetime
+import matplotlib.pyplot as plt
+import numpy as np
 import logging
 
 class Simulation:
@@ -33,11 +35,6 @@ class Simulation:
     def run(self):
         #Run simulation cycle
         for self.__cycle in range(SIMULATION_CYCLE_START, SIMULATION_CYCLE_END):
-            # Initialize monitoring stuff
-            for zone_id in range(1, 78):
-                self.__dispatcher.cancel_rider[zone_id] = 0
-                self.__dispatcher.no_work_driver[zone_id] = 0
-
             # Synchronization the time with Modules(Driver, Dispatcher, Rider, and so on)
             self.__logger.info(self.__cycle, "RUN", None, None, "1. Synchronizing Time With Each Module.")
             #Dispatcher Module
@@ -46,8 +43,6 @@ class Simulation:
             MatchingStrategy.timestamp = self.__cycle
             DriverStatusTracker.timestamp = self.__cycle
             RiderStatusTracker.timestamp = self.__cycle
-            if self.__cycle % 5 == 0:
-                ImportDemandEvaluation.time += datetime.timedelta(minutes=15)
             #Driver Module
             Driver.timestamp = self.__cycle
             RoutingStrategy.timestamp = self.__cycle
@@ -55,6 +50,8 @@ class Simulation:
             Rider.timestamp = self.__cycle
             #Import Module
             RequestList.timestamp = self.__cycle
+            if self.__cycle % 5 == 0:
+                ImportDemandEvaluation.time += datetime.timedelta(minutes=15)
 
             # Start simulation time of this cycle
             print("The Cycle Number: ", self.__cycle)
@@ -92,21 +89,30 @@ class Simulation:
 
             #Show up results
             self.__logger.info(self.__cycle, "RUN", None, None, "6. Show Up All Results of this Cycle.")
-            print(self.filterMonitorDict(self.__dispatcher.cancel_rider))
-            print(self.filterMonitorDict(self.__dispatcher.no_work_driver))
+            #print(self.__dispatcher.cancel_rider)
+            #print(self.__dispatcher.no_work_driver)
             if self.__cycle % SHOWN_INTERVAL == 0 and self.__cycle != SIMULATION_CYCLE_START:
                 self.showPerformanceMetrics()
             print("\n")
 
         print("Simulation Terminated.\n")
 
-    def filterMonitorDict(self, monitor_dict):
-        ret="{"
-        for zone_id, item in monitor_dict.items():
-            if item > 0:
-                ret=ret+str(zone_id)+":"+str(item)+", "
-        ret=ret+"}"
-        return ret
+        self.drawMonitorDict(self.__dispatcher.wait_rider, self.__dispatcher.no_work_driver)
+
+    def drawMonitorDict(self, monitor_dict1, monitor_dict2):
+
+        for time1, item1 in monitor_dict1.items():
+            for time2, item2 in monitor_dict2.items():
+                if time1 == time2:
+                    plt.figure(figsize=(30, 20))
+                    plt.plot(item1[0:78], label='Wait Riders')
+                    plt.plot(item2[0:78], label='Idle Drivers')
+                    plt.xticks(np.arange(0, 78, step=1))
+                    plt.yticks(np.arange(0, 300, step=10))
+                    plt.title(str(time1))
+                    plt.legend()
+                    plt.savefig(SAVE_PATH.format(time1))
+                    plt.close()
 
     def showPerformanceMetrics(self):
         print("\n")

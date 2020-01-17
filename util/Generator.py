@@ -17,7 +17,7 @@ def createDriverRequest():
             d["Zone"].append(zone)
             cnt+=1
 
-    for zone in [3, 22]:
+    for zone in [22]:
         for i in range(0, 2):
             time = SIMULATION_CYCLE_START
             id = "D" + str(cnt)
@@ -35,16 +35,8 @@ def createDriverRequest():
             d["Zone"].append(zone)
             cnt += 1
 
-    for zone in [7]:
-        for i in range(0, 5):
-            time = SIMULATION_CYCLE_START
-            id = "D" + str(cnt)
-            d["Time"].append(time)
-            d["ID"].append(id)
-            d["Zone"].append(zone)
-            cnt += 1
 
-    for zone in [5,6,56]:
+    for zone in [5,56]:
         for i in range(0, 10):
             time = SIMULATION_CYCLE_START
             id = "D" + str(cnt)
@@ -54,7 +46,7 @@ def createDriverRequest():
             cnt += 1
 
     for zone in [8, 28, 32, 76]:
-        for i in range(0, 20):
+        for i in range(0, 35):
             time = SIMULATION_CYCLE_START
             id = "D" + str(cnt)
             d["Time"].append(time)
@@ -62,7 +54,7 @@ def createDriverRequest():
             d["Zone"].append(zone)
             cnt += 1
 
-    fileName = "./Test/Chicago_d.csv"
+    fileName = FILENAME_D
     df = pd.DataFrame(d)
     df = df[cols]
     df.to_csv(fileName, index=False)

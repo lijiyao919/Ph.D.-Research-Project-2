@@ -24,7 +24,7 @@ class MatchingInQueue(MatchingStrategy):
         max = 0
 
         for zone in zones:
-            if BENERJEE == True:
+            if BENERJEE_W_1 == True:
                 supply_demand_ratio = self.__countIdleDriversWithinAZone(zone)
             else:
                 supply_demand_ratio = self.__countIdleDriversWithinAZone(zone)/(1+self.__demand_evaluation.getRatioOfSupplyDemand(zone))

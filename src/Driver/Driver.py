@@ -26,6 +26,7 @@ class Driver:
         self.__trip_effort = 0
         self.__trip_profit = 0
         self.__idle_time = 0
+        self.__finish_trip_time = -1
 
     def __str__(self):
         ret = "{" + str(self.__id) + ", " + str(self.__pos) + ", " + str(self.__status) + ", " + str(self.__trip_effort) + ", "
@@ -155,5 +156,11 @@ class Driver:
 
     def getIdleTime(self):
         return self.__idle_time
+
+    def setFinishTripTime(self, time):
+        self.__finish_trip_time = time
+
+    def getFinishTripTime(self):
+        return self.__finish_trip_time
 
 

@@ -12,7 +12,7 @@ class RiderStatusTracker:
         self.__finish_dict = finish_dict
         self.__cancel_dict = cancel_dict
 
-    def checkRiderStatusIfTimeOut(self, rider, cancel_dict):
+    def checkRiderStatusIfTimeOut(self, rider):
         if RiderStatusTracker.timestamp - rider.getRequestTimeStamp() >= rider.getPatience():
             rider.setStatus(CANCEL)
             self.__cancel_dict[rider.getID()] = rider
@@ -22,7 +22,7 @@ class RiderStatusTracker:
             del self.__wait_dict[zone_id][dir][group_id][rider.getID()]
             if len(self.__wait_dict[zone_id][dir][group_id]) == 0:
                 del self.__wait_dict[zone_id][dir][group_id]
-            cancel_dict[rider.getSrcZone()] += 1
+            #cancel_dict[RiderStatusTracker.timestamp][rider.getSrcZone()] += 1
         else:
             self.__logger.debug(RiderStatusTracker.timestamp, "updateRiderStatusWhenTimeOut", None, rider.getID(), "Cancel Time Should be: ",
                                 str(rider.getRequestTimeStamp() + rider.getPatience()))
@@ -41,10 +41,15 @@ class RiderStatusTracker:
             del self.__serve_dict[rider.getID()]
         else:
             self.__logger.error(RiderStatusTracker.timestamp, "updateRiderStatusWhenInService", None, rider.getID(), "The status and dict not match.")
-            raise Exception("The status and dict not match.")
+            raise Exception("The rider status and dict not match.")
 
 
-    def updateRiderStatusWhenWait(self,rider):
+    def updateRiderStatusWhenWait(self,rider,wait_rider_dict):
         if rider.getStatus() == WAITING:
             rider.tickWaitTime()
+            wait_rider_dict[RiderStatusTracker.timestamp][rider.getSrcZone()] += 1
+        else:
+            self.__logger.error(RiderStatusTracker.timestamp, "updateDriverStatusWhenIdle", None, rider.getID(), "Rider Status is Wrong.")
+            raise Exception("The rider status and dict not match.")
+
 

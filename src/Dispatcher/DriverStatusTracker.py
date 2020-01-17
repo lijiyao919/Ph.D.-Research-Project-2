@@ -1,6 +1,8 @@
 from src.Logger.Logger import Logger
 from src.Configure.Config import *
 from src.Dispatcher.RiderStatusTracker import RiderStatusTracker
+
+
 class DriverStatusTracker:
 
     timestamp = -1
@@ -32,11 +34,18 @@ class DriverStatusTracker:
 
         if len(driver.getTripRoute()) == 0:
             driver.setStatus(IDLE)
+            driver.setFinishTripTime(DriverStatusTracker.timestamp)
 
     def updateDriverStatusWhenIdle(self, driver, no_work_dict):
-        driver.tickIdleTime()
-        if driver.getIdleTime() >= 10:
-            no_work_dict[driver.getPos()] += 1
+        if driver.getStatus() == IDLE:
+            if driver.getFinishTripTime() != DriverStatusTracker.timestamp:
+                driver.tickIdleTime()
+                no_work_dict[DriverStatusTracker.timestamp][driver.getPos()] += 1
+                if DriverStatusTracker.timestamp == 221 and driver.getPos()==32:
+                    print("Diver id: ", driver.getID())
+        else:
+            self.__logger.error(DriverStatusTracker.timestamp, "updateDriverStatusWhenIdle", driver.getID(), None, "Driver Status is Wrong.")
+            raise Exception("The driver status and dict not match.")
 
 
 

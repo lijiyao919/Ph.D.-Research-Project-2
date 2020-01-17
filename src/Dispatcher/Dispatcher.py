@@ -17,7 +17,7 @@ class Dispatcher:
     def __init__(self):
         #logger in Dispatcher
         self.__logger = Logger('Dispatcher')
-        #self.__logger.setLevel(logging.DEBUG)
+        self.__logger.setLevel(logging.DEBUG)
         self.__logger.info(Dispatcher.timestamp, "__INIT__", None, None, "Create A Dispatcher Object")
 
         #Storage for drivers and riders
@@ -28,7 +28,7 @@ class Dispatcher:
         self.__rider_cancel_dict = {}
 
         #Performance of driver and rider
-        self.cancel_rider={}
+        self.wait_rider={}
         self.no_work_driver={}
 
         #Cluser Strategy
@@ -55,6 +55,14 @@ class Dispatcher:
             self.__rider_wait_dict[zone_id] = {}
             for dir_id in range(-1, 12):
                 self.__rider_wait_dict[zone_id][dir_id] = defaultdict(dict)
+
+        #
+        for cycle in range(SIMULATION_CYCLE_START, SIMULATION_CYCLE_END):
+            self.wait_rider[cycle] = []
+            self.no_work_driver[cycle] = []
+            for zone_id in range(0,78):
+                self.wait_rider[cycle].append(0)
+                self.no_work_driver[cycle].append(0)
 
     def showDriverDict(self, zone_id):
         ret = str(zone_id) + ": {"
@@ -208,8 +216,8 @@ class Dispatcher:
                 for group_id in self.__rider_wait_dict[zone_id][dir_id].copy().keys():
                     for rider in self.__rider_wait_dict[zone_id][dir_id][group_id].copy().values():
                         if rider.getStatus() == WAITING:
-                            self.__rider_tracker.checkRiderStatusIfTimeOut(rider, self.cancel_rider)
-                            self.__rider_tracker.updateRiderStatusWhenWait(rider)
+                            self.__rider_tracker.updateRiderStatusWhenWait(rider, self.wait_rider)
+                            self.__rider_tracker.checkRiderStatusIfTimeOut(rider)
 
     def countTotalDriverNumber(self):
         total_len = 0

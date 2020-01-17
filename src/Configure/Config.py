@@ -1,14 +1,15 @@
 #Simulation
 FILENAME_R = "C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/data/Chicago_April_11_2016.csv"
 FILENAME_D = "C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/data/Chicago_d.csv"
+SAVE_PATH = "C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/fig/p_{}.jpg"
 SIMULATION_CYCLE = 3  #every 3 minutes in one cycle
 SIMULATION_CYCLE_START = 220 #11AM
 SIMULATION_CYCLE_END = 491
 RIDER_ROW_START = 16250
 RIDER_ROW_END = 57172 # 23:45PM
 SHOWN_INTERVAL = 10
-BENERJEE = False
-CLUSTER_BY_RATIO = True
+BENERJEE_W_1 = False
+CLUSTER_BY_RATIO = False
 RATIO_THREHOLD = 0.1
 
 #Rider Para
