@@ -71,7 +71,6 @@ class Simulation:
                 self.__logger.debug(self.__cycle, "RUN", None, None, "Current Rider Moved into Dict of Dispatcher: ", str(curr_rider))
                 self.__dispatcher.handleRiderIntoDict(curr_rider)
 
-
             #Show dispatch dicts
             print("waiting, serving, finished, canceled: ", self.__dispatcher.countRiderNumberInWaitDict(),
                   self.__dispatcher.countRiderNumberInServeDict(),
@@ -138,6 +137,11 @@ class Simulation:
         print("System Performace Metrics:")
         print("Serving Rate: ", round(1 - self.__dispatcher.countRiderNumberInCancelDict() / self.__dispatcher.countCurrentTotalRiderNumber(), 2))
 
+        total = self.__dispatcher.countRiderNumberInServeDict()+self.__dispatcher.countRiderNumberInFinishDict()
+        print("Pooling Rate in 4: ", round(self.__dispatcher.grp_in_4*4/total, 2))
+        print("Pooling Rate in 3: ", round(self.__dispatcher.grp_in_3*3/total, 2))
+        print("Pooling Rate in 2: ", round(self.__dispatcher.grp_in_2*2/total,2))
+        print("Pooling Rate in 1: ", round(self.__dispatcher.grp_in_1/total,2))
         print("***************************************************************")
 
 

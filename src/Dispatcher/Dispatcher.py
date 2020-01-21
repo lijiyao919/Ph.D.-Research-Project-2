@@ -31,6 +31,11 @@ class Dispatcher:
         self.wait_rider={}
         self.no_work_driver={}
 
+        self.grp_in_4=0
+        self.grp_in_3=0
+        self.grp_in_2=0
+        self.grp_in_1=0
+
         #Cluser Strategy
         if CLUSTER_BY_RATIO:
             self.__cluster_strategy = ClusteringByRatio(self.__rider_wait_dict, self.__driver_dict)
@@ -186,6 +191,17 @@ class Dispatcher:
                         self.__logger.debug(Dispatcher.timestamp, "matchRidertoDriver", driver.getID(), None, str(driver))
 
                         #update rider status
+                        if len(self.__rider_wait_dict[zone_id][dir_id][group_id]) == 4:
+                            self.grp_in_4 += 1
+                        elif len(self.__rider_wait_dict[zone_id][dir_id][group_id]) == 3:
+                            self.grp_in_3 += 1
+                        elif len(self.__rider_wait_dict[zone_id][dir_id][group_id]) == 2:
+                            self.grp_in_2 += 1
+                        elif len(self.__rider_wait_dict[zone_id][dir_id][group_id]) == 1:
+                            self.grp_in_1 += 1
+                        else:
+                            self.__logger.warning(Dispatcher.timestamp, "calcPoolingPerformanceInWaitDict", None, None, "Grp len is 0.")
+
                         for rider in self.__rider_wait_dict[zone_id][dir_id][group_id].values():
                             self.__rider_tracker.updateRiderStatusAfterMatching(rider)
                             self.__logger.debug(Dispatcher.timestamp, "matchRidertoDriver", driver.getID(), rider.getID(), str(rider))
@@ -293,6 +309,7 @@ class Dispatcher:
         for rider in riders.values():
             totalSat += rider.getSat()
         return totalSat/(self.countRiderNumberInFinishDict()+self.countRiderNumberInServeDict()+self.countRiderNumberInCancelDict())
+
 
 
 
