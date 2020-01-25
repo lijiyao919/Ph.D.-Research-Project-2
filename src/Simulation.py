@@ -50,12 +50,11 @@ class Simulation:
             Rider.timestamp = self.__cycle
             #Import Module
             RequestList.timestamp = self.__cycle
-            if self.__cycle % 5 == 0:
-                ImportDemandEvaluation.time += datetime.timedelta(minutes=15)
+            ImportDemandEvaluation.timestamp = self.__cycle
 
             # Start simulation time of this cycle
             print("The Cycle Number: ", self.__cycle)
-            print("Time: ", ImportDemandEvaluation.time)
+            #print("Time: ", ImportDemandEvaluation.time)
 
             # Put the driver requests to dispatcher (The Driver List)
             self.__logger.info(self.__cycle, "RUN", None, None, "2. Put Drivers' Requests To Dispatcher From RequestList.")
@@ -63,6 +62,7 @@ class Simulation:
                 curr_driver = self.__driver_list.remove()
                 self.__logger.debug(self.__cycle, "RUN", None, None, "Current Driver Moved into Dict of Dispatcher: ", str(curr_driver))
                 self.__dispatcher.handleDriverIntoDict(curr_driver)
+            self.__dispatcher.countDriverNumberEachZone()
 
             # Put the rider requests to dispatcher (The Rider List)
             self.__logger.info(self.__cycle, "RUN", None, None, "3. Put Rider' Requests To Dispatcher From RequestList.")
@@ -99,18 +99,22 @@ class Simulation:
         self.drawMonitorDict(self.__dispatcher.wait_rider, self.__dispatcher.no_work_driver)
 
     def drawMonitorDict(self, monitor_dict1, monitor_dict2):
-
         for time1, item1 in monitor_dict1.items():
             for time2, item2 in monitor_dict2.items():
                 if time1 == time2:
-                    plt.figure(figsize=(30, 20))
-                    plt.plot(item1[0:78], label='Wait Riders')
-                    plt.plot(item2[0:78], label='Idle Drivers')
-                    plt.xticks(np.arange(0, 78, step=1))
-                    plt.yticks(np.arange(0, 300, step=10))
-                    plt.title(str(time1))
-                    plt.legend()
-                    plt.savefig(SAVE_PATH.format(time1))
+                    #plt.figure(figsize=(30, 20))
+                    fig, (ax1, ax2) = plt.subplots(2, figsize=(30,20))
+                    fig.suptitle(str(time1))
+                    ax1.plot(item1[0:78], label='Wait Rider', color='r')
+                    ax1.plot(item2[0:78], label='Idle Driver', color='b')
+                    ax1.set_xticks(np.arange(0, 78, step=1))
+                    ax1.set_yticks(np.arange(0, 300, step=20))
+                    ax1.legend()
+                    ax2.plot(self.__dispatcher.idle_driver_before_match[time1], label='Idle Driver', color='b')
+                    ax2.set_xticks(np.arange(0, 78, step=1))
+                    ax2.set_yticks(np.arange(0, 300, step=20))
+                    ax2.legend()
+                    #plt.savefig(SAVE_PATH.format(time1))
                     plt.close()
 
     def showPerformanceMetrics(self):
@@ -138,10 +142,10 @@ class Simulation:
         print("Serving Rate: ", round(1 - self.__dispatcher.countRiderNumberInCancelDict() / self.__dispatcher.countCurrentTotalRiderNumber(), 2))
 
         total = self.__dispatcher.countRiderNumberInServeDict()+self.__dispatcher.countRiderNumberInFinishDict()
-        print("Pooling Rate in 4: ", round(self.__dispatcher.grp_in_4*4/total, 2))
-        print("Pooling Rate in 3: ", round(self.__dispatcher.grp_in_3*3/total, 2))
-        print("Pooling Rate in 2: ", round(self.__dispatcher.grp_in_2*2/total,2))
-        print("Pooling Rate in 1: ", round(self.__dispatcher.grp_in_1/total,2))
+        print("Pooling Rate in 4: ", round(self.__dispatcher.grp_in_4*4/total, 3))
+        print("Pooling Rate in 3: ", round(self.__dispatcher.grp_in_3*3/total, 3))
+        print("Pooling Rate in 2: ", round(self.__dispatcher.grp_in_2*2/total,3))
+        print("Pooling Rate in 1: ", round(self.__dispatcher.grp_in_1/total,3))
         print("***************************************************************")
 
 

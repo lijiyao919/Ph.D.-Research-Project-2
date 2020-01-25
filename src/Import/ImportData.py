@@ -25,7 +25,7 @@ class ImportData:
         rider = pd.read_csv(file_name)
 
         print("Import Rider Data:")
-        for i in range(0, 40922):
+        for i in range(RIDER_ROW_START, RIDER_ROW_END):
             obs = rider.iloc[i, :]
 
             default_price = float(obs["Fare"])

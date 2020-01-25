@@ -30,6 +30,7 @@ class Dispatcher:
         #Performance of driver and rider
         self.wait_rider={}
         self.no_work_driver={}
+        self.idle_driver_before_match={}
 
         self.grp_in_4=0
         self.grp_in_3=0
@@ -240,6 +241,15 @@ class Dispatcher:
         for zone_id in self.__driver_dict.keys():
             total_len = total_len + len(self.__driver_dict[zone_id])
         return total_len
+
+    def countDriverNumberEachZone(self):
+        self.idle_driver_before_match[Dispatcher.timestamp] = [0]
+        for zone_id in self.__driver_dict.keys():
+            cnt=0
+            for driver in self.__driver_dict[zone_id].values():
+                if driver.getStatus() == IDLE:
+                    cnt+=1
+            self.idle_driver_before_match[Dispatcher.timestamp].append(cnt)
 
     def countRiderNumberInWaitDict(self):
         total_len = 0

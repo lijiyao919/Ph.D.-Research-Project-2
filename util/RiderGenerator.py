@@ -17,7 +17,7 @@ def createRiderRequest():
     cnt = 0
 
     print("Import data ...")
-    for i in range(RIDER_ROW_START, RIDER_ROW_END):
+    for i in range(0, 57172):
         obs = rider.iloc[i, :]
 
         #time

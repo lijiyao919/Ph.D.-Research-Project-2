@@ -6,35 +6,36 @@ from src.Graph.Map import AdjList_Chicago
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
+from src.Configure.Config import *
 pd.set_option('display.max_columns', 20)
 
 
 class DemandEvaluation:
-    Gamma = 0.6
+    Gamma = 0.8
 
     def __init__(self, start, end):
         self.__start_date = start
         self.__end_date = end
-        self.__delta_time = datetime.timedelta(minutes=15)
+        self.__delta_time = 1  # 1 cycle, about 3 minutes
         self.__state_value = {}
 
     #Intitialize state_value_table(state is time&zone, value is the demand evaluation)
     def __initilize(self):
         print('Initialize the State Value Table.')
-        begin_time = datetime.datetime(2016, 4, 11, hour=0, minute=0)   #year, month and day is not important here
-        final_time = datetime.datetime(2016, 4, 11, hour=23, minute=45) #year, month and day is not important here
-        curr_time = final_time  # 2016-04-01 23:45:00
+        begin_time = BEGIN_TIME   #cycle in a day
+        end_time = END_TIME      #cycle in a day
+        curr_time = end_time
         while curr_time >= begin_time:
-            curr_state_t = curr_time.strftime('%m/%d/%Y %H:%M').split(' ')[1]  #e.g. 23:45 (string type)
+            curr_state_t = curr_time
             self.__state_value[curr_state_t] =  np.zeros(78, dtype=np.float64)
             curr_time = curr_time-self.__delta_time
         #print(state_value_table)
         #print(len(state_value_table))  # should be 96
 
     def __readCSV(self, curr_date):
-        df = pd.read_csv("C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/data/Chicago_April_11_2016.csv")
-        df['Trip Start Timestamp'] = df['Trip Start Timestamp'].astype('datetime64[ns]') #e.g. 4/4/2016 0:00===> 2016-04-04 00:00:00
-        df['Trip Total'] = df['Trip Total'].str.replace(',', '').astype('float64') #e.g. 1,200===>1200.0
+        df = pd.read_csv("C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/data/Chicago_r.csv")
+        df['Time'] = df['Time'].astype('datetime64[ns]') #e.g. 4/4/2016 0:00===> 2016-04-04 00:00:00
+        df['Fare'] = df['Fare'].astype('float64') #e.g. 1,200===>1200.0
         return df
 
     def handleStateValueTable(self):
@@ -49,12 +50,12 @@ class DemandEvaluation:
             df = self.__readCSV(curr_date)
 
             #group by timestamp
-            g_time=df.groupby('Trip Start Timestamp')
+            g_time=df.groupby('Time')
 
             #start time and end time in a date
-            date_start_time = datetime.datetime(2016, 4, curr_date, 0, 0)
-            date_end_time = datetime.datetime(2016, 4, curr_date, 23, 45)
-            print('The date: ', date_start_time.date)
+            date_start_time = BEGIN_TIME
+            date_end_time = END_TIME
+            print('The date: ', curr_date)
 
             #calculate state value in a day
             curr_time = date_end_time
@@ -62,11 +63,11 @@ class DemandEvaluation:
             while curr_time >= date_start_time:
                 #clac the reward (current number of requests in each zone)
                 pickup_count = np.zeros(78, dtype=np.int16)
-                curr_df = g_time.get_group(curr_time.strftime('%m/%d/%Y %H:%M'))
-                curr_state_t = curr_time.strftime('%m/%d/%Y %H:%M').split(' ')[1]
+                curr_df = g_time.get_group(curr_time)
+                curr_state_t = curr_time
                 row = 0
-                while row < len(curr_df['Pickup Community Area']):
-                    pickup_count[curr_df['Pickup Community Area'].iloc[row]]+=1
+                while row < len(curr_df['Pickup']):
+                    pickup_count[curr_df['Pickup'].iloc[row]]+=1
                     row+=1
                 #update the state value
                 print('The current time: ', curr_state_t)
@@ -76,7 +77,7 @@ class DemandEvaluation:
                 else:
                     self.__state_value[curr_state_t] = self.__state_value[curr_state_t] + \
                                                            (1/number_of_day)*(pickup_count + DemandEvaluation.Gamma * self.__state_value[prev_state_t] - self.__state_value[curr_state_t])
-                print(curr_df.groupby('Pickup Community Area').size())  # print for compare
+                print(curr_df.groupby('Pickup').size())  # print for compare
                 print(self.__state_value[curr_state_t])
                 prev_state_t = curr_state_t
                 curr_time = curr_time - self.__delta_time
@@ -84,14 +85,14 @@ class DemandEvaluation:
 
     def saveSateValueTable(self):
         print('Save the State Value Table.')
-        begin_time = datetime.datetime(2016, 4, 11, hour=0, minute=0)   #year, month and day is not important here
-        final_time = datetime.datetime(2016, 4, 11, hour=23, minute=45) #year, month and day is not important here
+        begin_time = BEGIN_TIME   #year, month and day is not important here
+        final_time = END_TIME #year, month and day is not important here
         curr_time = final_time
         while curr_time >= begin_time:
-            curr_state_t = curr_time.strftime('%m/%d/%Y %H:%M').split(' ')[1]
+            curr_state_t = curr_time
             self.__state_value[curr_state_t] =  self.__state_value[curr_state_t].tolist() #convert value in table for storing
             curr_time = curr_time-self.__delta_time
-        with open('../data/data1.json', 'w') as fp:
+        with open('../data/data.json', 'w') as fp:
             json.dump(self.__state_value, fp)
 
     def loadStateValueTable(self):
@@ -150,7 +151,7 @@ class DemandEvaluation:
         plt.show()
 
 
-demand = DemandEvaluation(11,11)
+demand = DemandEvaluation(11,11) #input the start date and end date.
 demand.handleStateValueTable()
 demand.saveSateValueTable()
-demand.drawSurfaceFigure()
+#demand.drawSurfaceFigure()

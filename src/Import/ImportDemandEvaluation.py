@@ -2,7 +2,7 @@ import datetime
 import json
 
 class ImportDemandEvaluation:
-    time = datetime.datetime(2016, 4, 11, hour=10, minute=45)
+    timestamp = -1
     __instance = None
 
     def __init__(self):
@@ -24,5 +24,8 @@ class ImportDemandEvaluation:
 
 
     def getRatioOfSupplyDemand(self, zone_id):
-        curr_state_t = ImportDemandEvaluation.time.strftime('%m/%d/%Y %H:%M').split(' ')[1]
-        return self.__data[curr_state_t][zone_id]
+        curr_state_t = ImportDemandEvaluation.timestamp
+        if curr_state_t <= 479:
+            return self.__data[str(curr_state_t)][zone_id]
+        else:
+            return 0

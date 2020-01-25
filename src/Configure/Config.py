@@ -37,6 +37,9 @@ COST_PER_CYCLE = 0.1 * SIMULATION_CYCLE
 PICKUP="pickup"
 DROPOFF="dropoff"
 
+#Train
+BEGIN_TIME = 0
+END_TIME = 479
 
 
 
