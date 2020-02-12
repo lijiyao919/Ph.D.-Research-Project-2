@@ -33,7 +33,7 @@ class DemandEvaluation:
         #print(len(state_value_table))  # should be 96
 
     def __readCSV(self, curr_date):
-        df = pd.read_csv("C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/data/Chicago_r.csv")
+        df = pd.read_csv(FILENAME_R)
         df['Time'] = df['Time'].astype('datetime64[ns]') #e.g. 4/4/2016 0:00===> 2016-04-04 00:00:00
         df['Fare'] = df['Fare'].astype('float64') #e.g. 1,200===>1200.0
         return df

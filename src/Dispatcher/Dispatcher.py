@@ -4,7 +4,6 @@ from src.Rider.Rider import Rider
 from src.Configure.Config import *
 from src.Logger.Logger import Logger
 from src.Dispatcher.ClusteringByDir import ClusteringByDir
-from src.Dispatcher.ClusteringByRatio import ClusteringByRatio
 from src.Dispatcher.MatchingInQueue import MatchingInQueue
 from src.Dispatcher.DriverStatusTracker import DriverStatusTracker
 from src.Dispatcher.RiderStatusTracker import RiderStatusTracker
@@ -38,10 +37,7 @@ class Dispatcher:
         self.grp_in_1=0
 
         #Cluser Strategy
-        if CLUSTER_BY_RATIO:
-            self.__cluster_strategy = ClusteringByRatio(self.__rider_wait_dict, self.__driver_dict)
-        else:
-            self.__cluster_strategy = ClusteringByDir(self.__rider_wait_dict)
+        self.__cluster_strategy = ClusteringByDir(self.__rider_wait_dict)
 
         #Matching Strategy
         self.__match_strategy = MatchingInQueue(self.__driver_dict, self.__rider_wait_dict, self.__rider_serve_dict)
