@@ -18,19 +18,25 @@ class DemandEvaluation:
         self.__end_date = end
         self.__delta_time = 1  # 1 cycle, about 3 minutes
         self.__state_value = {}
+        self.__smooth_marker = {}
 
     #Intitialize state_value_table(state is time&zone, value is the demand evaluation)
-    def __initilize(self):
-        print('Initialize the State Value Table.')
-        begin_time = BEGIN_TIME   #cycle in a day
-        end_time = END_TIME      #cycle in a day
-        curr_time = end_time
-        while curr_time >= begin_time:
+    def initializeStateValue(self):
+        print('Initialize the State Value.')
+        self.__initialize(self.__state_value, np.float64)
+
+    def initializeSmoothMarker(self):
+        print('Initialize the Smooth Marker.')
+        self.__initialize(self.__smooth_marker, np.bool)
+
+    def __initialize(self, table, type):
+        curr_time = END_TIME
+        while curr_time >= BEGIN_TIME:
             curr_state_t = curr_time
-            self.__state_value[curr_state_t] =  np.zeros(78, dtype=np.float64)
-            curr_time = curr_time-self.__delta_time
-        #print(state_value_table)
-        #print(len(state_value_table))  # should be 96
+            table[curr_state_t] = np.zeros(78, dtype=type)
+            curr_time = curr_time - self.__delta_time
+        # print(state_value_table)
+        # print(len(state_value_table))  # should be 96
 
     def __readCSV(self, curr_date):
         df = pd.read_csv(FILENAME_R)
@@ -42,7 +48,7 @@ class DemandEvaluation:
         print('Handle the State Value Table.')
         curr_date = self.__start_date
         number_of_day = 0
-        self.__initilize()
+        self.initializeStateValue()
         while curr_date <= self.__end_date:
             #read file and convert datatype
             number_of_day+=1
@@ -83,7 +89,26 @@ class DemandEvaluation:
                 curr_time = curr_time - self.__delta_time
             curr_date = curr_date + 1
 
-    def saveSateValueTable(self):
+    def smoothStateValue(self):
+        self.__state_value = {int(k):v for k,v in self.__state_value.items()}
+        curr_time = END_TIME
+        while curr_time >= BEGIN_TIME:
+            queue = [BASE_ZONE]
+            self.initializeSmoothMarker()
+            self.__smooth_marker[curr_time][BASE_ZONE]=True
+            while len(queue) > 0:
+                base_zone = queue.pop(0)
+                for zone in AdjList_Chicago[base_zone]:
+                    if self.__smooth_marker[curr_time][zone] == False:
+                        self.__state_value[curr_time][zone] = self.__state_value[curr_time][zone]+SMOOTH_RATOR*self.__state_value[curr_time][base_zone]
+                        self.__smooth_marker[curr_time][zone] = True
+                        queue.append(zone)
+            print("Current Time: ", curr_time)
+            print(self.__state_value[curr_time])
+            curr_time = curr_time - self.__delta_time
+
+
+    def save(self, filename):
         print('Save the State Value Table.')
         begin_time = BEGIN_TIME   #year, month and day is not important here
         final_time = END_TIME #year, month and day is not important here
@@ -92,7 +117,7 @@ class DemandEvaluation:
             curr_state_t = curr_time
             self.__state_value[curr_state_t] =  self.__state_value[curr_state_t].tolist() #convert value in table for storing
             curr_time = curr_time-self.__delta_time
-        with open('../data/data.json', 'w') as fp:
+        with open('../data/'+filename, 'w') as fp:
             json.dump(self.__state_value, fp)
 
     def loadStateValueTable(self):
@@ -146,12 +171,12 @@ class DemandEvaluation:
         #fig.colorbar(surf, shrink=0.5, aspect=5)
         ax.set_ylabel('Time')
         ax.set_xlabel('Zone')
-
-
         plt.show()
 
 
 demand = DemandEvaluation(11,11) #input the start date and end date.
 demand.handleStateValueTable()
-demand.saveSateValueTable()
+#demand.save('data.json')
+demand.smoothStateValue()
+demand.save('data_smooth.json')
 #demand.drawSurfaceFigure()

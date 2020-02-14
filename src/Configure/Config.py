@@ -39,6 +39,8 @@ DROPOFF="dropoff"
 FILENAME_Chicago = "C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/data/Chicago_April_11_2016.csv"
 BEGIN_TIME = 0
 END_TIME = 479
+SMOOTH_RATOR = 0.5
+BASE_ZONE = 32
 
 
 
