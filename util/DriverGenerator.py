@@ -8,8 +8,17 @@ def createDriverRequest():
     cols = ["Time", "ID", "Zone"]
     cnt = 0
 
-    for zone in [1, 2, 9, 10, 11, 12,13,14,15,16,19,20,21,23,25,26,27,29,30,31,34,35,38,40,41,44]:
+    for zone in [1, 2, 9, 10, 11, 12,13,14,15,16,19,20,21,23,25,26,27,29,30,40,41,44]:
         for i in range(0, 1):
+            time = SIMULATION_CYCLE_START
+            id = "D" + str(cnt)
+            d["Time"].append(time)
+            d["ID"].append(id)
+            d["Zone"].append(zone)
+            cnt+=1
+
+    for zone in [7, 24, 31, 34, 35, 38]:
+        for i in range(0, 20):
             time = SIMULATION_CYCLE_START
             id = "D" + str(cnt)
             d["Time"].append(time)
