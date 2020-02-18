@@ -34,6 +34,7 @@ INSERVICE ='inservice'
 COST_PER_CYCLE = 0.1 * SIMULATION_CYCLE
 PICKUP="pickup"
 DROPOFF="dropoff"
+IDLE_MOVE_THRE = 0.1
 
 #Util
 FILENAME_Chicago = "C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/data/Chicago_April_11_2016.csv"

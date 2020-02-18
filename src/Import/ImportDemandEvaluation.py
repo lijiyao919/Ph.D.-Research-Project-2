@@ -13,6 +13,8 @@ class ImportDemandEvaluation:
             ImportDemandEvaluation.__instance = self
             with open('C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/data/data.json') as json_file:
                 self.__data = json.load(json_file)
+            with open('C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/data/data_smooth.json') as json_file_smooth:
+                self.__smooth_data = json.load(json_file_smooth)
 
     @staticmethod
     def getInstance():
@@ -21,7 +23,12 @@ class ImportDemandEvaluation:
             ImportDemandEvaluation()
         return ImportDemandEvaluation.__instance
 
-
+    def getSmoothRatioOfSupplyDemand(self, zone_id):
+        curr_state_t = ImportDemandEvaluation.timestamp
+        if curr_state_t <= 479:
+            return self.__smooth_data[str(curr_state_t)][zone_id]
+        else:
+            return 0
 
     def getRatioOfSupplyDemand(self, zone_id):
         curr_state_t = ImportDemandEvaluation.timestamp

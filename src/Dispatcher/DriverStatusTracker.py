@@ -1,6 +1,7 @@
 from src.Logger.Logger import Logger
 from src.Configure.Config import *
-from src.Dispatcher.RiderStatusTracker import RiderStatusTracker
+from src.Graph.Map import AdjList_Chicago
+from src.Import.ImportDemandEvaluation import ImportDemandEvaluation
 
 
 class DriverStatusTracker:
@@ -10,6 +11,7 @@ class DriverStatusTracker:
     def __init__(self, driver_dict):
         self.__logger = Logger("DriverStatusTracker")
         self.__driver_dict = driver_dict
+        self.__demand_evaluation = ImportDemandEvaluation.getInstance()
 
     def updateDriverStatusAfterMatching(self, driver):
         driver.setStatus(INSERVICE)
@@ -41,9 +43,24 @@ class DriverStatusTracker:
             if driver.getFinishTripTime() != DriverStatusTracker.timestamp:
                 driver.tickIdleTime()
                 no_work_dict[DriverStatusTracker.timestamp][driver.getPos()] += 1
+                theZoneRatio = self.getSmoothRatio(driver.getPos())
+                for adjacent_zone in AdjList_Chicago[driver.getPos()]:
+                    adjRatio = self.getSmoothRatio(adjacent_zone)
+                    if theZoneRatio - adjRatio > IDLE_MOVE_THRE:
+                        del self.__driver_dict[driver.getPos()][driver.getID()]
+                        self.__driver_dict[adjacent_zone][driver.getID()] = driver
+                        driver.setPos(adjacent_zone)
         else:
             self.__logger.error(DriverStatusTracker.timestamp, "updateDriverStatusWhenIdle", driver.getID(), None, "Driver Status is Wrong.")
             raise Exception("The driver status and dict not match.")
+
+
+    def getSmoothRatio(self, zone_id):
+        total = 0
+        for driver in self.__driver_dict[zone_id].values():
+            if driver.getStatus() == IDLE and driver.getFinishTripTime() != DriverStatusTracker.timestamp:
+                total += 1
+        return total/(1+self.__demand_evaluation.getSmoothRatioOfSupplyDemand(zone_id))
 
 
 

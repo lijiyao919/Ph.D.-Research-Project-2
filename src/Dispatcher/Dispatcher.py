@@ -209,6 +209,12 @@ class Dispatcher:
 
 
     def updateDriverInDict(self):
+        print("32: " + str(self.__driver_tracker.getSmoothRatio(32)))
+        print("33: " + str(self.__driver_tracker.getSmoothRatio(33)))
+        print("35: " + str(self.__driver_tracker.getSmoothRatio(35)))
+        print("36: " + str(self.__driver_tracker.getSmoothRatio(36)))
+        print("39: " + str(self.__driver_tracker.getSmoothRatio(39)))
+        print("41: " + str(self.__driver_tracker.getSmoothRatio(41)))
         for zone_id in self.__driver_dict.keys():
             for driver in self.__driver_dict[zone_id].copy().values():
                 if driver.getStatus() == IDLE:
