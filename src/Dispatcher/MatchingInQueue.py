@@ -37,7 +37,7 @@ class MatchingInQueue(MatchingStrategy):
 
         if zone_selected is not None:
             for driver in OrderedDict(sorted(self.__driver_dict[zone_selected].items(), key=lambda t: t[0])).values():
-                if driver.getStatus() == IDLE:
+                if driver.getStatus() == IDLE and driver.getFinishTripTime() != MatchingStrategy.timestamp:
                     return driver
         return None
 
@@ -46,7 +46,7 @@ class MatchingInQueue(MatchingStrategy):
     def __countIdleDriversWithinAZone(self, zone_id):
         total = 0
         for driver in self.__driver_dict[zone_id].values():
-            if driver.getStatus() == IDLE:
+            if driver.getStatus() == IDLE and driver.getFinishTripTime() != MatchingStrategy.timestamp:
                 total += 1
         return total
 

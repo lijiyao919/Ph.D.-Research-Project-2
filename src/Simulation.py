@@ -62,7 +62,7 @@ class Simulation:
                 curr_driver = self.__driver_list.remove()
                 self.__logger.debug(self.__cycle, "RUN", None, None, "Current Driver Moved into Dict of Dispatcher: ", str(curr_driver))
                 self.__dispatcher.handleDriverIntoDict(curr_driver)
-            self.__dispatcher.countDriverNumberEachZone()
+            self.__dispatcher.countDriverNumberEachZone()  #count idle driver number before match
 
             # Put the rider requests to dispatcher (The Rider List)
             self.__logger.info(self.__cycle, "RUN", None, None, "3. Put Rider' Requests To Dispatcher From RequestList.")
@@ -105,16 +105,19 @@ class Simulation:
                     #plt.figure(figsize=(30, 20))
                     fig, (ax1, ax2) = plt.subplots(2, figsize=(30,20))
                     fig.suptitle(str(time1))
-                    ax1.plot(item1[0:78], label='Wait Rider', color='r')
-                    ax1.plot(item2[0:78], label='Idle Driver', color='b')
+                    ax1.plot(item1[0:78], label='Wait Rider# after match', color='r')
+                    ax1.plot(item2[0:78], label='Idle Driver# after match', color='b')
                     ax1.set_xticks(np.arange(0, 78, step=1))
                     ax1.set_yticks(np.arange(0, 300, step=20))
+                    ax1.set_ylabel("driver#")
                     ax1.legend()
-                    ax2.plot(self.__dispatcher.idle_driver_before_match[time1], label='Idle Driver', color='b')
+                    ax2.plot(self.__dispatcher.idle_driver_before_match[time1], label='Idle Driver# before match', color='b')
                     ax2.set_xticks(np.arange(0, 78, step=1))
                     ax2.set_yticks(np.arange(0, 300, step=20))
+                    ax2.set_xlabel("zones")
+                    ax2.set_ylabel("driver#")
                     ax2.legend()
-                    #plt.savefig(SAVE_PATH.format(time1))
+                    plt.savefig(SAVE_PATH.format(time1))
                     plt.close()
 
     def showPerformanceMetrics(self):
