@@ -129,8 +129,9 @@ class Simulation:
 
         print("***************************************************************")
         print("Driver Performace Metrics:")
-        print("Average Profit: ", round(self.__dispatcher.calcAverageProfitOfDrivers(), 2))
+        print("Average Revenue: ", round(self.__dispatcher.calcAverageProfitOfDrivers(), 2))
         print("Average Idle Time: ", round(self.__dispatcher.calcAverageIdleTimeOfDrivers(), 2))
+        print("Average Trip Effort: ", round(self.__dispatcher.calcAverageTripEffortOfDrivers(), 2))
 
         print("***************************************************************")
         print("Rider Performace Metrics:")
