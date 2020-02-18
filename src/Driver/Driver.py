@@ -113,6 +113,9 @@ class Driver:
         else:
             self.__trip_effort = total_effort
 
+    def tickTripEffort(self):
+        self.__trip_effort += 1
+
     def getTripEffort(self):
         return self.__trip_effort
 
