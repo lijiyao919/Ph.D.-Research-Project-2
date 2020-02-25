@@ -43,8 +43,8 @@ class DriverStatusTracker:
             if driver.getFinishTripTime() != DriverStatusTracker.timestamp:
                 driver.tickIdleTime()
                 no_work_dict[DriverStatusTracker.timestamp][driver.getPos()] += 1
-                theZoneRatio = self.getSmoothRatio(driver.getPos())
                 for adjacent_zone in AdjList_Chicago[driver.getPos()]:
+                    theZoneRatio = self.getSmoothRatio(driver.getPos())
                     adjRatio = self.getSmoothRatio(adjacent_zone)
                     if theZoneRatio - adjRatio > IDLE_MOVE_THRE:
                         del self.__driver_dict[driver.getPos()][driver.getID()]
