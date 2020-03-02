@@ -43,14 +43,19 @@ class DriverStatusTracker:
             if driver.getFinishTripTime() != DriverStatusTracker.timestamp:
                 driver.tickIdleTime()
                 no_work_dict[DriverStatusTracker.timestamp][driver.getPos()] += 1
+                min_ratio = 1000
+                min_zone = None
                 for adjacent_zone in AdjList_Chicago[driver.getPos()]:
-                    theZoneRatio = self.getSmoothRatio(driver.getPos())
                     adjRatio = self.getSmoothRatio(adjacent_zone)
-                    if theZoneRatio - adjRatio > IDLE_MOVE_THRE:
-                        del self.__driver_dict[driver.getPos()][driver.getID()]
-                        self.__driver_dict[adjacent_zone][driver.getID()] = driver
-                        driver.setPos(adjacent_zone)
-                        driver.tickTripEffort()
+                    if adjRatio < min_ratio:
+                        min_ratio=adjRatio
+                        min_zone=adjacent_zone
+                theZoneRatio = self.getSmoothRatio(driver.getPos())
+                if theZoneRatio - min_ratio > IDLE_MOVE_THRE:
+                    del self.__driver_dict[driver.getPos()][driver.getID()]
+                    self.__driver_dict[min_zone][driver.getID()] = driver
+                    driver.setPos(min_zone)
+                    driver.tickTripEffort()
         else:
             self.__logger.error(DriverStatusTracker.timestamp, "updateDriverStatusWhenIdle", driver.getID(), None, "Driver Status is Wrong.")
             raise Exception("The driver status and dict not match.")
