@@ -90,6 +90,8 @@ class Simulation:
             self.__logger.info(self.__cycle, "RUN", None, None, "6. Show Up All Results of this Cycle.")
             #print(self.__dispatcher.cancel_rider)
             #print(self.__dispatcher.no_work_driver)
+            print("Driver number can pick rider: ", self.__dispatcher.driver_num_serve)
+            print("Driver number move in idle: ", self.__dispatcher.driver_num_move)
             if self.__cycle % SHOWN_INTERVAL == 0 and self.__cycle != SIMULATION_CYCLE_START:
                 self.showPerformanceMetrics()
             print("\n")

@@ -36,6 +36,10 @@ class Dispatcher:
         self.grp_in_2=0
         self.grp_in_1=0
 
+        #Learning reward
+        self.driver_num_serve = 0
+        self.driver_num_move = 0
+
         #Cluser Strategy
         self.__cluster_strategy = ClusteringByDir(self.__rider_wait_dict)
 
@@ -175,11 +179,13 @@ class Dispatcher:
             raise Exception("Rider's type is wrong.")
 
     def matchRidertoDriver(self):
+        self.driver_num_serve = 0
         for zone_id in self.__rider_wait_dict.keys():
             for dir_id in self.__rider_wait_dict[zone_id].keys():
                 for group_id in self.__rider_wait_dict[zone_id][dir_id].copy().keys():
                     driver = self.__match_strategy.match(zone_id)
                     if driver is not None:
+                        self.driver_num_serve += 1
                         self.__logger.info(Dispatcher.timestamp, "matchRidertoDriver", driver.getID(), None, "Driver be Chosen to Serve Riders.")
                         self.__logger.debug(Dispatcher.timestamp, "matchRidertoDriver", None, None, "Driver Zone ===> Rider Zone: ", str(driver.getPos()) + "===>" + str(zone_id))
                         # update driver status
@@ -209,17 +215,21 @@ class Dispatcher:
 
 
     def updateDriverInDict(self):
-        print("32: " + str(self.__driver_tracker.getSmoothRatio(32)))
-        print("33: " + str(self.__driver_tracker.getSmoothRatio(33)))
-        print("35: " + str(self.__driver_tracker.getSmoothRatio(35)))
-        print("36: " + str(self.__driver_tracker.getSmoothRatio(36)))
-        print("39: " + str(self.__driver_tracker.getSmoothRatio(39)))
-        print("41: " + str(self.__driver_tracker.getSmoothRatio(41)))
+        #print("32: " + str(self.__driver_tracker.getSmoothRatio(32)))
+        #print("33: " + str(self.__driver_tracker.getSmoothRatio(33)))
+        #print("35: " + str(self.__driver_tracker.getSmoothRatio(35)))
+        #print("36: " + str(self.__driver_tracker.getSmoothRatio(36)))
+        #print("39: " + str(self.__driver_tracker.getSmoothRatio(39)))
+        #print("41: " + str(self.__driver_tracker.getSmoothRatio(41)))
+        self.driver_num_move = 0
         for zone_id in self.__driver_dict.keys():
             for driver in self.__driver_dict[zone_id].copy().values():
                 if driver.getStatus() == IDLE:
                     self.__logger.info(Dispatcher.timestamp, "updateDriverStatus", driver.getID(), None, "Update Driver when IDLE.")
+                    preEffort = driver.getTripEffort()
                     self.__driver_tracker.updateDriverStatusWhenIdle(driver, self.no_work_driver)
+                    if driver.getTripEffort() > preEffort:
+                        self.driver_num_move += 1
                 elif driver.getStatus() == INSERVICE:
                     self.__logger.info(Dispatcher.timestamp, "updateDriverStatus", driver.getID(), None, "Update Driver Who is INSERVICE.")
                     self.__driver_tracker.updateDriverStatusWhenInService(driver, self.__rider_tracker)
