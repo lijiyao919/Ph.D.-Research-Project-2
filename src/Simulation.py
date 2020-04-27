@@ -11,10 +11,10 @@ from src.Driver.RoutingStrategy import RoutingStrategy
 from src.Rider.Rider import Rider
 from src.Configure.Config import *
 from src.Import.ImportDemandEvaluation import ImportDemandEvaluation
-import datetime
+
 import matplotlib.pyplot as plt
 import numpy as np
-import logging
+
 
 class Simulation:
 
@@ -80,6 +80,9 @@ class Simulation:
             #match driver and rider by dispatcher
             self.__logger.info(self.__cycle, "RUN", None, None, "4. Match Riders' Request to AN Appropriate Driver.")
             self.__dispatcher.matchRidertoDriver()
+            #show reward
+            #print("Driver number move in idle: ", self.__dispatcher.driver_num_move)
+            #print("Driver number can pick rider: ", self.__dispatcher.driver_num_serve)
 
             # Update simulator's states
             self.__logger.info(self.__cycle, "RUN", None, None, "5. Update State of Simulator.")
@@ -90,15 +93,13 @@ class Simulation:
             self.__logger.info(self.__cycle, "RUN", None, None, "6. Show Up All Results of this Cycle.")
             #print(self.__dispatcher.cancel_rider)
             #print(self.__dispatcher.no_work_driver)
-            print("Driver number can pick rider: ", self.__dispatcher.driver_num_serve)
-            print("Driver number move in idle: ", self.__dispatcher.driver_num_move)
             if self.__cycle % SHOWN_INTERVAL == 0 and self.__cycle != SIMULATION_CYCLE_START:
                 self.showPerformanceMetrics()
             print("\n")
 
         print("Simulation Terminated.\n")
 
-        self.drawMonitorDict(self.__dispatcher.wait_rider, self.__dispatcher.no_work_driver)
+        #self.drawMonitorDict(self.__dispatcher.wait_rider, self.__dispatcher.no_work_driver)
 
     def drawMonitorDict(self, monitor_dict1, monitor_dict2):
         for time1, item1 in monitor_dict1.items():
@@ -156,6 +157,7 @@ class Simulation:
 
 
 if __name__ == "__main__":
-    sim = Simulation()
-    sim.importData()
-    sim.run()
+    for i in range(0,100):
+        sim = Simulation()
+        sim.importData()
+        sim.run()
