@@ -8,19 +8,10 @@ class DriverStatusTracker:
 
     timestamp = -1
 
-    def __init__(self, driver_dict, learner):
+    def __init__(self, driver_dict):
         self.__logger = Logger("DriverStatusTracker")
         self.__driver_dict = driver_dict
         self.__demand_evaluation = ImportDemandEvaluation.getInstance()
-        self.__learner = learner
-        self.__idle_move_threshold = []
-
-        for i in range(0,78):
-            self.__idle_move_threshold.append(0)
-
-    def updateIdleThresholdForEachZone(self):
-        for i in range(1,78):
-            self.__idle_move_threshold[i] = self.__learner.selectThreValue((DriverStatusTracker.timestamp, i))
 
 
     def updateDriverStatusAfterMatching(self, driver):
@@ -48,7 +39,7 @@ class DriverStatusTracker:
             driver.setStatus(IDLE)
             driver.setFinishTripTime(DriverStatusTracker.timestamp)
 
-    def updateDriverStatusWhenIdle(self, driver, no_work_dict):
+    def updateDriverStatusWhenIdle(self, driver, no_work_dict, R):
         if driver.getStatus() == IDLE:
             if driver.getFinishTripTime() != DriverStatusTracker.timestamp:
                 driver.tickIdleTime()
@@ -62,11 +53,12 @@ class DriverStatusTracker:
                         min_zone=adjacent_zone
                 theZoneRatio = self.getSmoothRatio(driver.getPos())
                 #print(str((DriverStatusTracker.timestamp,driver.getPos()))+': '+str(self.__idle_move_threshold[driver.getPos()]))
-                if IDLE_MOVE_THRE_LEARN:
-                    idle_move_threshold =  self.__idle_move_threshold[driver.getPos()]
-                else:
-                    idle_move_threshold = 0.1
-                if theZoneRatio - min_ratio > idle_move_threshold:
+                #print(R, DriverStatusTracker.timestamp, driver.getPos(), theZoneRatio - min_ratio)
+                driver.learner.runQLearning(None, DriverStatusTracker.timestamp, driver.getPos(), theZoneRatio - min_ratio)
+                A = driver.learner.selectAction((DriverStatusTracker.timestamp, driver.getPos(), theZoneRatio - min_ratio))
+
+                #if theZoneRatio - min_ratio > idle_move_threshold:
+                if A == 1:
                     del self.__driver_dict[driver.getPos()][driver.getID()]
                     self.__driver_dict[min_zone][driver.getID()] = driver
                     driver.setPos(min_zone)

@@ -7,7 +7,6 @@ from src.Dispatcher.ClusteringByDir import ClusteringByDir
 from src.Dispatcher.MatchingInQueue import MatchingInQueue
 from src.Dispatcher.DriverStatusTracker import DriverStatusTracker
 from src.Dispatcher.RiderStatusTracker import RiderStatusTracker
-from src.Dispatcher.IdleThreLearning import IdleThreLearning
 import logging
 
 class Dispatcher:
@@ -47,11 +46,8 @@ class Dispatcher:
         #Matching Strategy
         self.__match_strategy = MatchingInQueue(self.__driver_dict, self.__rider_wait_dict, self.__rider_serve_dict)
 
-        # Idle thre learner
-        self.__learner = IdleThreLearning()
-
         #Driver Status Tracker
-        self.__driver_tracker = DriverStatusTracker(self.__driver_dict, self.__learner)
+        self.__driver_tracker = DriverStatusTracker(self.__driver_dict)
 
         #Rider Status tracker
         self.__rider_tracker = RiderStatusTracker(self.__rider_wait_dict, self.__rider_serve_dict, self.__rider_finish_dict, self.__rider_cancel_dict)
@@ -189,6 +185,7 @@ class Dispatcher:
                 for group_id in self.__rider_wait_dict[zone_id][dir_id].copy().keys():
                     driver = self.__match_strategy.match(zone_id)
                     if driver is not None:
+                        driver.learner.runQLearning(0, Dispatcher.timestamp, driver.getPos(),0)
                         self.driver_num_serve += 1
                         self.__logger.info(Dispatcher.timestamp, "matchRidertoDriver", driver.getID(), None, "Driver be Chosen to Serve Riders.")
                         self.__logger.debug(Dispatcher.timestamp, "matchRidertoDriver", None, None, "Driver Zone ===> Rider Zone: ", str(driver.getPos()) + "===>" + str(zone_id))
@@ -216,10 +213,9 @@ class Dispatcher:
                     else:
                         self.__logger.info(Dispatcher.timestamp, "matchRidertoDriver", None, None, "No Driver is available.")
                         break
-        self.__learner.estimate_last_QLearning(self.driver_num_serve-self.driver_num_move, Dispatcher.timestamp)
 
 
-    def updateDriverInDict(self):
+    def updateDriverInDict(self, R):
         #print("32: " + str(self.__driver_tracker.getSmoothRatio(32)))
         #print("33: " + str(self.__driver_tracker.getSmoothRatio(33)))
         #print("35: " + str(self.__driver_tracker.getSmoothRatio(35)))
@@ -227,13 +223,12 @@ class Dispatcher:
         #print("39: " + str(self.__driver_tracker.getSmoothRatio(39)))
         #print("41: " + str(self.__driver_tracker.getSmoothRatio(41)))
         self.driver_num_move = 0
-        self.__driver_tracker.updateIdleThresholdForEachZone()
         for zone_id in self.__driver_dict.keys():
             for driver in self.__driver_dict[zone_id].copy().values():
                 if driver.getStatus() == IDLE:
                     self.__logger.info(Dispatcher.timestamp, "updateDriverStatus", driver.getID(), None, "Update Driver when IDLE.")
                     preEffort = driver.getTripEffort()
-                    self.__driver_tracker.updateDriverStatusWhenIdle(driver, self.no_work_driver)
+                    self.__driver_tracker.updateDriverStatusWhenIdle(driver, self.no_work_driver, R)
                     if driver.getTripEffort() > preEffort:
                         self.driver_num_move += 1
                 elif driver.getStatus() == INSERVICE:

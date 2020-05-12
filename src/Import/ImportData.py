@@ -11,20 +11,20 @@ class ImportData:
         driver = pd.read_csv(file_name)
         numOfDriver = len(driver)
 
-        print("Import Driver Data:")
+        #print("Import Driver Data:")
         for i in range(0, numOfDriver):
             obs = driver.iloc[i, :]
             actor_id = obs["ID"]
             zone_id = obs["Zone"]
             driver_list.add(Driver(actor_id, zone_id))
-            if i % 100 == 0:
-                print(i)
+            #if i % 100 == 0:
+            #    print(i)
 
     @staticmethod
     def importRiderData(file_name, rider_list):
         rider = pd.read_csv(file_name)
 
-        print("Import Rider Data:")
+        #print("Import Rider Data:")
         for i in range(RIDER_ROW_START, RIDER_ROW_END):
             obs = rider.iloc[i, :]
 
@@ -42,8 +42,8 @@ class ImportData:
             patience = PATIENCE
             rider_list.add(Rider(actor_id, timestamp, pickup_zone, dropoff_zone, default_price, patience, src_lon, src_lat,
                             dest_lon, dest_lat))
-            if i % 1000 == 0:
-                print(i)
+            #if i % 1000 == 0:
+            #    print(i)
 
 
 

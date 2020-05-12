@@ -11,9 +11,10 @@ from src.Driver.RoutingStrategy import RoutingStrategy
 from src.Rider.Rider import Rider
 from src.Configure.Config import *
 from src.Import.ImportDemandEvaluation import ImportDemandEvaluation
-
+from src.Driver.IdleMoveLearner import IdleMoveLearner
 import matplotlib.pyplot as plt
 import numpy as np
+import os.path
 
 
 class Simulation:
@@ -34,6 +35,9 @@ class Simulation:
 
     def run(self):
         #Run simulation cycle
+        if os.path.exists(Q_TABLE_PATH):
+            IdleMoveLearner.load()
+
         for self.__cycle in range(SIMULATION_CYCLE_START, SIMULATION_CYCLE_END):
             # Synchronization the time with Modules(Driver, Dispatcher, Rider, and so on)
             self.__logger.info(self.__cycle, "RUN", None, None, "1. Synchronizing Time With Each Module.")
@@ -46,6 +50,7 @@ class Simulation:
             #Driver Module
             Driver.timestamp = self.__cycle
             RoutingStrategy.timestamp = self.__cycle
+            IdleMoveLearner.timestamp = self.__cycle
             #Rider Module
             Rider.timestamp = self.__cycle
             #Import Module
@@ -53,7 +58,7 @@ class Simulation:
             ImportDemandEvaluation.timestamp = self.__cycle
 
             # Start simulation time of this cycle
-            print("The Cycle Number: ", self.__cycle)
+            #print("The Cycle Number: ", self.__cycle)
             #print("Time: ", ImportDemandEvaluation.time)
 
             # Put the driver requests to dispatcher (The Driver List)
@@ -72,10 +77,10 @@ class Simulation:
                 self.__dispatcher.handleRiderIntoDict(curr_rider)
 
             #Show dispatch dicts
-            print("waiting, serving, finished, canceled: ", self.__dispatcher.countRiderNumberInWaitDict(),
-                  self.__dispatcher.countRiderNumberInServeDict(),
-                  self.__dispatcher.countRiderNumberInFinishDict(),
-                  self.__dispatcher.countRiderNumberInCancelDict())
+            #print("waiting, serving, finished, canceled: ", self.__dispatcher.countRiderNumberInWaitDict(),
+            #      self.__dispatcher.countRiderNumberInServeDict(),
+            #      self.__dispatcher.countRiderNumberInFinishDict(),
+            #      self.__dispatcher.countRiderNumberInCancelDict())
 
             #match driver and rider by dispatcher
             self.__logger.info(self.__cycle, "RUN", None, None, "4. Match Riders' Request to AN Appropriate Driver.")
@@ -86,7 +91,7 @@ class Simulation:
 
             # Update simulator's states
             self.__logger.info(self.__cycle, "RUN", None, None, "5. Update State of Simulator.")
-            self.__dispatcher.updateDriverInDict()
+            self.__dispatcher.updateDriverInDict(self.__dispatcher.driver_num_serve) #- self.__dispatcher.driver_num_move)
             self.__dispatcher.updateRidersInWaitDict()
 
             #Show up results
@@ -95,9 +100,10 @@ class Simulation:
             #print(self.__dispatcher.no_work_driver)
             if self.__cycle % SHOWN_INTERVAL == 0 and self.__cycle != SIMULATION_CYCLE_START:
                 self.showPerformanceMetrics()
-            print("\n")
+            #print("\n")
 
-        print("Simulation Terminated.\n")
+        #print("Simulation Terminated.\n")
+        IdleMoveLearner.save()
 
         #self.drawMonitorDict(self.__dispatcher.wait_rider, self.__dispatcher.no_work_driver)
 
@@ -157,7 +163,8 @@ class Simulation:
 
 
 if __name__ == "__main__":
-    for i in range(0,100):
+    for i in range(0, 100):
+        print("The iteration: "+str(i))
         sim = Simulation()
         sim.importData()
         sim.run()

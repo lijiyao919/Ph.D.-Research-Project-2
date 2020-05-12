@@ -5,7 +5,7 @@ from src.Driver.RoutingInDistance import RoutingInDistance
 from src.Logger.Logger import Logger
 import logging
 import math
-
+from src.Driver.IdleMoveLearner import IdleMoveLearner
 
 class Driver:
 
@@ -27,6 +27,8 @@ class Driver:
         self.__trip_profit = 0
         self.__idle_time = 0
         self.__finish_trip_time = -1
+
+        self.learner = IdleMoveLearner()
 
     def __str__(self):
         ret = "{" + str(self.__id) + ", " + str(self.__pos) + ", " + str(self.__status) + ", " + str(self.__trip_effort) + ", "
