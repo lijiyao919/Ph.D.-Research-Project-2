@@ -216,7 +216,7 @@ class Dispatcher:
                     else:
                         self.__logger.info(Dispatcher.timestamp, "matchRidertoDriver", None, None, "No Driver is available.")
                         break
-        self.__learner.estimate_last_QLearning(self.driver_num_serve-self.driver_num_move, Dispatcher.timestamp)
+        #self.__learner.estimate_last_QLearning(self.driver_num_serve-self.driver_num_move, Dispatcher.timestamp)
 
 
     def updateDriverInDict(self):

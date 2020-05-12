@@ -157,7 +157,6 @@ class Simulation:
 
 
 if __name__ == "__main__":
-    for i in range(0,100):
-        sim = Simulation()
-        sim.importData()
-        sim.run()
+    sim = Simulation()
+    sim.importData()
+    sim.run()
