@@ -7,7 +7,6 @@ from src.Dispatcher.ClusteringByDir import ClusteringByDir
 from src.Dispatcher.MatchingInQueue import MatchingInQueue
 from src.Dispatcher.DriverStatusTracker import DriverStatusTracker
 from src.Dispatcher.RiderStatusTracker import RiderStatusTracker
-from src.Dispatcher.IdleThreLearning import IdleThreLearning
 import logging
 
 class Dispatcher:
@@ -47,11 +46,8 @@ class Dispatcher:
         #Matching Strategy
         self.__match_strategy = MatchingInQueue(self.__driver_dict, self.__rider_wait_dict, self.__rider_serve_dict)
 
-        # Idle thre learner
-        self.__learner = IdleThreLearning()
-
         #Driver Status Tracker
-        self.__driver_tracker = DriverStatusTracker(self.__driver_dict, self.__learner)
+        self.__driver_tracker = DriverStatusTracker(self.__driver_dict)
 
         #Rider Status tracker
         self.__rider_tracker = RiderStatusTracker(self.__rider_wait_dict, self.__rider_serve_dict, self.__rider_finish_dict, self.__rider_cancel_dict)
@@ -216,7 +212,6 @@ class Dispatcher:
                     else:
                         self.__logger.info(Dispatcher.timestamp, "matchRidertoDriver", None, None, "No Driver is available.")
                         break
-        #self.__learner.estimate_last_QLearning(self.driver_num_serve-self.driver_num_move, Dispatcher.timestamp)
 
 
     def updateDriverInDict(self):
@@ -227,7 +222,6 @@ class Dispatcher:
         #print("39: " + str(self.__driver_tracker.getSmoothRatio(39)))
         #print("41: " + str(self.__driver_tracker.getSmoothRatio(41)))
         self.driver_num_move = 0
-        self.__driver_tracker.updateIdleThresholdForEachZone()
         for zone_id in self.__driver_dict.keys():
             for driver in self.__driver_dict[zone_id].copy().values():
                 if driver.getStatus() == IDLE:

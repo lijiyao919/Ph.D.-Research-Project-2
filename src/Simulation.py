@@ -99,7 +99,7 @@ class Simulation:
 
         print("Simulation Terminated.\n")
 
-        #self.drawMonitorDict(self.__dispatcher.wait_rider, self.__dispatcher.no_work_driver)
+        self.drawMonitorDict(self.__dispatcher.wait_rider, self.__dispatcher.no_work_driver)
 
     def drawMonitorDict(self, monitor_dict1, monitor_dict2):
         for time1, item1 in monitor_dict1.items():
@@ -120,7 +120,7 @@ class Simulation:
                     ax2.set_xlabel("zones")
                     ax2.set_ylabel("driver#")
                     ax2.legend()
-                    #plt.savefig(SAVE_PATH.format(time1))
+                    plt.savefig(SAVE_PATH.format(time1))
                     plt.close()
 
     def showPerformanceMetrics(self):
