@@ -34,7 +34,7 @@ INSERVICE ='inservice'
 COST_PER_CYCLE = 0
 PICKUP="pickup"
 DROPOFF="dropoff"
-IDLE_MOVE_THRE_LEARN = True
+#IDLE_MOVE_THRE_LEARN = True
 
 #Util
 FILENAME_Chicago = "C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/data/Chicago_April_11_2016.csv"
@@ -47,6 +47,6 @@ BASE_ZONE = 32
 EPSILON= 0.1#0.03
 GAMMA = 0.9
 ALPHA = 0.1
-Q_TABLE_PATH = '../data/idle_thres.json'
+Q_TABLE_PATH = '../data/qtable.json'
 
 
