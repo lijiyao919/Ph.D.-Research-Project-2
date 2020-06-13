@@ -57,10 +57,10 @@ class DriverStatusTracker:
                         min_zone=adjacent_zone
                 theZoneRatio = self.getSmoothRatio(driver.getPos())
                 #print(str((DriverStatusTracker.timestamp,driver.getPos()))+': '+str(self.__idle_move_threshold[driver.getPos()]))
-                if DriverStatusTracker.timestamp >= 480:
-                    idle_move_threshold = 32
-                else:
-                    idle_move_threshold = 0
+                #if DriverStatusTracker.timestamp >= 480:
+                 #   idle_move_threshold = 32
+                #else:
+                idle_move_threshold = 0.1
                 if theZoneRatio - min_ratio > idle_move_threshold:
                     del self.__driver_dict[driver.getPos()][driver.getID()]
                     self.__driver_dict[min_zone][driver.getID()] = driver
