@@ -77,10 +77,10 @@ class Simulation:
                 self.__dispatcher.handleRiderIntoDict(curr_rider)
 
             #Show dispatch dicts
-            #print("waiting, serving, finished, canceled: ", self.__dispatcher.countRiderNumberInWaitDict(),
-            #      self.__dispatcher.countRiderNumberInServeDict(),
-            #      self.__dispatcher.countRiderNumberInFinishDict(),
-            #      self.__dispatcher.countRiderNumberInCancelDict())
+            print("waiting, serving, finished, canceled: ", self.__dispatcher.countRiderNumberInWaitDict(),
+                  self.__dispatcher.countRiderNumberInServeDict(),
+                  self.__dispatcher.countRiderNumberInFinishDict(),
+                  self.__dispatcher.countRiderNumberInCancelDict())
 
             #match driver and rider by dispatcher
             self.__logger.info(self.__cycle, "RUN", None, None, "4. Match Riders' Request to AN Appropriate Driver.")
@@ -163,7 +163,7 @@ class Simulation:
 
 
 if __name__ == "__main__":
-    for i in range(0, 100):
+    for i in range(0, 1):
         print("The iteration: "+str(i))
         sim = Simulation()
         sim.importData()

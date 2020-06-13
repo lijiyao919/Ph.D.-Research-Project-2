@@ -47,9 +47,9 @@ class IdleMoveLearner:
                     R=-1
                 else:
                     if IdleMoveLearner.timestamp >= 480:
-                        R=-200
+                       R=-200
                     else:
-                        R=-2
+                       R=-2
             IdleMoveLearner.Q[self.last_state][self.act] = IdleMoveLearner.Q[self.last_state][self.act] \
                                                            + ALPHA * (R + GAMMA * np.max(IdleMoveLearner.Q[S]) - IdleMoveLearner.Q[self.last_state][self.act])
             self.last_state = S

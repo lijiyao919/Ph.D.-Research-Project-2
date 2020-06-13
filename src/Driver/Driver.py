@@ -113,7 +113,7 @@ class Driver:
             self.__logger.warning(Driver.timestamp, "calcTripEffort", self.getID(), None, "Trip effort value is unresonable ")
             raise Exception("Trip effort value is unresonable ")
         else:
-            self.__trip_effort = total_effort
+            self.__trip_effort += total_effort
 
     def tickTripEffort(self):
         self.__trip_effort += 1
@@ -136,7 +136,7 @@ class Driver:
                 else:
                     self.__logger.error(Driver.timestamp, "calcTripEffort", self.getID(), None, "Price value is unresonable ")
                     raise Exception("Price value is unresonable ")
-            self.__trip_profit = trip_revenue - self.__trip_effort * COST_PER_CYCLE
+            self.__trip_profit += trip_revenue - self.__trip_effort * COST_PER_CYCLE
         else:
             self.__logger.error(Driver.timestamp, "calcTripEffort", self.getID(), None, "No riders in vehicle.")
             raise Exception("No riders in vehicle.")
