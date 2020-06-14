@@ -96,22 +96,27 @@ class Driver:
 
     #must calc route first
     def calcTripEffort(self):
-        total_effort = 0
+        trip_time = 0
+        trip_effort = 0
         pos = self.getPos()
         for elem in self.__trip_route:
-            total_effort = total_effort + Graph.queryTravelCost(pos, elem.getZoneID())
-            elem.setEventTime(Driver.timestamp + total_effort)
+            if Graph.queryTravelCost(pos, elem.getZoneID()) != 0:
+                trip_effort = trip_effort + Graph.queryTravelCost(pos, elem.getZoneID())
+            else:
+                trip_effort += 0.5
+            trip_time = trip_time + Graph.queryTravelCost(pos, elem.getZoneID())
+            elem.setEventTime(Driver.timestamp + trip_time)
             if elem.getEvent() == DROPOFF:
                 rider = self.__riders[elem.getRiderID()]
-                rider.setArrivalTimestamp(Driver.timestamp + total_effort)
-                rider.calcDetourTime(total_effort) #detour time is b/w the rerquest accepted and arrive at destination.
+                rider.setArrivalTimestamp(Driver.timestamp + trip_time)
+                rider.calcDetourTime(trip_time) #detour time is b/w the rerquest accepted and arrive at destination.
             pos = elem.getZoneID()
 
-        if total_effort < 0:
+        if trip_effort < 0:
             self.__logger.warning(Driver.timestamp, "calcTripEffort", self.getID(), None, "Trip effort value is unresonable ")
             raise Exception("Trip effort value is unresonable ")
         else:
-            self.__trip_effort += total_effort
+            self.__trip_effort += trip_effort
 
     def tickTripEffort(self):
         self.__trip_effort += 1
@@ -134,7 +139,7 @@ class Driver:
                 else:
                     self.__logger.error(Driver.timestamp, "calcTripEffort", self.getID(), None, "Price value is unresonable ")
                     raise Exception("Price value is unresonable ")
-            self.__trip_profit += trip_revenue - self.__trip_effort * COST_PER_CYCLE
+            self.__trip_profit += trip_revenue
         else:
             self.__logger.error(Driver.timestamp, "calcTripEffort", self.getID(), None, "No riders in vehicle.")
             raise Exception("No riders in vehicle.")
