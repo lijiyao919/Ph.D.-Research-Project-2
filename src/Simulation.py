@@ -58,7 +58,7 @@ class Simulation:
             ImportDemandEvaluation.timestamp = self.__cycle
 
             # Start simulation time of this cycle
-            #print("The Cycle Number: ", self.__cycle)
+            print("The Cycle Number: ", self.__cycle)
             #print("Time: ", ImportDemandEvaluation.time)
 
             # Put the driver requests to dispatcher (The Driver List)
@@ -103,7 +103,7 @@ class Simulation:
             #print("\n")
 
         #print("Simulation Terminated.\n")
-        IdleMoveLearner.save()
+        #IdleMoveLearner.save()
 
         #self.drawMonitorDict(self.__dispatcher.wait_rider, self.__dispatcher.no_work_driver)
 
@@ -139,9 +139,10 @@ class Simulation:
         print("***************************************************************")
         print("Driver Performace Metrics:")
         print("Average Revenue: ", round(self.__dispatcher.calcAverageProfitOfDrivers(), 2))
-        print("Average Idle Time: ", round(self.__dispatcher.calcAverageIdleTimeOfDrivers(), 2))
         print("Average Trip Effort: ", round(self.__dispatcher.calcAverageTripEffortOfDrivers(), 2))
-
+        print("Average Profit: ", round(self.__dispatcher.calcAverageProfitOfDrivers() -
+                                        COST_PER_CYCLE * self.__dispatcher.calcAverageTripEffortOfDrivers(), 2))
+        print("Average Idle Time: ", round(self.__dispatcher.calcAverageIdleTimeOfDrivers(), 2))
         print("***************************************************************")
         print("Rider Performace Metrics:")
         print("Average Waiting Time (Cycles): ", round(self.__dispatcher.calcAverageWaitTimeOfRiders(), 2))
