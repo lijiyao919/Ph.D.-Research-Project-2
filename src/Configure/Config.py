@@ -31,7 +31,7 @@ PATIENCE = 7
 VEHICLE_CAPACITY = 4
 IDLE = 'idle'
 INSERVICE ='inservice'
-COST_PER_CYCLE = 0
+COST_PER_CYCLE = 1.8
 PICKUP="pickup"
 DROPOFF="dropoff"
 

@@ -99,7 +99,7 @@ class Simulation:
 
         print("Simulation Terminated.\n")
 
-        self.drawMonitorDict(self.__dispatcher.wait_rider, self.__dispatcher.no_work_driver)
+        #self.drawMonitorDict(self.__dispatcher.wait_rider, self.__dispatcher.no_work_driver)
 
     def drawMonitorDict(self, monitor_dict1, monitor_dict2):
         for time1, item1 in monitor_dict1.items():
@@ -133,9 +133,10 @@ class Simulation:
         print("***************************************************************")
         print("Driver Performace Metrics:")
         print("Average Revenue: ", round(self.__dispatcher.calcAverageProfitOfDrivers(), 2))
-        print("Average Idle Time: ", round(self.__dispatcher.calcAverageIdleTimeOfDrivers(), 2))
         print("Average Trip Effort: ", round(self.__dispatcher.calcAverageTripEffortOfDrivers(), 2))
-
+        print("Average Profit: ", round(self.__dispatcher.calcAverageProfitOfDrivers() -
+                                        COST_PER_CYCLE * self.__dispatcher.calcAverageTripEffortOfDrivers(), 2))
+        print("Average Idle Time: ", round(self.__dispatcher.calcAverageIdleTimeOfDrivers(), 2))
         print("***************************************************************")
         print("Rider Performace Metrics:")
         print("Average Waiting Time (Cycles): ", round(self.__dispatcher.calcAverageWaitTimeOfRiders(), 2))
