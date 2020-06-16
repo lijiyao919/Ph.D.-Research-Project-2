@@ -131,17 +131,13 @@ class Simulation:
         print("Driver Performace Metrics:")
         print("Average Revenue: ", round(self.__dispatcher.calcAverageProfitOfDrivers(), 2))
         print("Average Trip Effort: ", round(self.__dispatcher.calcAverageTripEffortOfDrivers(), 2))
-        print("Average Profit: ", round(self.__dispatcher.calcAverageProfitOfDrivers() -
-                                        COST_PER_CYCLE*self.__dispatcher.calcAverageTripEffortOfDrivers(), 2))
-        print("Average Idle Time: ", round(self.__dispatcher.calcAverageIdleTimeOfDrivers(), 2))
+        print("Average Profit: ", round(self.__dispatcher.calcAverageProfitOfDrivers() - COST_PER_CYCLE*self.__dispatcher.calcAverageTripEffortOfDrivers(), 2))
+        print("Average Utilization: ", round((260-self.__dispatcher.calcAverageIdleTimeOfDrivers())/260, 2))
 
         print("***************************************************************")
         print("Rider Performace Metrics:")
         print("Average Waiting Time (Cycles): ", round(self.__dispatcher.calcAverageWaitTimeOfRiders(), 2))
         print("Average Detour Time (Cycles): ", round(self.__dispatcher.calcAverageDetourTimeOfRiders(), 2))
-        print("Average Sat: ", round(self.__dispatcher.calcAverageSatOfRiders(), 2))
-        print("Average Fare: ", round(self.__dispatcher.calcAverageFareOfRiders(), 2))
-        print("Average Default Fare: ", round(self.__dispatcher.calcAverageDefaultFareRiders(), 2))
 
         print("***************************************************************")
         print("System Performace Metrics:")

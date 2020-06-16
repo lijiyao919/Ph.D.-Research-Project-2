@@ -1,5 +1,5 @@
 #Simulation
-FILENAME_D = "C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/data/Chicago_d.csv"
+FILENAME_D = "C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/data/Chicago_d_116.csv"
 FILENAME_R = "C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/data/Chicago_r.csv"
 SAVE_PATH = "C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/fig/p_{}.jpg"
 SIMULATION_CYCLE = 3  #every 3 minutes in one cycle
@@ -17,11 +17,11 @@ SERVING  = "serving"
 FINISHED = "finished"
 CANCEL = "cancel"
 
-DETOUR_WEIGH = 0.05
-DISCOUNT_1 = 0.96
-DISCOUNT_2 = 0.93
-DISCOUNT_3 = 0.9
-DISCOUNT_4 = 0.87
+DETOUR_WEIGH = 0
+DISCOUNT_1 = 1
+DISCOUNT_2 = 1
+DISCOUNT_3 = 1
+DISCOUNT_4 = 1
 
 DIR_THRESHOLD = 30
 SAT_PRICE = 1
@@ -31,7 +31,7 @@ PATIENCE = 7
 VEHICLE_CAPACITY = 4
 IDLE = 'idle'
 INSERVICE ='inservice'
-COST_PER_CYCLE = 1.8
+COST_PER_CYCLE = 2
 PICKUP="pickup"
 DROPOFF="dropoff"
 
