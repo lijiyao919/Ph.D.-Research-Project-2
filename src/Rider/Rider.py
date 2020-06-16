@@ -120,7 +120,7 @@ class Rider:
         if self.__detour_time < 0:
             self.__logger.error(Rider.timestamp, "calcSat", None, self.getID(), "Detour time is unreasonable.")
             raise Exception("Detour time is unreasonable.")
-        elif self.__price >= self.__default_price:
+        elif self.__price > self.__default_price:
             self.__logger.error(Rider.timestamp, "calcSat", None, self.getID(), "Price is unreasonable.")
             raise Exception("Price is unreasonable.")
         else:
