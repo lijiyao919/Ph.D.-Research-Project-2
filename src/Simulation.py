@@ -98,12 +98,13 @@ class Simulation:
             self.__logger.info(self.__cycle, "RUN", None, None, "6. Show Up All Results of this Cycle.")
             #print(self.__dispatcher.cancel_rider)
             #print(self.__dispatcher.no_work_driver)
-            if self.__cycle % SHOWN_INTERVAL == 0 and self.__cycle != SIMULATION_CYCLE_START:
-                self.showPerformanceMetrics()
+            #if self.__cycle % SHOWN_INTERVAL == 0 and self.__cycle != SIMULATION_CYCLE_START:
+            #    self.showPerformanceMetrics()
             #print("\n")
 
-        #print("Simulation Terminated.\n")
-        #IdleMoveLearner.save()
+        self.showPerformanceMetrics()
+        print("Simulation Terminated.\n")
+
 
         #self.drawMonitorDict(self.__dispatcher.wait_rider, self.__dispatcher.no_work_driver)
 

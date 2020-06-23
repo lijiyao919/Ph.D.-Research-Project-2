@@ -17,7 +17,7 @@ SERVING  = "serving"
 FINISHED = "finished"
 CANCEL = "cancel"
 
-DETOUR_WEIGH = 0.5
+DETOUR_WEIGH = 0.2
 DISCOUNT_1 = 1
 DISCOUNT_2 = 1
 DISCOUNT_3 = 1
