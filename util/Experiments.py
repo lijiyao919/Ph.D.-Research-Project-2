@@ -41,13 +41,13 @@ banerjee_w_learn_pool_idle =[1867, 1966, 1756, 1592, 1446]
 banerjee_w_learn_pool_idle_learn = [1908, 2016, 1904, 1829, 1625]'''
 
 #driver utilization
-utilization=[50, 60, 70, 80, 90, 100]
+'''utilization=[50, 60, 70, 80, 90, 100]
 utilization_str=('50', '60', '70', '80', '90', '100')
 banerjee_w_1= [86, 83, 78, 73, 68]
 banerjee_w_1_pool = [78, 74, 67, 59, 53]
 banerjee_w_learn_pool = [79, 79, 72, 66, 59]
 banerjee_w_learn_pool_idle =[90, 88, 79, 71, 64]
-banerjee_w_learn_pool_idle_learn = [93, 90, 86, 80, 71]
+banerjee_w_learn_pool_idle_learn = [93, 90, 86, 80, 71]'''
 
 #rider call time
 '''call=[0.5, 1, 1.5, 2, 2.5, 3, 3.5]
@@ -68,7 +68,7 @@ banerjee_w_learn_pool_idle =[2.5, 2.55, 2.55, 2.5, 2.5]
 banerjee_w_learn_pool_idle_learn = [2.5, 2.6, 2.5, 2.6, 2.8]'''
 
 #code
-fig, ax = plt.subplots()
+'''fig, ax = plt.subplots()
 ax.plot(driver_num, banerjee_w_1, 'cd-', label='SMW')
 ax.plot(driver_num, banerjee_w_1_pool, 'gp-', label='SMW+CP')
 ax.plot(driver_num, banerjee_w_learn_pool, 'b*-', label='ARDL+CP')
@@ -82,8 +82,45 @@ ax.set_yticks(call)
 ax.set_yticklabels(call_str, fontsize=frontsize)
 ax.set_ylabel('The Average Calling Time of Rider', fontsize=frontsize)
 ax.legend(prop={'size': 11})
-plt.show()
+plt.show()'''
 
+
+'''angle_num = [5, 10 ,20 ,30 ,40]
+pool_rate=[20, 30, 40, 50, 60]
+pool_rate_str=('20', '30', '40', '50', '60')
+pool_in_4 = [26.3, 34.7, 47.5, 56.3, 61.3]
+pool_in_3 = [13.1, 15, 14.1, 12.7, 11.5]
+pool_in_2 = [22, 20.7, 17.3, 13.8, 12.1]
+pool_in_1 = [38.5, 29.6, 21.1, 17.2, 15.1]
+fig, ax = plt.subplots()
+ax.plot(angle_num, pool_in_4, 'gp-', label='Pool Rate in 4')
+ax.plot(angle_num, pool_in_3, 'b*-', label='Pool Rate in 3')
+ax.plot(angle_num, pool_in_2, 'r^-', label='Pool Rate in 2')
+ax.plot(angle_num, pool_in_1, 'ko-', label='Pool Rate in 1')
+ax.set_xlabel('The Threshold of CTR', fontsize=frontsize)
+ax.set_xticks(angle_num)
+ax.set_xticklabels(('5', '10', '20', '30', '40'), fontsize=frontsize)
+ax.set_yticks(pool_rate)
+ax.set_yticklabels(pool_rate_str, fontsize=frontsize)
+ax.set_ylabel('The Average Pooling Rate', fontsize=frontsize)
+ax.legend(prop={'size': 11})
+plt.show()'''
+
+
+angle_num = [5, 10 ,20 ,30 ,40]
+detour=[2, 2.2, 2.5, 2.8, 3]
+detour_str=('2', '2.2', '2.5', '2.8', '3')
+wait=[2.1, 2.3, 2.5, 2.7, 3]
+fig, ax = plt.subplots()
+ax.plot(angle_num, wait, 'ko-')
+ax.set_xlabel('The Threshold of CTR', fontsize=frontsize)
+ax.set_xticks(angle_num)
+ax.set_xticklabels(('5', '10', '20', '30', '40'), fontsize=frontsize)
+
+ax.set_yticks(detour)
+ax.set_yticklabels(detour_str, fontsize=frontsize)
+ax.set_ylabel('The Average Detour Time of Rider', fontsize=frontsize)
+plt.show()
 
 
 
