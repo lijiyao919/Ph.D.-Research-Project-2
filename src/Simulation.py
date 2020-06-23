@@ -141,6 +141,8 @@ class Simulation:
         print("Rider Performace Metrics:")
         print("Average Waiting Time (Cycles): ", round(self.__dispatcher.calcAverageWaitTimeOfRiders(), 2))
         print("Average Detour Time (Cycles): ", round(self.__dispatcher.calcAverageDetourTimeOfRiders(), 2))
+        print("Average Fare: ", round(self.__dispatcher.calcAverageFareOfRiders(), 2))
+        print("Average Default Fare: ", round(self.__dispatcher.calcAverageDefaultFareRiders(), 2))
 
         print("***************************************************************")
         print("System Performace Metrics:")
