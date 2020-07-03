@@ -32,13 +32,13 @@ banerjee_w_learn_pool_idle =[234, 228, 212, 204, 188]
 banerjee_w_learn_pool_idle_learn = [240, 239, 238, 235, 225]'''
 
 #driver profit
-'''profit=[600, 800, 1000, 1200, 1400, 1600]
+profit=[600, 800, 1000, 1200, 1400, 1600]
 profit_str=('600', '800', '1000', '1200', '1400', '1600')
 banerjee_w_1= [496.26, 518.1, 534.07, 512.04, 488.74]
 banerjee_w_1_pool = [1206.42, 1254.01, 1198.2, 1078.4, 976.4]
 banerjee_w_learn_pool = [1284.26, 1435.49, 1312.96, 1211.75, 1099.26]
 banerjee_w_learn_pool_idle =[1508.43, 1582.92, 1395.01, 1273.93, 1146.27]
-banerjee_w_learn_pool_idle_learn = [1550.2, 1611.34, 1520.25, 1424.51, 1227.47]'''
+banerjee_w_learn_pool_idle_learn = [1550.2, 1611.34, 1520.25, 1424.51, 1227.47]
 
 #driver utilization
 '''utilization=[50, 60, 70, 80, 90, 100]
@@ -60,7 +60,7 @@ banerjee_w_learn_pool_idle_learn = [2.8, 2.1, 1.8, 1.2, 0.57]'''
 
 
 #code
-'''fig, ax = plt.subplots()
+fig, ax = plt.subplots()
 ax.plot(driver_num, banerjee_w_1, 'cd-', label='SMW')
 ax.plot(driver_num, banerjee_w_1_pool, 'gp-', label='SMW+CP')
 ax.plot(driver_num, banerjee_w_learn_pool, 'b*-', label='ARDL+CP')
@@ -70,31 +70,31 @@ ax.set_xlabel('The Number of Taxi', fontsize=frontsize)
 ax.set_xticks(driver_num)
 ax.set_xticklabels(('116', '166', '216', '266', '316'), fontsize=frontsize)
 
-ax.set_yticks(call)
-ax.set_yticklabels(call_str, fontsize=frontsize)
-ax.set_ylabel('The Average Calling Time of Rider (min)', fontsize=frontsize)
+ax.set_yticks(profit)
+ax.set_yticklabels(profit_str, fontsize=frontsize)
+ax.set_ylabel('The Average Profit of Taxi Driver ($)', fontsize=frontsize)
 ax.legend(prop={'size': 11})
-plt.show()'''
+plt.show()
 
 
 '''angle_num = [5, 10 ,20 ,30 ,40]
-pool_rate=[20, 30, 40, 50, 60]
-pool_rate_str=('20', '30', '40', '50', '60')
-pool_in_4 = [26.3, 34.7, 47.5, 56.3, 61.3]
-pool_in_3 = [13.1, 15, 14.1, 12.7, 11.5]
+pool_rate=[10, 20, 30, 40, 50, 60]
+pool_rate_str=('10', '20', '30', '40', '50', '60')
+pool_in_4 = [26.3, 34.9, 47.5, 56.3, 61.3]
+pool_in_3 = [13.1, 14.8, 14.1, 12.7, 11.5]
 pool_in_2 = [22, 20.7, 17.3, 13.8, 12.1]
 pool_in_1 = [38.5, 29.6, 21.1, 17.2, 15.1]
 fig, ax = plt.subplots()
-ax.plot(angle_num, pool_in_4, 'gp-', label='Pool Rate in 4')
-ax.plot(angle_num, pool_in_3, 'b*-', label='Pool Rate in 3')
-ax.plot(angle_num, pool_in_2, 'r^-', label='Pool Rate in 2')
-ax.plot(angle_num, pool_in_1, 'ko-', label='Pool Rate in 1')
+ax.plot(angle_num, pool_in_4, 'gp-', label='% of riders pooling in 4')
+ax.plot(angle_num, pool_in_3, 'b*-', label='% of riders pooling in 3')
+ax.plot(angle_num, pool_in_2, 'r^-', label='% of riders pooling in 2')
+ax.plot(angle_num, pool_in_1, 'ko-', label='% of riders pooling in 1')
 ax.set_xlabel('The Threshold of CTR', fontsize=frontsize)
 ax.set_xticks(angle_num)
 ax.set_xticklabels(('5', '10', '20', '30', '40'), fontsize=frontsize)
 ax.set_yticks(pool_rate)
 ax.set_yticklabels(pool_rate_str, fontsize=frontsize)
-ax.set_ylabel('The Average Pooling Rate', fontsize=frontsize)
+ax.set_ylabel('The Average Pooling Rate (%)', fontsize=frontsize)
 ax.legend(prop={'size': 11})
 plt.show()'''
 
@@ -102,16 +102,56 @@ plt.show()'''
 '''angle_num = [5, 10 ,20 ,30 ,40]
 detour=[2, 2.2, 2.5, 2.8, 3]
 detour_str=('2', '2.2', '2.5', '2.8', '3')
-wait=[2.1, 2.3, 2.5, 2.7, 3]
+save=[2, 2.2, 2.5, 2.8, 3, 3.2]
+save_str=('2', '2.2', '2.5', '2.8', '3', '3.2')
+
+wait=[2.1, 2.3, 2.5, 2.7, 2.9]
+save=[2, 2.2, 2.7, 3.2, 3.3]
 fig, ax = plt.subplots()
-ax.plot(angle_num, wait, 'ko-')
+ax2 = ax.twinx()
+ax.plot(angle_num, wait, 'ko-', label='Extra Trip Time')
+ax2.plot(angle_num, save, 'bd-',label='Saved Money')
 ax.set_xlabel('The Threshold of CTR', fontsize=frontsize)
 ax.set_xticks(angle_num)
 ax.set_xticklabels(('5', '10', '20', '30', '40'), fontsize=frontsize)
 
 ax.set_yticks(detour)
 ax.set_yticklabels(detour_str, fontsize=frontsize)
-ax.set_ylabel('The Average Detour Time of Rider', fontsize=frontsize)
+ax.set_ylabel('The Average Extra Trip Time of Rider (min)', fontsize=frontsize)
+ax2.set_yticks(save)
+ax2.set_yticklabels(save_str, fontsize=frontsize)
+ax2.set_ylabel('The Average Saved Money of Rider ($)', color='b', fontsize=frontsize)
+ax.legend(prop={'size': 11}, loc='lower right')
+ax2.legend(prop={'size': 11}, loc='upper left')
+plt.show()'''
+
+
+'''angle_num = [5, 10 ,20 ,30 ,40]
+detour=[70, 75, 80, 85, 90, 95]
+detour_str=('70', '75', '80', '85', '90', '95')
+save=[1180, 1190, 1200, 1210, 1220, 1230, 1240, 1250]
+save_str=('1180', '1190', '1200', '1210', '1220', '1230', '1240', '1250')
+
+serve=[91, 95, 97, 98, 98]
+utilization=[83, 79, 74, 71, 69]
+profit=[1185, 1254, 1234, 1228, 1218]
+fig, ax = plt.subplots()
+ax2 = ax.twinx()
+ax.plot(angle_num, serve, 'ko-', label='Serving Rate')
+ax.plot(angle_num, utilization, 'k^-', label='Utilization Rate')
+ax2.plot(angle_num, profit, 'bd-', label='Profit')
+ax.set_xlabel('The Threshold of CTR', fontsize=frontsize)
+ax.set_xticks(angle_num)
+ax.set_xticklabels(('5', '10', '20', '30', '40'), fontsize=frontsize)
+
+ax.set_yticks(detour)
+ax.set_yticklabels(detour_str, fontsize=frontsize)
+ax.set_ylabel('The Serving/Utilization Rate (%)', fontsize=frontsize)
+ax2.set_yticks(save)
+ax2.set_yticklabels(save_str, fontsize=frontsize)
+ax2.set_ylabel('The Average Profit of Taxi ($)', color='b', fontsize=frontsize)
+ax.legend(prop={'size': 11}, loc='lower right')
+ax2.legend(prop={'size': 11}, loc='center right')
 plt.show()'''
 
 
