@@ -59,7 +59,7 @@ class Dispatcher:
         #Rider Dict
         for zone_id in range(1,78):
             self.__rider_wait_dict[zone_id] = {}
-            for dir_id in range(-1, 12):
+            for dir_id in range(-1, 360//DIR_THRESHOLD):
                 self.__rider_wait_dict[zone_id][dir_id] = defaultdict(dict)
 
         #

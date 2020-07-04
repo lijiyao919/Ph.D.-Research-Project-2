@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from src.Logger.Logger import Logger
-
+from src.Configure.Config import *
 
 class ClusteringStrategy(ABC):
 
@@ -16,7 +16,7 @@ class ClusteringStrategy(ABC):
         # Assign Group ID
         for zone_id in range(1, 78):
             self.__assign_gid_dict[zone_id] = {}
-            for dir_id in range(-1, 12):
+            for dir_id in range(-1, 360//DIR_THRESHOLD):
                 self.__assign_gid_dict[zone_id][dir_id] = 1
 
     def showAssignGidDict(self):
