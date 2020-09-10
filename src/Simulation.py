@@ -14,7 +14,7 @@ from src.Import.ImportDemandEvaluation import ImportDemandEvaluation
 
 import matplotlib.pyplot as plt
 import numpy as np
-
+import time
 
 class Simulation:
 
@@ -26,7 +26,9 @@ class Simulation:
         self.__rider_list = RequestList()
         self.__dispatcher = Dispatcher()
         self.__cycle = 0
-        self.__sim_time = []
+        self.__cluster_time = []
+        self.__match_time = []
+        self.__reloc_time = []
 
     def importData(self,):
         ImportData.importDriverData(FILENAME_D, self.__driver_list)
@@ -65,11 +67,15 @@ class Simulation:
             self.__dispatcher.countDriverNumberEachZone() #count idle driver number before match
 
             # Put the rider requests to dispatcher (The Rider List)
+            cluster_start = time.time()
             self.__logger.info(self.__cycle, "RUN", None, None, "3. Put Rider' Requests To Dispatcher From RequestList.")
             while not self.__rider_list.is_empty() and self.__rider_list.first_element().getRequestTimeStamp() == self.__cycle:
                 curr_rider = self.__rider_list.remove()
                 self.__logger.debug(self.__cycle, "RUN", None, None, "Current Rider Moved into Dict of Dispatcher: ", str(curr_rider))
                 self.__dispatcher.handleRiderIntoDict(curr_rider)
+            cluster_end = time.time()
+            if self.__cycle <=480:
+                self.__cluster_time.append(cluster_end-cluster_start)
 
             #Show dispatch dicts
             print("waiting, serving, finished, canceled: ", self.__dispatcher.countRiderNumberInWaitDict(),
@@ -79,15 +85,23 @@ class Simulation:
 
             #match driver and rider by dispatcher
             self.__logger.info(self.__cycle, "RUN", None, None, "4. Match Riders' Request to AN Appropriate Driver.")
+            match_start = time.time()
             self.__dispatcher.matchRidertoDriver()
+            match_end = time.time()
+            if self.__cycle <= 480:
+                self.__match_time.append(match_end - match_start)
             #show reward
             #print("Driver number move in idle: ", self.__dispatcher.driver_num_move)
             #print("Driver number can pick rider: ", self.__dispatcher.driver_num_serve)
 
             # Update simulator's states
             self.__logger.info(self.__cycle, "RUN", None, None, "5. Update State of Simulator.")
+            reloc_start = time.time()
             self.__dispatcher.updateDriverInDict()
+            reloc_end = time.time()
             self.__dispatcher.updateRidersInWaitDict()
+            if self.__cycle <= 480:
+                self.__reloc_time.append(reloc_end - reloc_start)
 
             #Show up results
             self.__logger.info(self.__cycle, "RUN", None, None, "6. Show Up All Results of this Cycle.")
@@ -155,6 +169,9 @@ class Simulation:
         print("Pooling Rate in 1: ", round(self.__dispatcher.grp_in_1/total,3))
         print("***************************************************************")
 
+        print("Average Cluster Time: ", sum(self.__cluster_time)/len(self.__cluster_time))
+        print("Average Match Time: ", sum(self.__match_time)/len(self.__match_time))
+        print("Average Relocate Time: ", sum(self.__reloc_time)/len(self.__reloc_time))
 
 if __name__ == "__main__":
     sim = Simulation()
