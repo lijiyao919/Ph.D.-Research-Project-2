@@ -5,20 +5,20 @@ import numpy as np
 driver_num = np.array([116, 166, 216, 266, 316])
 
 #serving rate
-serving_rate=[20, 30, 40, 50, 60, 70, 80, 90]
-serving_rate_str=('20', '30', '40', '50', '60', '70', '80', '90')
+'''serving_rate=[20, 30, 40, 50, 60, 70, 80, 90, 100]
+serving_rate_str=('20', '30', '40', '50', '60', '70', '80', '90', '100')
 banerjee_w_1= [21, 31, 38, 43, 48]
-banerjee_w_1_pool = [36, 49, 58, 65, 70]
-banerjee_w_learn_pool = [38, 54, 65, 73, 78]
+#banerjee_w_1_pool = [36, 49, 58, 65, 70]
+#banerjee_w_learn_pool = [38, 54, 65, 73, 78]
 banerjee_w_learn_pool_idle =[43, 60, 71, 81, 87]
-banerjee_w_learn_pool_idle_learn = [45, 61, 79, 93, 98]
+banerjee_w_learn_pool_idle_learn = [45, 61, 79, 93, 98]'''
 
 #driver utilization
-'''utilization=[50, 60, 70, 80, 90]
-utilization_str=('50', '60', '70', '80', '90')
+'''utilization=[60, 70, 80, 90, 95]
+utilization_str=('60', '70', '80', '90', '95')
 banerjee_w_1= [86, 83, 78, 73, 68]
-banerjee_w_1_pool = [78, 73, 67, 59, 53]
-banerjee_w_learn_pool = [79, 79, 72, 66, 59]
+#banerjee_w_1_pool = [78, 73, 67, 59, 53]
+#banerjee_w_learn_pool = [79, 79, 72, 66, 59]
 banerjee_w_learn_pool_idle =[90, 87, 79, 72, 64]
 banerjee_w_learn_pool_idle_learn = [93, 90, 86, 80, 71]'''
 
@@ -26,17 +26,17 @@ banerjee_w_learn_pool_idle_learn = [93, 90, 86, 80, 71]'''
 '''profit=[200, 300, 400, 500, 600, 700, 800, 900, 1000]
 profit_str=('200', '300', '400', '500', '600', '700', '800', '900', '1000')
 banerjee_w_1= [244, 260, 275, 267, 256]
-banerjee_w_1_pool = [728, 768, 738, 665, 602]
-banerjee_w_learn_pool = [780, 886, 812, 749, 676]
+#banerjee_w_1_pool = [728, 768, 738, 665, 602]
+#banerjee_w_learn_pool = [780, 886, 812, 749, 676]
 banerjee_w_learn_pool_idle =[917, 974, 850, 770, 690]
 banerjee_w_learn_pool_idle_learn = [941, 984, 922, 857, 725]'''
 
 #platform revenue
-'''revenue=[20000, 40000, 60000, 80000, 100000, 120000, 140000]
-revenue_str=('20K', '40K', '60K', '80K', '100K', '120K', '140K')
+'''revenue=[20000, 40000, 60000, 80000, 100000, 120000, 140000, 160000]
+revenue_str=('20K', '40K', '60K', '80K', '100K', '120K', '140K', '160K')
 banerjee_w_1= np.array([842.61, 859.95, 861.75, 818.38, 776.87])*0.3*driver_num
-banerjee_w_1_pool = np.array([1592.42, 1620.29, 1534.34, 1380.65, 1250.76])*0.3*driver_num
-banerjee_w_learn_pool = np.array([1680.04, 1834.25, 1676.67, 1546.63, 1402.58])*0.3*driver_num
+#banerjee_w_1_pool = np.array([1592.42, 1620.29, 1534.34, 1380.65, 1250.76])*0.3*driver_num
+#banerjee_w_learn_pool = np.array([1680.04, 1834.25, 1676.67, 1546.63, 1402.58])*0.3*driver_num
 banerjee_w_learn_pool_idle =np.array([1976.09, 2038.54, 1819.99, 1682.49, 1523.09])*0.3*driver_num
 banerjee_w_learn_pool_idle_learn = np.array([2030.41, 2089.88, 1996.61, 1894.9, 1677.12])*0.3*driver_num'''
 
@@ -72,10 +72,10 @@ banerjee_w_learn_pool_idle_learn = [240, 239, 238, 235, 225]'''
 '''angle_num = [5, 10 ,20 ,30 ,40]
 pool_rate=[10, 20, 30, 40, 50, 60]
 pool_rate_str=('10', '20', '30', '40', '50', '60')
-pool_in_4 = [26.3, 34.9, 47.5, 56.3, 61.3]
-pool_in_3 = [13.1, 14.8, 14.1, 12.7, 11.5]
-pool_in_2 = [22, 20.7, 17.3, 13.8, 12.1]
-pool_in_1 = [38.5, 29.6, 21.1, 17.2, 15.1]
+pool_in_4 = [26.5, 35,   47.4, 56.2, 61.3]
+pool_in_3 = [13.2, 14.7, 14.2, 12.7, 11.5]
+pool_in_2 = [22,   20.7, 17.4, 13.9, 12.1]
+pool_in_1 = [38.4, 29.6, 21,   17.2, 15.1]
 fig, ax = plt.subplots()
 frontsize=20
 ax.plot(angle_num, pool_in_4, 'gp-', label='Poolability at Level 4')
@@ -96,10 +96,10 @@ plt.show()'''
 detour=[2, 2.2, 2.5, 2.8, 3]
 detour_str=('2', '2.2', '2.5', '2.8', '3')
 save=[2, 2.2, 2.5, 2.8, 3, 3.2]
-save_str=('2', '2.2', '2.5', '2.8', '3', '3.2')
+save_str=('2', '2.2', '2.5', '2.8', '3', '3.2')'''
 
 frontsize=15
-wait=[2.1, 2.3, 2.5, 2.7, 2.9]
+'''wait=[2.1, 2.3, 2.5, 2.7, 2.9]
 save=[2, 2.2, 2.7, 3.2, 3.3]
 fig, ax = plt.subplots()
 ax2 = ax.twinx()
@@ -123,10 +123,10 @@ plt.show()'''
 frontsize=20
 fig, ax = plt.subplots()
 ax.plot(driver_num, banerjee_w_1, 'cd-', label='SMW')
-ax.plot(driver_num, banerjee_w_1_pool, 'gp-', label='SMW+CP')
-ax.plot(driver_num, banerjee_w_learn_pool, 'b*-', label='ARDL+CP')
-ax.plot(driver_num, banerjee_w_learn_pool_idle, 'ko-', label='ARDL+CP+GIM')
-#ax.plot(driver_num, banerjee_w_learn_pool_idle_learn, 'ko-', label='ARDL+CP+LIM')
+#ax.plot(driver_num, banerjee_w_1_pool, 'gp-', label='SMW+CP')
+#ax.plot(driver_num, banerjee_w_learn_pool, 'b*-', label='ARDL+CP')
+ax.plot(driver_num, banerjee_w_learn_pool_idle, 'ko-', label='Hybrid Solution')
+ax.plot(driver_num, banerjee_w_learn_pool_idle_learn, 'ro-', label='T-Balance')
 ax.set_xlabel('The Number of Taxis', fontsize=frontsize)
 ax.set_xticks(driver_num)
 ax.set_xticklabels(('116', '166', '216', '266', '316'), fontsize=frontsize)
@@ -134,7 +134,7 @@ ax.set_xticklabels(('116', '166', '216', '266', '316'), fontsize=frontsize)
 ax.set_yticks(call)
 ax.set_yticklabels(call_str, fontsize=frontsize)
 ax.set_ylabel('The Average Calling Time of Riders (min)', fontsize=16)
-ax.legend(prop={'size': 13})
+ax.legend(prop={'size': 12})
 plt.show()
 
 
@@ -146,40 +146,6 @@ plt.show()
 
 
 
-
-
-
-
-
-
-
-'''angle_num = [5, 10 ,20 ,30 ,40]
-detour=[70, 75, 80, 85, 90, 95]
-detour_str=('70', '75', '80', '85', '90', '95')
-save=[1180, 1190, 1200, 1210, 1220, 1230, 1240, 1250]
-save_str=('1180', '1190', '1200', '1210', '1220', '1230', '1240', '1250')
-
-serve=[91, 95, 97, 98, 98]
-utilization=[83, 79, 74, 71, 69]
-profit=[1185, 1254, 1234, 1228, 1218]
-fig, ax = plt.subplots()
-ax2 = ax.twinx()
-ax.plot(angle_num, serve, 'ko-', label='Serving Rate')
-ax.plot(angle_num, utilization, 'k^-', label='Utilization Rate')
-ax2.plot(angle_num, profit, 'bd-', label='Profit')
-ax.set_xlabel('The Threshold of CTR', fontsize=frontsize)
-ax.set_xticks(angle_num)
-ax.set_xticklabels(('5', '10', '20', '30', '40'), fontsize=frontsize)
-
-ax.set_yticks(detour)
-ax.set_yticklabels(detour_str, fontsize=frontsize)
-ax.set_ylabel('The Serving/Utilization Rate (%)', fontsize=frontsize)
-ax2.set_yticks(save)
-ax2.set_yticklabels(save_str, fontsize=frontsize)
-ax2.set_ylabel('The Average Profit of Taxi ($)', color='b', fontsize=frontsize)
-ax.legend(prop={'size': 11}, loc='lower right')
-ax2.legend(prop={'size': 11}, loc='center right')
-plt.show()'''
 
 
 
