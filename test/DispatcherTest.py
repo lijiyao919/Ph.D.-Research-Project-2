@@ -1,7 +1,9 @@
 import unittest
 
 from src.Dispatcher.DriverStatusTracker import DriverStatusTracker
+from src.Dispatcher.MatchingStrategy import MatchingStrategy
 from src.Dispatcher.RiderStatusTracker import RiderStatusTracker
+from src.Import.ImportDemandEvaluation import ImportDemandEvaluation
 from src.Rider.Rider import Rider
 from src.Driver.Driver import Driver
 from src.Dispatcher.Dispatcher import Dispatcher
@@ -176,6 +178,8 @@ class DispatcherTest(unittest.TestCase):
         Dispatcher.timestamp = 0
         Driver.timestamp = 0
         Rider.timestamp = 0
+        ImportDemandEvaluation.timestamp = 0
+        MatchingStrategy.timestamp = 0
 
         dispatcher.handleDriverIntoDict(d1)
         dispatcher.handleDriverIntoDict(d2)
@@ -213,14 +217,14 @@ class DispatcherTest(unittest.TestCase):
         # observer rider
         self.assertEqual(SERVING, dispatcher.getRiderFromServedDict("R14").getStatus())
         self.assertEqual(1, dispatcher.getRiderFromServedDict("R14").getDetourTime())
-        self.assertAlmostEqual(9.132, dispatcher.getRiderFromServedDict("R14").getPrice(), delta=0.01)
-        self.assertAlmostEqual(2.452, dispatcher.getRiderFromServedDict("R14").getSat(), delta=0.01)
+        self.assertAlmostEqual(8.18, dispatcher.getRiderFromServedDict("R14").getPrice(), delta=0.01)
+        self.assertAlmostEqual(0.094, dispatcher.getRiderFromServedDict("R14").getSat(), delta=0.01)
         self.assertEqual(4, dispatcher.getRiderFromServedDict("R14").getArrivalTimestamp())
 
         self.assertEqual(SERVING, dispatcher.getRiderFromServedDict("R15").getStatus())
         self.assertEqual(0, dispatcher.getRiderFromServedDict("R15").getDetourTime())
-        self.assertAlmostEqual(9.6, dispatcher.getRiderFromServedDict("R15").getPrice(), delta=0.01)
-        self.assertAlmostEqual(1.822, dispatcher.getRiderFromServedDict("R15").getSat(), delta=0.01)
+        self.assertAlmostEqual(10, dispatcher.getRiderFromServedDict("R15").getPrice(), delta=0.01)
+        self.assertAlmostEqual(0, dispatcher.getRiderFromServedDict("R15").getSat(), delta=0.01)
         self.assertEqual(3, dispatcher.getRiderFromServedDict("R15").getArrivalTimestamp())
 
         self.assertEqual(SERVING, dispatcher.getRiderFromServedDict("R1").getStatus())
@@ -354,7 +358,8 @@ class DispatcherTest(unittest.TestCase):
         Driver.timestamp = 0
         Rider.timestamp = 0
         Dispatcher.timestamp = 0
-        DriverStatusTracker.timestamp = 0
+        DriverStatusTracker.timestamp = SIMULATION_CYCLE_START
+        ImportDemandEvaluation.timestamp = 0
 
         d1 = Driver("D1", 22)
         r1 = Rider("R1", 0, 7, 1, 10, 20, 1, 1, 2, 1)  # 0
@@ -431,23 +436,21 @@ class DispatcherTest(unittest.TestCase):
             pass
 
     def testUpdateRidersInWaitDict(self):
-        r1 = Rider("R1", 0, 7, 1, 10, 20, 1, 1, 2, 1)
+        r1 = Rider("R1", SIMULATION_CYCLE_START, 7, 1, 10, 20, 1, 1, 2, 1)
         dispatch = Dispatcher()
-        for zone_id in range(1, 78):
-            dispatch.cancel_rider[zone_id] = 0
         dispatch.handleRiderIntoDict(r1)
 
-        RiderStatusTracker.timestamp = 1
+        RiderStatusTracker.timestamp = SIMULATION_CYCLE_START
         dispatch.updateRidersInWaitDict()
         self.assertEqual(WAITING, r1.getStatus())
         self.assertEqual("7: {0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {1: [R1, ], }, 7: {}, 8: {}, 9: {}, 10: {}, 11: {}, -1: {}, }", dispatch.showRiderWaitDict(7))
         self.assertEqual(1, r1.getWaitTime())
         self.assertEqual(1, dispatch.countRiderNumberInWaitDict())
 
-        RiderStatusTracker.timestamp = 21
+        RiderStatusTracker.timestamp = SIMULATION_CYCLE_START+21
         dispatch.updateRidersInWaitDict()
         self.assertEqual(CANCEL, r1.getStatus())
         self.assertEqual("7: {0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7: {}, 8: {}, 9: {}, 10: {}, 11: {}, -1: {}, }", dispatch.showRiderWaitDict(7))
         self.assertEqual("{R1, }", dispatch.showRiderCanceledDict())
-        self.assertEqual(1, r1.getWaitTime())
+        self.assertEqual(2, r1.getWaitTime())
         self.assertEqual(1, dispatch.countRiderNumberInCancelDict())

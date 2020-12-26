@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from src.Logger.Logger import Logger
 from src.Configure.Config import *
+from src.Rider.Group import Group
 
 class ClusteringStrategy(ABC):
 
@@ -43,14 +44,17 @@ class ClusteringStrategy(ABC):
 
         # self.__rider_waiting_dict[rider.getSrcZone()][rider.getDirID()] is defaultdict(dict)
         # group_num is the dict
-        if rider.getID() not in self.__rider_dict[zone_id][dir_id][group_id].keys():
-            self.__rider_dict[zone_id][dir_id][group_id][rider.getID()] = rider
+        if self.__rider_dict[zone_id][dir_id][group_id] is None:
+            self.__rider_dict[zone_id][dir_id][group_id] = Group(group_id)
+
+        if not self.__rider_dict[zone_id][dir_id][group_id].isInGroup(rider):
+            self.__rider_dict[zone_id][dir_id][group_id].addRider(rider)
             rider.setGroupID(group_id)
         else:
             self.logger.error(ClusteringStrategy.timestamp, "groupRiderByDir", None, rider.getID(), "Rider has been in the Pool")
 
         # check how many riders in the zone&direction&group_num to determine group id
-        rider_num = len(self.__rider_dict[zone_id][dir_id][group_id])
+        rider_num = self.__rider_dict[zone_id][dir_id][group_id].getGroupSize()
         # When the number of rider in group up to VEHICLE_CAPACITY
         if rider_num == group_vulumn:
             self.tickGroupID(zone_id, dir_id)

@@ -103,7 +103,7 @@ class Simulation:
             # Update simulator's states
             self.__logger.info(self.__cycle, "RUN", None, None, "5. Update State of Simulator.")
             reloc_start = time.time()
-            self.__dispatcher.updateDriverInDict(self.__dispatcher.driver_num_serve) #- self.__dispatcher.driver_num_move)
+            self.__dispatcher.updateDriverInDict() #- self.__dispatcher.driver_num_move)
             reloc_end = time.time()
 
             self.__dispatcher.updateRidersInWaitDict()

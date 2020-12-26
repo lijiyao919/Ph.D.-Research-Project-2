@@ -39,7 +39,7 @@ class DriverStatusTracker:
             driver.setStatus(IDLE)
             driver.setFinishTripTime(DriverStatusTracker.timestamp)
 
-    def updateDriverStatusWhenIdle(self, driver, no_work_dict, R):
+    def updateDriverStatusWhenIdle(self, driver, no_work_dict):
         if driver.getStatus() == IDLE:
             if driver.getFinishTripTime() != DriverStatusTracker.timestamp:
                 driver.tickIdleTime()

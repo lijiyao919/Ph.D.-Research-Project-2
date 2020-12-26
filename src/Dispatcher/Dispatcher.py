@@ -60,7 +60,7 @@ class Dispatcher:
         for zone_id in range(1,78):
             self.__rider_wait_dict[zone_id] = {}
             for dir_id in range(-1, 360//DIR_THRESHOLD):
-                self.__rider_wait_dict[zone_id][dir_id] = defaultdict(dict)
+                self.__rider_wait_dict[zone_id][dir_id] = defaultdict(lambda:None)
 
         #
         for cycle in range(SIMULATION_CYCLE_START, SIMULATION_CYCLE_END):
@@ -93,7 +93,7 @@ class Dispatcher:
             ret = ret + str(dir_id) + ": {"
             for group_id in self.__rider_wait_dict[zone_id][dir_id].keys():
                 ret = ret + str(group_id) + ": ["
-                for rider_id in OrderedDict(sorted(self.__rider_wait_dict[zone_id][dir_id][group_id].items(), key=lambda t: t[0])).keys():
+                for rider_id in OrderedDict(sorted(self.__rider_wait_dict[zone_id][dir_id][group_id].getRiders().items(), key=lambda t: t[0])).keys():
                     ret = ret + str(rider_id) + ", "
                 ret = ret + "], "
             ret = ret + "}, "
@@ -101,7 +101,7 @@ class Dispatcher:
         return ret
 
     def getRiderFromWaitDict(self, zone_id, dir_id, group_id, rider_id):
-        for id, rider in self.__rider_wait_dict[zone_id][dir_id][group_id].items():
+        for id, rider in self.__rider_wait_dict[zone_id][dir_id][group_id].getRiders().items():
             if id == rider_id:
                 return rider
         return None
@@ -116,7 +116,7 @@ class Dispatcher:
         total_num = 0
         for dir_id in self.__rider_wait_dict[zone_id].keys():
             for group_id in self.__rider_wait_dict[zone_id][dir_id].keys():
-                total_num += len(self.__rider_wait_dict[zone_id][dir_id][group_id])
+                total_num += self.__rider_wait_dict[zone_id][dir_id][group_id].getGroupSize()
         return total_num
 
 
@@ -190,23 +190,23 @@ class Dispatcher:
                         self.__logger.info(Dispatcher.timestamp, "matchRidertoDriver", driver.getID(), None, "Driver be Chosen to Serve Riders.")
                         self.__logger.debug(Dispatcher.timestamp, "matchRidertoDriver", None, None, "Driver Zone ===> Rider Zone: ", str(driver.getPos()) + "===>" + str(zone_id))
                         # update driver status
-                        driver.setRiders(self.__rider_wait_dict[zone_id][dir_id][group_id])
+                        driver.setRiders(self.__rider_wait_dict[zone_id][dir_id][group_id].getRiders())
                         self.__driver_tracker.updateDriverStatusAfterMatching(driver)
                         self.__logger.debug(Dispatcher.timestamp, "matchRidertoDriver", driver.getID(), None, str(driver))
 
                         #update rider status
-                        if len(self.__rider_wait_dict[zone_id][dir_id][group_id]) == 4:
+                        if self.__rider_wait_dict[zone_id][dir_id][group_id].getGroupSize() == 4:
                             self.grp_in_4 += 1
-                        elif len(self.__rider_wait_dict[zone_id][dir_id][group_id]) == 3:
+                        elif self.__rider_wait_dict[zone_id][dir_id][group_id].getGroupSize() == 3:
                             self.grp_in_3 += 1
-                        elif len(self.__rider_wait_dict[zone_id][dir_id][group_id]) == 2:
+                        elif self.__rider_wait_dict[zone_id][dir_id][group_id].getGroupSize() == 2:
                             self.grp_in_2 += 1
-                        elif len(self.__rider_wait_dict[zone_id][dir_id][group_id]) == 1:
+                        elif self.__rider_wait_dict[zone_id][dir_id][group_id].getGroupSize() == 1:
                             self.grp_in_1 += 1
                         else:
                             self.__logger.warning(Dispatcher.timestamp, "calcPoolingPerformanceInWaitDict", None, None, "Grp len is 0.")
 
-                        for rider in self.__rider_wait_dict[zone_id][dir_id][group_id].values():
+                        for rider in self.__rider_wait_dict[zone_id][dir_id][group_id].getRiders().values():
                             self.__rider_tracker.updateRiderStatusAfterMatching(rider)
                             self.__logger.debug(Dispatcher.timestamp, "matchRidertoDriver", driver.getID(), rider.getID(), str(rider))
                         del self.__rider_wait_dict[zone_id][dir_id][group_id]
@@ -215,7 +215,7 @@ class Dispatcher:
                         break
 
 
-    def updateDriverInDict(self, R):
+    def updateDriverInDict(self):
         #print("32: " + str(self.__driver_tracker.getSmoothRatio(32)))
         #print("33: " + str(self.__driver_tracker.getSmoothRatio(33)))
         #print("35: " + str(self.__driver_tracker.getSmoothRatio(35)))
@@ -228,7 +228,7 @@ class Dispatcher:
                 if driver.getStatus() == IDLE:
                     self.__logger.info(Dispatcher.timestamp, "updateDriverStatus", driver.getID(), None, "Update Driver when IDLE.")
                     preEffort = driver.getTripEffort()
-                    self.__driver_tracker.updateDriverStatusWhenIdle(driver, self.no_work_driver, R)
+                    self.__driver_tracker.updateDriverStatusWhenIdle(driver, self.no_work_driver)
                     if driver.getTripEffort() > preEffort:
                         self.driver_num_move += 1
                 elif driver.getStatus() == INSERVICE:
@@ -244,7 +244,7 @@ class Dispatcher:
         for zone_id in self.__rider_wait_dict.keys():
             for dir_id in self.__rider_wait_dict[zone_id].keys():
                 for group_id in self.__rider_wait_dict[zone_id][dir_id].copy().keys():
-                    for rider in self.__rider_wait_dict[zone_id][dir_id][group_id].copy().values():
+                    for rider in self.__rider_wait_dict[zone_id][dir_id][group_id].getRiders().copy().values():
                         if rider.getStatus() == WAITING:
                             self.__rider_tracker.updateRiderStatusWhenWait(rider, self.wait_rider)
                             self.__rider_tracker.checkRiderStatusIfTimeOut(rider)
@@ -269,7 +269,7 @@ class Dispatcher:
         for zone_id in self.__rider_wait_dict.keys():
             for dir_id in self.__rider_wait_dict[zone_id].keys():
                 for group_id in self.__rider_wait_dict[zone_id][dir_id].keys():
-                    total_len = total_len + len(self.__rider_wait_dict[zone_id][dir_id][group_id])
+                    total_len = total_len + self.__rider_wait_dict[zone_id][dir_id][group_id].getGroupSize()
         return total_len
 
     def countRiderNumberInServeDict(self):

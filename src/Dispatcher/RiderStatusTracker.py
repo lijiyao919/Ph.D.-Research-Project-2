@@ -19,8 +19,8 @@ class RiderStatusTracker:
             zone_id = rider.getSrcZone()
             dir = rider.getDirID()
             group_id = rider.getGroupID()
-            del self.__wait_dict[zone_id][dir][group_id][rider.getID()]
-            if len(self.__wait_dict[zone_id][dir][group_id]) == 0:
+            del (self.__wait_dict[zone_id][dir][group_id].getRiders())[rider.getID()]
+            if self.__wait_dict[zone_id][dir][group_id].getGroupSize() == 0:
                 del self.__wait_dict[zone_id][dir][group_id]
             #cancel_dict[RiderStatusTracker.timestamp][rider.getSrcZone()] += 1
         else:
