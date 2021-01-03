@@ -1,3 +1,4 @@
+import random
 from collections import defaultdict, OrderedDict
 from src.Driver.Driver import Driver
 from src.Rider.Rider import Rider
@@ -181,37 +182,60 @@ class Dispatcher:
     def matchRidertoDriver(self):
         self.driver_num_serve = 0
         for zone_id in self.__rider_wait_dict.keys():
+            total_riders_in_zone = 0
+            total_lotteries = 0
             for dir_id in self.__rider_wait_dict[zone_id].keys():
-                for group_id in self.__rider_wait_dict[zone_id][dir_id].copy().keys():
-                    driver = self.__match_strategy.match(zone_id)
-                    if driver is not None:
-                        driver.learner.runQLearning(0, Dispatcher.timestamp, driver.getPos(),0)
-                        self.driver_num_serve += 1
-                        self.__logger.info(Dispatcher.timestamp, "matchRidertoDriver", driver.getID(), None, "Driver be Chosen to Serve Riders.")
-                        self.__logger.debug(Dispatcher.timestamp, "matchRidertoDriver", None, None, "Driver Zone ===> Rider Zone: ", str(driver.getPos()) + "===>" + str(zone_id))
-                        # update driver status
-                        driver.setRiders(self.__rider_wait_dict[zone_id][dir_id][group_id].getRiders())
-                        self.__driver_tracker.updateDriverStatusAfterMatching(driver)
-                        self.__logger.debug(Dispatcher.timestamp, "matchRidertoDriver", driver.getID(), None, str(driver))
+                for group_id in self.__rider_wait_dict[zone_id][dir_id].keys():
+                    total_lotteries += self.__rider_wait_dict[zone_id][dir_id][group_id].getLoterries()
+                    total_riders_in_zone += 1
 
-                        #update rider status
-                        if self.__rider_wait_dict[zone_id][dir_id][group_id].getGroupSize() == 4:
-                            self.grp_in_4 += 1
-                        elif self.__rider_wait_dict[zone_id][dir_id][group_id].getGroupSize() == 3:
-                            self.grp_in_3 += 1
-                        elif self.__rider_wait_dict[zone_id][dir_id][group_id].getGroupSize() == 2:
-                            self.grp_in_2 += 1
-                        elif self.__rider_wait_dict[zone_id][dir_id][group_id].getGroupSize() == 1:
-                            self.grp_in_1 += 1
+            driver = 1
+            while total_riders_in_zone > 0 and driver is not None:
+                lottery_num = random.randint(0, total_lotteries)
+                curr_lottery = 0
+                has_winner = False
+                #print(zone_id, lottery_num, total_lotteries)
+                for dir_id in self.__rider_wait_dict[zone_id].keys():
+                    for group_id in self.__rider_wait_dict[zone_id][dir_id].copy().keys():
+                        curr_lottery += self.__rider_wait_dict[zone_id][dir_id][group_id].getLoterries()
+                        #print(curr_lottery, "("+str(lottery_num)+")")
+                        if curr_lottery < lottery_num:
+                            continue
+                        #print("I win")
+                        has_winner = True
+                        driver = self.__match_strategy.match(zone_id)
+                        if driver is not None:
+                            driver.learner.runQLearning(0, Dispatcher.timestamp, driver.getPos(),0)
+                            self.driver_num_serve += 1
+                            self.__logger.info(Dispatcher.timestamp, "matchRidertoDriver", driver.getID(), None, "Driver be Chosen to Serve Riders.")
+                            self.__logger.debug(Dispatcher.timestamp, "matchRidertoDriver", None, None, "Driver Zone ===> Rider Zone: ", str(driver.getPos()) + "===>" + str(zone_id))
+                            # update driver status
+                            driver.setRiders(self.__rider_wait_dict[zone_id][dir_id][group_id].getRiders())
+                            self.__driver_tracker.updateDriverStatusAfterMatching(driver)
+                            self.__logger.debug(Dispatcher.timestamp, "matchRidertoDriver", driver.getID(), None, str(driver))
+
+                            #update rider status
+                            if self.__rider_wait_dict[zone_id][dir_id][group_id].getGroupSize() == 4:
+                                self.grp_in_4 += 1
+                            elif self.__rider_wait_dict[zone_id][dir_id][group_id].getGroupSize() == 3:
+                                self.grp_in_3 += 1
+                            elif self.__rider_wait_dict[zone_id][dir_id][group_id].getGroupSize() == 2:
+                                self.grp_in_2 += 1
+                            elif self.__rider_wait_dict[zone_id][dir_id][group_id].getGroupSize() == 1:
+                                self.grp_in_1 += 1
+                            else:
+                                self.__logger.warning(Dispatcher.timestamp, "calcPoolingPerformanceInWaitDict", None, None, "Grp len is 0.")
+
+                            for rider in self.__rider_wait_dict[zone_id][dir_id][group_id].getRiders().values():
+                                self.__rider_tracker.updateRiderStatusAfterMatching(rider)
+                                self.__logger.debug(Dispatcher.timestamp, "matchRidertoDriver", driver.getID(), rider.getID(), str(rider))
+                            total_riders_in_zone -= 1
+                            total_lotteries -= self.__rider_wait_dict[zone_id][dir_id][group_id].getLoterries()
+                            del self.__rider_wait_dict[zone_id][dir_id][group_id]
                         else:
-                            self.__logger.warning(Dispatcher.timestamp, "calcPoolingPerformanceInWaitDict", None, None, "Grp len is 0.")
-
-                        for rider in self.__rider_wait_dict[zone_id][dir_id][group_id].getRiders().values():
-                            self.__rider_tracker.updateRiderStatusAfterMatching(rider)
-                            self.__logger.debug(Dispatcher.timestamp, "matchRidertoDriver", driver.getID(), rider.getID(), str(rider))
-                        del self.__rider_wait_dict[zone_id][dir_id][group_id]
-                    else:
-                        self.__logger.info(Dispatcher.timestamp, "matchRidertoDriver", None, None, "No Driver is available.")
+                            self.__logger.info(Dispatcher.timestamp, "matchRidertoDriver", None, None, "No Driver is available.")
+                        break
+                    if has_winner or driver is None:
                         break
 
 

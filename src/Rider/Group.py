@@ -1,5 +1,9 @@
 from collections import defaultdict
 
+from src.Configure.Config import lottery_multiplier
+from src.Import.ImportDemandEvaluation import ImportDemandEvaluation
+
+
 class Group:
     def __init__(self, id):
         self.__gid = id
@@ -34,6 +38,10 @@ class Group:
 
     def getRiders(self):
         return self.__riders
+
+    def getLoterries(self):
+        destination_score = int(ImportDemandEvaluation.getInstance().getRatioOfSupplyDemand(self.__destination))
+        return int(destination_score*lottery_multiplier)
 
 
 a= Group(1)

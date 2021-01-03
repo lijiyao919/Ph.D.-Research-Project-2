@@ -49,4 +49,7 @@ GAMMA = 0.9
 ALPHA = 0.1
 Q_TABLE_PATH = '../data/qtable.json'
 
+#lottery
+lottery_multiplier = 0
+
 
