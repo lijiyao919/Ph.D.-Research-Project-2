@@ -24,6 +24,7 @@ class Driver:
         self.__riders = {}
         self.__trip_route = []
         self.__trip_effort = 0
+        self.__trip_effort_in_idle = 0
         self.__trip_profit = 0
         self.__idle_time = 0
         self.__finish_trip_time = -1
@@ -125,6 +126,12 @@ class Driver:
 
     def getTripEffort(self):
         return self.__trip_effort
+
+    def tickTripEffortInIdleMode(self):
+        self.__trip_effort_in_idle += 1
+
+    def getTripEffortInIdleMode(self):
+        return self.__trip_effort_in_idle
 
     def notifyRiderPrice(self):
         shared_number = len(self.__riders)

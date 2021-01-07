@@ -63,6 +63,7 @@ class DriverStatusTracker:
                     self.__driver_dict[min_zone][driver.getID()] = driver
                     driver.setPos(min_zone)
                     driver.tickTripEffort()
+                    driver.tickTripEffortInIdleMode()
         else:
             self.__logger.error(DriverStatusTracker.timestamp, "updateDriverStatusWhenIdle", driver.getID(), None, "Driver Status is Wrong.")
             raise Exception("The driver status and dict not match.")

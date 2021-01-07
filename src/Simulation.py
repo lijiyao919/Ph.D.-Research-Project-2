@@ -157,6 +157,7 @@ class Simulation:
         print("Driver Performace Metrics:")
         print("Average Revenue: ", round(self.__dispatcher.calcAverageProfitOfDrivers(), 2))
         print("Average Trip Effort: ", round(self.__dispatcher.calcAverageTripEffortOfDrivers(), 2))
+        print("Average Trip Effort in Idle Mode: ", round(self.__dispatcher.calcAverageTripEffortOfDriversInIdleMode(), 2))
         print("Average Profit: ", round(self.__dispatcher.calcAverageProfitOfDrivers() - COST_PER_CYCLE * self.__dispatcher.calcAverageTripEffortOfDrivers(), 2))
         print("Average Utilization: ", round((260-self.__dispatcher.calcAverageIdleTimeOfDrivers())/260, 2))
 

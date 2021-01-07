@@ -329,6 +329,13 @@ class Dispatcher:
                 totalTripEffort += driver.getTripEffort()
         return totalTripEffort / self.countTotalDriverNumber()
 
+    def calcAverageTripEffortOfDriversInIdleMode(self):
+        totalTripEffortInIdle = 0
+        for zone_id in self.__driver_dict.keys():
+            for driver in self.__driver_dict[zone_id].values():
+                totalTripEffortInIdle += driver.getTripEffortInIdleMode()
+        return totalTripEffortInIdle / self.countTotalDriverNumber()
+
     def calcAverageWaitTimeOfRiders(self):
         totalWaitTime = 0
         riders = {**self.__rider_serve_dict, **self.__rider_finish_dict}
