@@ -41,13 +41,13 @@ banerjee_w_learn_pool_idle =np.array([1976.09, 2038.54, 1819.99, 1682.49, 1523.0
 banerjee_w_learn_pool_idle_learn = np.array([2030.41, 2089.88, 1996.61, 1894.9, 1677.12])*0.3*driver_num'''
 
 #rider call time
-call=[1, 1.5, 2, 2.5, 3, 3.5]
+'''call=[1, 1.5, 2, 2.5, 3, 3.5]
 call_str=( '1', '1.5', '2', '2.5', '3', '3.5')
 banerjee_w_1= [3.48, 3, 2.7, 2.4, 2.2]
 banerjee_w_1_pool = [2.88, 2.5, 1.98, 1.5, 1.4]
 banerjee_w_learn_pool = [2.84, 2.34, 1.95, 1.5, 1.1]
 banerjee_w_learn_pool_idle =[2.8, 2.2, 1.8, 1.4, 1]
-banerjee_w_learn_pool_idle_learn = [2.8, 2.1, 1.8, 1.2, 0.57]
+banerjee_w_learn_pool_idle_learn = [2.8, 2.1, 1.8, 1.2, 0.57]'''
 
 #driver revenue
 '''revenue=[800, 1000, 1200, 1400, 1600, 1800, 2000]
@@ -119,8 +119,29 @@ ax.legend(prop={'size': 16}, loc='lower right')
 ax2.legend(prop={'size': 16}, loc='upper left')
 plt.show()'''
 
-#code for compare
+#lottery
+multiplier_num = [0, 0.02, 0.04, 0.06, 0.08, 0.1]
+lost_rate=[10, 20, 30, 40, 50, 60]
+lost_rate_str=('10', '20', '30', '40', '50', '60')
+driver_116 = [56, 53, 52, 52, 52, 52]
+driver_166 = [39, 37, 37, 37, 36, 36]
+driver_216 = [21, 19, 19, 19, 18, 18]
+driver_266 = [8, 7, 7, 7, 7, 7]
+driver_316 = [3, 2, 2, 2, 2, 2]
+fig, ax = plt.subplots()
 frontsize=20
+ax.plot(multiplier_num, driver_316, 'ko-', label='driver#: 316')
+ax.set_xlabel("multipiler", fontsize=frontsize)
+ax.set_xticks(multiplier_num)
+#ax.set_xticklabels(('0', '0.02', '0.04', '0.06', '0.08', '0.1'), fontsize=frontsize)
+#ax.set_yticks(lost_rate)
+#ax.set_yticklabels(lost_rate_str, fontsize=frontsize)
+ax.set_ylabel('Lost Riders(%)', fontsize=frontsize)
+ax.legend(prop={'size': 16})
+plt.show()
+
+#code for compare
+'''frontsize=20
 fig, ax = plt.subplots()
 ax.plot(driver_num, banerjee_w_1, 'cd-', label='SMW')
 #ax.plot(driver_num, banerjee_w_1_pool, 'gp-', label='SMW+CP')
@@ -135,7 +156,7 @@ ax.set_yticks(call)
 ax.set_yticklabels(call_str, fontsize=frontsize)
 ax.set_ylabel('The Average Calling Time of Riders (min)', fontsize=16)
 ax.legend(prop={'size': 12})
-plt.show()
+plt.show()'''
 
 
 
