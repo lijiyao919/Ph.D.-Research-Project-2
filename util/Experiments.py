@@ -41,13 +41,13 @@ banerjee_w_learn_pool_idle =np.array([1976.09, 2038.54, 1819.99, 1682.49, 1523.0
 banerjee_w_learn_pool_idle_learn = np.array([2316.41, 2197, 2137, 1929, 1679])*0.3*driver_num'''
 
 #rider call time
-call=[1, 1.5, 2, 2.5, 3, 3.5]
+'''call=[1, 1.5, 2, 2.5, 3, 3.5]
 call_str=( '1', '1.5', '2', '2.5', '3', '3.5')
 banerjee_w_1= [3.48, 3, 2.7, 2.4, 2.2]
 banerjee_w_1_pool = [2.88, 2.5, 1.98, 1.5, 1.4]
 banerjee_w_learn_pool = [2.84, 2.34, 1.95, 1.5, 1.1]
 banerjee_w_learn_pool_idle =[2.8, 2.2, 1.8, 1.4, 1]
-banerjee_w_learn_pool_idle_learn = [3, 2.2, 1.8, 1.2, 0.6]
+banerjee_w_learn_pool_idle_learn = [3, 2.2, 2, 1.2, 0.6]'''
 
 #driver revenue
 '''revenue=[800, 1000, 1200, 1400, 1600, 1800, 2000]
@@ -69,7 +69,7 @@ banerjee_w_learn_pool_idle_learn = [240, 239, 238, 235, 225]'''
 
 
 #Poolability
-'''angle_num = [5, 10 ,20 ,30 ,40]
+angle_num = [5, 10 ,20 ,30 ,40]
 pool_rate=[10, 20, 30, 40, 50, 60]
 pool_rate_str=('10', '20', '30', '40', '50', '60')
 pool_in_4 = [26.5, 35,   47.4, 56.2, 61.3]
@@ -78,18 +78,18 @@ pool_in_2 = [22,   20.7, 17.4, 13.9, 12.1]
 pool_in_1 = [38.4, 29.6, 21,   17.2, 15.1]
 fig, ax = plt.subplots()
 frontsize=20
-ax.plot(angle_num, pool_in_4, 'gp-', label='Poolability at Level 4')
-ax.plot(angle_num, pool_in_3, 'b*-', label='Poolability at Level 3')
-ax.plot(angle_num, pool_in_2, 'r^-', label='Poolability at Level 2')
-ax.plot(angle_num, pool_in_1, 'ko-', label='Poolability at Level 1')
+ax.plot(angle_num, pool_in_4, 'gp-', label='pool_fraction(4)')
+ax.plot(angle_num, pool_in_3, 'b*-', label='pool_fraction(3)')
+ax.plot(angle_num, pool_in_2, 'r^-', label='pool_fraction(2)')
+ax.plot(angle_num, pool_in_1, 'ko-', label='pool_fraction(1)')
 ax.set_xlabel(r"$\theta_{CTR}$", fontsize=frontsize)
 ax.set_xticks(angle_num)
 ax.set_xticklabels(('5', '10', '20', '30', '40'), fontsize=frontsize)
 ax.set_yticks(pool_rate)
 ax.set_yticklabels(pool_rate_str, fontsize=frontsize)
-ax.set_ylabel('The Poolability (%)', fontsize=frontsize)
+ax.set_ylabel('The Pool Fraction (%)', fontsize=frontsize)
 ax.legend(prop={'size': 16})
-plt.show()'''
+plt.show()
 
 # Extra trip and saved money
 '''angle_num = [5, 10 ,20 ,30 ,40]
@@ -141,7 +141,7 @@ ax.legend(prop={'size': 16})
 plt.show()'''
 
 #code for compare
-frontsize=20
+'''frontsize=20
 fig, ax = plt.subplots()
 ax.plot(driver_num, banerjee_w_1, 'cd-', label='SMW')
 #ax.plot(driver_num, banerjee_w_1_pool, 'gp-', label='SMW+CP')
@@ -156,7 +156,7 @@ ax.set_yticks(call)
 ax.set_yticklabels(call_str, fontsize=frontsize)
 ax.set_ylabel('The Average Calling Time of Riders (min)', fontsize=16)
 ax.legend(prop={'size': 12})
-plt.show()
+plt.show()'''
 
 
 
