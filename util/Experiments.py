@@ -69,7 +69,7 @@ banerjee_w_learn_pool_idle_learn = [240, 239, 238, 235, 225]'''
 
 
 #Poolability
-angle_num = [5, 10 ,20 ,30 ,40]
+'''angle_num = [5, 10 ,20 ,30 ,40]
 pool_rate=[10, 20, 30, 40, 50, 60]
 pool_rate_str=('10', '20', '30', '40', '50', '60')
 pool_in_4 = [26.5, 35,   47.4, 56.2, 61.3]
@@ -89,7 +89,7 @@ ax.set_yticks(pool_rate)
 ax.set_yticklabels(pool_rate_str, fontsize=frontsize)
 ax.set_ylabel('The Pool Fraction (%)', fontsize=frontsize)
 ax.legend(prop={'size': 16})
-plt.show()
+plt.show()'''
 
 # Extra trip and saved money
 '''angle_num = [5, 10 ,20 ,30 ,40]
@@ -120,24 +120,43 @@ ax2.legend(prop={'size': 16}, loc='upper left')
 plt.show()'''
 
 #lottery
-'''multiplier_num = [0, 0.02, 0.04, 0.06, 0.08, 0.1]
-lost_rate=[10, 20, 30, 40, 50, 60]
-lost_rate_str=('10', '20', '30', '40', '50', '60')
-driver_116 = [56, 53, 52, 52, 52, 52]
-driver_166 = [39, 37, 37, 37, 36, 36]
-driver_216 = [21, 19, 19, 19, 18, 18]
-driver_266 = [8, 7, 7, 7, 7, 7]
-driver_316 = [3, 2, 2, 2, 2, 2]
+'''labels = ['116', '166', '216', '266', '316']
+lottery_noused = [22764, 15900, 8497, 3080, 1028]
+lottery_used =   [21287, 14885, 7515, 2813, 967]
+x = np.arange(len(labels))  # the label locations
+y = np.arange(6)
+width = 0.38  # the width of the bars
+
 fig, ax = plt.subplots()
-frontsize=20
-ax.plot(multiplier_num, driver_316, 'ko-', label='driver#: 316')
-ax.set_xlabel("multipiler", fontsize=frontsize)
-ax.set_xticks(multiplier_num)
-#ax.set_xticklabels(('0', '0.02', '0.04', '0.06', '0.08', '0.1'), fontsize=frontsize)
-#ax.set_yticks(lost_rate)
-#ax.set_yticklabels(lost_rate_str, fontsize=frontsize)
-ax.set_ylabel('Lost Riders(%)', fontsize=frontsize)
-ax.legend(prop={'size': 16})
+rects1 = ax.bar(x - width/2, lottery_noused, width, label='LS Not Used')
+rects2 = ax.bar(x + width/2, lottery_used, width, label='LS Used')
+
+# Add some text for labels, title and custom x-axis tick labels, etc.
+ax.set_xlabel('The Number of Taxis', fontsize=frontsize)
+ax.set_xticks(x)
+ax.set_xticklabels(('116', '166', '216', '266', '316'), fontsize=18)
+
+ax.set_ylabel('The Number of Unserved Riders', fontsize=frontsize)
+ax.set_yticks([0, 5000, 10000, 15000, 20000, 25000])
+ax.set_yticklabels(('0','5000', '10000', '15000', '20000', '25000'), fontsize=18)
+ax.legend()
+
+def autolabel(rects, pos='center'):
+    """Attach a text label above each bar in *rects*, displaying its height."""
+    for rect in rects:
+        height = rect.get_height()
+        ax.annotate('{}'.format(height),
+                    xy=(rect.get_x() + rect.get_width() / 2, height),
+                    xytext=(0, 3),  # 3 points vertical offset
+                    textcoords="offset points",
+                    ha=pos, va='bottom', fontsize=14)
+
+
+autolabel(rects1)
+autolabel(rects2, 'left')
+
+fig.tight_layout()
+
 plt.show()'''
 
 #code for compare
