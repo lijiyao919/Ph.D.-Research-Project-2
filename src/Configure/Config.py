@@ -23,7 +23,7 @@ DISCOUNT_2 = 1
 DISCOUNT_3 = 1
 DISCOUNT_4 = 1
 
-DIR_THRESHOLD = 30
+DIR_THRESHOLD = 40
 SAT_PRICE = 1
 PATIENCE = 7
 
@@ -50,6 +50,6 @@ ALPHA = 0.1
 Q_TABLE_PATH = '../data/qtable.json'
 
 #lottery
-lottery_multiplier = 0
+lottery_multiplier = 2
 
 
