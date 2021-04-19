@@ -41,13 +41,13 @@ banerjee_w_learn_pool_idle =np.array([1976.09, 2038.54, 1819.99, 1682.49, 1523.0
 banerjee_w_learn_pool_idle_learn = np.array([2316.41, 2197, 2137, 1929, 1679])*0.3*driver_num'''
 
 #rider call time
-'''call=[1, 1.5, 2, 2.5, 3, 3.5]
-call_str=( '1', '1.5', '2', '2.5', '3', '3.5')
-banerjee_w_1= [3.48, 3, 2.7, 2.4, 2.2]
-banerjee_w_1_pool = [2.88, 2.5, 1.98, 1.5, 1.4]
-banerjee_w_learn_pool = [2.84, 2.34, 1.95, 1.5, 1.1]
-banerjee_w_learn_pool_idle =[2.8, 2.2, 1.8, 1.4, 1]
-banerjee_w_learn_pool_idle_learn = [3, 2.2, 2, 1.2, 0.6]'''
+call=[3, 3.5, 4, 4.5, 5, 5.5,6]
+call_str=( '3.0', '3.5', '4.0', '4.5', '5.0', '5.5', '6.0')
+banerjee_w_1= [5.88, 5.4, 5.1, 4.8, 4.6]
+#banerjee_w_1_pool = [2.88, 2.5, 1.98, 1.5, 1.4]
+#banerjee_w_learn_pool = [2.84, 2.34, 1.95, 1.5, 1.1]
+banerjee_w_learn_pool_idle =[5.2, 4.6, 4.2, 3.8, 3.4]
+banerjee_w_learn_pool_idle_learn = [5.4, 4.6, 4.4, 3.6, 3]
 
 #driver revenue
 '''revenue=[800, 1000, 1200, 1400, 1600, 1800, 2000]
@@ -91,32 +91,49 @@ ax.set_ylabel('The Pool Fraction (%)', fontsize=frontsize)
 ax.legend(prop={'size': 16})
 plt.show()'''
 
+#unserve rider
+'''angle_num = [5, 10 ,20 ,30 ,40]
+unserive=[6.31, 3.56, 2.66, 2.48, 2]
+fig, ax = plt.subplots()
+frontsize=20
+ax.plot(angle_num, unserive, 'rp-')
+ax.set_xlabel(r"$\theta_{CTR}$", fontsize=frontsize)
+ax.set_xticks(angle_num)
+ax.set_xticklabels(('5', '10', '20', '30', '40'), fontsize=frontsize)
+ax.set_yticks((0, 1, 2, 3, 4, 5, 6, 7))
+ax.set_yticklabels(('0', '1', '2', '3', '4', '5', '6', '7'), fontsize=frontsize)
+ax.set_ylabel('Unserved Riders (%)', fontsize=frontsize)
+plt.show()'''
+
+
 # Extra trip and saved money
 '''angle_num = [5, 10 ,20 ,30 ,40]
 detour=[2, 2.2, 2.5, 2.8, 3]
 detour_str=('2', '2.2', '2.5', '2.8', '3')
-save=[2, 2.2, 2.5, 2.8, 3, 3.2]
-save_str=('2', '2.2', '2.5', '2.8', '3', '3.2')'''
+save=[2, 2.2, 2.5, 2.8, 3]
+save_str=('2', '2.2', '2.5', '2.8', '3')
 
 frontsize=15
-'''wait=[2.1, 2.3, 2.5, 2.7, 2.9]
+wait=[2.1, 2.3, 2.5, 2.7, 2.9]
 save=[2, 2.2, 2.7, 3.2, 3.3]
 fig, ax = plt.subplots()
-ax2 = ax.twinx()
 ax.plot(angle_num, wait, 'ko-', label='Extra Trip Time')
-ax2.plot(angle_num, save, 'bd-',label='Saved Money')
 ax.set_xlabel(r"$\theta_{CTR}$", fontsize=frontsize)
 ax.set_xticks(angle_num)
 ax.set_xticklabels(('5', '10', '20', '30', '40'), fontsize=18)
-
 ax.set_yticks(detour)
 ax.set_yticklabels(detour_str, fontsize=18)
 ax.set_ylabel('The Average Extra Trip Time of Rider (min)', fontsize=frontsize)
+plt.show()
+
+fig, ax2 = plt.subplots()
+ax2.plot(angle_num, save, 'bd-',label='Saved Money')
+ax2.set_xlabel(r"$\theta_{CTR}$", fontsize=frontsize)
+ax2.set_xticks(angle_num)
+ax2.set_xticklabels(('5', '10', '20', '30', '40'), fontsize=18)
 ax2.set_yticks(save)
 ax2.set_yticklabels(save_str, fontsize=18)
-ax2.set_ylabel('The Average Saved Money of Rider ($)', color='b', fontsize=frontsize)
-ax.legend(prop={'size': 16}, loc='lower right')
-ax2.legend(prop={'size': 16}, loc='upper left')
+ax2.set_ylabel('The Average Saved Money of Rider ($)', fontsize=frontsize)
 plt.show()'''
 
 #lottery
@@ -160,7 +177,7 @@ fig.tight_layout()
 plt.show()'''
 
 #code for compare
-'''frontsize=20
+frontsize=20
 fig, ax = plt.subplots()
 ax.plot(driver_num, banerjee_w_1, 'cd-', label='SMW')
 #ax.plot(driver_num, banerjee_w_1_pool, 'gp-', label='SMW+CP')
@@ -173,9 +190,9 @@ ax.set_xticklabels(('116', '166', '216', '266', '316'), fontsize=frontsize)
 
 ax.set_yticks(call)
 ax.set_yticklabels(call_str, fontsize=frontsize)
-ax.set_ylabel('The Average Calling Time of Riders (min)', fontsize=16)
+ax.set_ylabel('The Average Response Time (min)', fontsize=16)
 ax.legend(prop={'size': 12})
-plt.show()'''
+plt.show()
 
 
 
