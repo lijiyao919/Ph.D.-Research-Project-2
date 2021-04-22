@@ -92,17 +92,17 @@ class DemandEvaluation:
             curr_state_t = curr_time
             self.__state_value[curr_state_t] =  self.__state_value[curr_state_t].tolist() #convert value in table for storing
             curr_time = curr_time-self.__delta_time
-        with open('../data/data.json', 'w') as fp:
+        with open(POPULARITY_SCORE_FILE, 'w') as fp:
             json.dump(self.__state_value, fp)
 
     def loadStateValueTable(self):
         print('Load the State Value Table.')
-        with open('../data/data.json') as fr:
+        with open(POPULARITY_SCORE_FILE) as fr:
             self.__state_value = json.load(fr)
 
     def drawBarChart(self):
-        begin_time = datetime.datetime(2016, 4, 11, 0, 0)   #year, month and day is not important here
-        final_time = datetime.datetime(2016, 4, 11, 23, 45) #year, month and day is not important here
+        begin_time = datetime.datetime(2016, 4, REQ_DATE, 0, 0)   #year, month and day is not important here
+        final_time = datetime.datetime(2016, 4, REQ_DATE, 23, 45) #year, month and day is not important here
         curr_time_figure = final_time
         plt.figure(1)
         while curr_time_figure >= begin_time:
@@ -151,7 +151,7 @@ class DemandEvaluation:
         plt.show()
 
 
-demand = DemandEvaluation(11,11) #input the start date and end date.
+demand = DemandEvaluation(REQ_DATE,REQ_DATE) #input the start date and end date.
 demand.handleStateValueTable()
 demand.saveSateValueTable()
 #demand.drawSurfaceFigure()
