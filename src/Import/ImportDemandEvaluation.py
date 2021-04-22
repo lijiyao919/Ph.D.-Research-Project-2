@@ -1,5 +1,6 @@
 import datetime
 import json
+from src.Configure.Config import *
 
 class ImportDemandEvaluation:
     timestamp = -1
@@ -11,7 +12,7 @@ class ImportDemandEvaluation:
             raise Exception("This class is a singleton!")
         else:
             ImportDemandEvaluation.__instance = self
-            with open('C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/data/data.json') as json_file:
+            with open(POPULARITY_SCORE_FILE) as json_file:
                 self.__data = json.load(json_file)
             with open('C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/data/data_smooth.json') as json_file_smooth:
                 self.__smooth_data = json.load(json_file_smooth)
