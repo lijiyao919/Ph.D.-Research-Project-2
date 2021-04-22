@@ -1,6 +1,6 @@
 #Simulation
 FILENAME_D = "C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/data/Chicago_d_316.csv"
-FILENAME_R = "C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/data/Chicago_r.csv"
+FILENAME_R = "C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/data/Chicago_r_4_12_2016.csv"
 SAVE_PATH = "C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/fig/p_{}.jpg"
 SIMULATION_CYCLE = 3  #every 3 minutes in one cycle
 SIMULATION_CYCLE_START = 220
@@ -35,8 +35,10 @@ COST_PER_CYCLE = 2
 PICKUP="pickup"
 DROPOFF="dropoff"
 
-#Util
-FILENAME_Chicago = "C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/data/Chicago_April_11_2016.csv"
+#Util For generate
+REQ_DATE = 12
+REQ_NUM = 62019
+FILENAME_Chicago = "C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/data/Chicago_April_" + str(REQ_DATE) + "_2016.csv"
 BEGIN_TIME = 0
 END_TIME = 479
 

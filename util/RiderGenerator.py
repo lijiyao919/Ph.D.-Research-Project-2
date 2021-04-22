@@ -3,6 +3,7 @@ import pandas as pd
 import random
 
 def createRiderRequest():
+    print(FILENAME_Chicago)
     rider = pd.read_csv(FILENAME_Chicago)
     d = {"Time": [],
          "ID": [],
@@ -17,11 +18,11 @@ def createRiderRequest():
     cnt = 0
 
     print("Import data ...")
-    for i in range(0, 57172):
+    for i in range(0, REQ_NUM):
         obs = rider.iloc[i, :]
 
         #time
-        timestamp = ((pd.to_datetime(obs["Trip Start Timestamp"]) - pd.Timestamp(2016, 4, 11, 0)) / pd.to_timedelta(1,unit='m')) / SIMULATION_CYCLE
+        timestamp = ((pd.to_datetime(obs["Trip Start Timestamp"]) - pd.Timestamp(2016, 4, REQ_DATE, 0)) / pd.to_timedelta(1,unit='m')) / SIMULATION_CYCLE
         timestamp = timestamp + round(random.uniform(0,4))
         d["Time"].append(timestamp)
 
@@ -30,7 +31,7 @@ def createRiderRequest():
         d["ID"].append(actor_id)
 
         #price
-        default_price = float(obs["Trip Total"].replace(',', ''))
+        default_price = float(obs["Trip Total"])
         d["Fare"].append(default_price)
 
         #zone id
