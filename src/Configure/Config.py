@@ -2,7 +2,7 @@
 REQ_DATE = 12
 REQ_NUM = 62019
 FILENAME_Chicago = "C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/data/Chicago_April_" + str(REQ_DATE) + "_2016.csv"
-POPULARITY_SCORE_FILE = '../data/data_2.json'
+POPULARITY_SCORE_FILE = 'C:/Users/a02231961/PycharmProjects/Ph.D.-Research-Project-2/data/data_2.json'
 BEGIN_TIME = 0
 END_TIME = 479
 
