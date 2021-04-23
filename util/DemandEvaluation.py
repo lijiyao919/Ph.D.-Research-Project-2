@@ -126,8 +126,8 @@ class DemandEvaluation:
             self.__state_value = json.load(fr)
 
     def drawBarChart(self):
-        begin_time = datetime.datetime(2016, 4, 11, 0, 0)   #year, month and day is not important here
-        final_time = datetime.datetime(2016, 4, 11, 23, 45) #year, month and day is not important here
+        begin_time = datetime.datetime(2016, 4, REQ_DATE, 0, 0)   #year, month and day is not important here
+        final_time = datetime.datetime(2016, 4, REQ_DATE, 23, 45) #year, month and day is not important here
         curr_time_figure = final_time
         plt.figure(1)
         while curr_time_figure >= begin_time:
@@ -174,7 +174,7 @@ class DemandEvaluation:
         plt.show()
 
 
-demand = DemandEvaluation(11,11) #input the start date and end date.
+demand = DemandEvaluation(REQ_DATE,REQ_DATE) #input the start date and end date.
 demand.handleStateValueTable()
 #demand.save('data.json')
 demand.smoothStateValue()

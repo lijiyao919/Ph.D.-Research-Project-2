@@ -60,7 +60,7 @@ class DriverStatusTracker:
                 #if DriverStatusTracker.timestamp >= 480:
                  #   idle_move_threshold = 32
                 #else:
-                idle_move_threshold = 0.1
+                idle_move_threshold = 0.06
                 if theZoneRatio - min_ratio > idle_move_threshold:
                     del self.__driver_dict[driver.getPos()][driver.getID()]
                     self.__driver_dict[min_zone][driver.getID()] = driver
