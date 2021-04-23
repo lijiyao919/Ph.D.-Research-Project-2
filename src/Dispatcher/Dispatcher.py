@@ -306,10 +306,10 @@ class Dispatcher:
 
     def calcAverageWaitTimeOfRiders(self):
         totalWaitTime = 0
-        riders = {**self.__rider_serve_dict, **self.__rider_finish_dict}
+        riders = {**self.__rider_serve_dict, **self.__rider_finish_dict, **self.__rider_cancel_dict}
         for rider in riders.values():
             totalWaitTime +=rider.getWaitTime()
-        return totalWaitTime/(self.countRiderNumberInFinishDict()+self.countRiderNumberInServeDict())
+        return totalWaitTime/(self.countRiderNumberInFinishDict()+self.countRiderNumberInServeDict()+self.countRiderNumberInCancelDict())
 
     def calcAverageDetourTimeOfRiders(self):
         totalDetourTime = 0
