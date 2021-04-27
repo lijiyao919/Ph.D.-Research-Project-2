@@ -5,31 +5,31 @@ import numpy as np
 driver_num = np.array([116, 166, 216, 266, 316])
 
 #serving rate
-'''serving_rate=[20, 30, 40, 50, 60, 70, 80, 90, 100]
-serving_rate_str=('20', '30', '40', '50', '60', '70', '80', '90', '100')
-banerjee_w_1= [21, 31, 38, 43, 48]
-#banerjee_w_1_pool = [36, 49, 58, 65, 70]
+'''serving_rate=[20, 30, 40, 50, 60, 70, 80, 90]
+serving_rate_str=('20', '30', '40', '50', '60', '70', '80', '90')
+#banerjee_w_1= [21, 31, 38, 43, 48]
+banerjee_w_1_pool = [34, 46, 54, 59, 63]
 #banerjee_w_learn_pool = [38, 54, 65, 73, 78]
-banerjee_w_learn_pool_idle =[43, 60, 71, 81, 87]
-banerjee_w_learn_pool_idle_learn = [48, 64, 82, 93, 98]'''
+banerjee_w_learn_pool_idle =[39, 53, 62, 68, 76]
+banerjee_w_learn_pool_idle_learn = [45, 58, 71, 82, 87]'''
 
 #driver utilization
-'''utilization=[60, 70, 80, 90, 95]
-utilization_str=('60', '70', '80', '90', '95')
-banerjee_w_1= [86, 83, 78, 73, 68]
-#banerjee_w_1_pool = [78, 73, 67, 59, 53]
+'''utilization=[50, 60, 70, 80, 90]
+utilization_str=('50', '60', '70', '80', '90')
+#banerjee_w_1= [86, 83, 78, 73, 68]
+banerjee_w_1_pool = [73, 71, 65, 56, 50]
 #banerjee_w_learn_pool = [79, 79, 72, 66, 59]
-banerjee_w_learn_pool_idle =[90, 87, 79, 72, 64]
-banerjee_w_learn_pool_idle_learn = [94, 90, 87, 80, 71]'''
+banerjee_w_learn_pool_idle =[83, 81, 73, 68, 58]
+banerjee_w_learn_pool_idle_learn = [89, 85, 78, 71, 63]'''
 
 #driver profit
-'''profit=[200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100]
+profit=[200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100]
 profit_str=('200', '300', '400', '500', '600', '700', '800', '900', '1000', '1100')
-banerjee_w_1= [244, 260, 275, 267, 256]
-#banerjee_w_1_pool = [728, 768, 738, 665, 602]
+#banerjee_w_1= [244, 260, 275, 267, 256]
+banerjee_w_1_pool = [728, 768, 738, 665, 602]
 #banerjee_w_learn_pool = [780, 886, 812, 749, 676]
 banerjee_w_learn_pool_idle =[917, 974, 850, 770, 690]
-banerjee_w_learn_pool_idle_learn = [1127, 1054, 1014, 879, 727]'''
+banerjee_w_learn_pool_idle_learn = [1127, 1054, 1014, 879, 727]
 
 #platform revenue
 '''revenue=[20000, 40000, 60000, 80000, 100000, 120000, 140000, 160000]
@@ -41,13 +41,13 @@ banerjee_w_learn_pool_idle =np.array([1976.09, 2038.54, 1819.99, 1682.49, 1523.0
 banerjee_w_learn_pool_idle_learn = np.array([2316.41, 2197, 2137, 1929, 1679])*0.3*driver_num'''
 
 #rider call time
-call=[3, 3.5, 4, 4.5, 5, 5.5,6]
+'''call=[3, 3.5, 4, 4.5, 5, 5.5,6]
 call_str=( '3.0', '3.5', '4.0', '4.5', '5.0', '5.5', '6.0')
 banerjee_w_1= [5.88, 5.4, 5.1, 4.8, 4.6]
 #banerjee_w_1_pool = [2.88, 2.5, 1.98, 1.5, 1.4]
 #banerjee_w_learn_pool = [2.84, 2.34, 1.95, 1.5, 1.1]
 banerjee_w_learn_pool_idle =[5.2, 4.6, 4.2, 3.8, 3.4]
-banerjee_w_learn_pool_idle_learn = [5.4, 4.6, 4.4, 3.6, 3]
+banerjee_w_learn_pool_idle_learn = [5.4, 4.6, 4.4, 3.6, 3]'''
 
 #driver revenue
 '''revenue=[800, 1000, 1200, 1400, 1600, 1800, 2000]
@@ -179,8 +179,8 @@ plt.show()'''
 #code for compare
 frontsize=20
 fig, ax = plt.subplots()
-ax.plot(driver_num, banerjee_w_1, 'cd-', label='SMW')
-#ax.plot(driver_num, banerjee_w_1_pool, 'gp-', label='SMW+CP')
+#ax.plot(driver_num, banerjee_w_1, 'cd-', label='SMW')
+ax.plot(driver_num, banerjee_w_1_pool, 'gp-', label='SMW+CIP')
 #ax.plot(driver_num, banerjee_w_learn_pool, 'b*-', label='ARDL+CP')
 ax.plot(driver_num, banerjee_w_learn_pool_idle, 'ko-', label='Hybrid Solution')
 ax.plot(driver_num, banerjee_w_learn_pool_idle_learn, 'ro-', label='T-Balance')
@@ -188,9 +188,9 @@ ax.set_xlabel('The Number of Taxis', fontsize=frontsize)
 ax.set_xticks(driver_num)
 ax.set_xticklabels(('116', '166', '216', '266', '316'), fontsize=frontsize)
 
-ax.set_yticks(call)
-ax.set_yticklabels(call_str, fontsize=frontsize)
-ax.set_ylabel('The Average Response Time (min)', fontsize=16)
+ax.set_yticks(utilization)
+ax.set_yticklabels(utilization_str, fontsize=frontsize)
+ax.set_ylabel('The Taxi Utilization (%)', fontsize=16)
 ax.legend(prop={'size': 12})
 plt.show()
 
